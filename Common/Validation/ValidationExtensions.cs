@@ -4,38 +4,30 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using static Common.Validation.ValidationHelper;
 
 namespace Common.Validation
 {
     public static class ValidationExtensions
     {
-        public static IEnumerable<ValidationError> ValidateAttributes(this object model)
+        public static IEnumerable<ValidationError> ValidateAnnotations(
+            this object model, string path = null)
         {
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            return model.ValidateAttributes(new HashSet<object>(), "");
+            return model.ValidateAnnotations(new HashSet<object>(), path);
         }
 
-        private static IEnumerable<ValidationError> ValidateAttributes(
+        private static IEnumerable<ValidationError> ValidateAnnotations(
             this object model, HashSet<object> visitedObjects, string path)
         {
             if (model == null) yield break;
 
             Type type = model.GetType();
 
-            if (type.IsSimple()) yield break;
+            if (IsSimpleType(type)) yield break;
 
-            if (visitedObjects.Contains(model))
-            {
-                yield break;
-            }
-            else
-            {
-                visitedObjects.Add(model);
-            }
+            if (visitedObjects.Contains(model)) yield break;
+
+            visitedObjects.Add(model);
 
             IDictionary dictionary = model as IDictionary;
 
@@ -46,7 +38,7 @@ namespace Common.Validation
                 while (enumerator.MoveNext())
                 {
                     IEnumerable<ValidationError> errors = enumerator.Value
-                        .ValidateAttributes(visitedObjects, MakeDictionaryPath(path, enumerator.Key));
+                        .ValidateAnnotations(visitedObjects, MakeDictionaryPath(path, enumerator.Key));
 
                     foreach (var error in errors) yield return error;
                 }
@@ -61,24 +53,19 @@ namespace Common.Validation
                 foreach (object item in enumerable)
                 {
                     IEnumerable<ValidationError> errors = item
-                        .ValidateAttributes(visitedObjects, $"{path}[{index++}]");
+                        .ValidateAnnotations(visitedObjects, $"{path}[{index++}]");
 
                     foreach (var error in errors) yield return error;
                 }
                 yield break;
             }
-
-            if (path != "")
-            {
-                path += ".";
-            }
-
+            
             foreach (PropertyInfo property in type.GetProperties())
             {
                 // object properties without indexed property
                 if (property.GetIndexParameters().Any()) continue;
 
-                string propertyPath = path + property.Name;
+                string propertyPath = CombinePath(path, property.Name);
                 object propertyValue = property.GetValue(model);
 
                 IEnumerable<ValidationAttribute> attributes = property
@@ -101,47 +88,22 @@ namespace Common.Validation
                 }
 
                 IEnumerable<ValidationError> errors = propertyValue
-                    .ValidateAttributes(visitedObjects, propertyPath);
+                    .ValidateAnnotations(visitedObjects, propertyPath);
 
                 foreach (var error in errors) yield return error;
             }
 
-            IValidatable validatable = model as IValidatable;
+            IEnumerableValidatable validatable = model as IEnumerableValidatable;
 
             if (validatable != null)
             {
-                foreach (var error in validatable.Validate(path)) yield return error;
+                foreach (var error in validatable.Validate())
+                {
+                    error.PropertyPath = CombinePath(path, error.PropertyPath);
+
+                    yield return error;
+                }
             }
-        }
-
-        private static bool IsSimple(this Type type)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                // nullable type, check if the nested type is simple.
-                return IsSimple(type.GetGenericArguments()[0]);
-            }
-
-            return type.IsPrimitive
-                || type.IsEnum
-                || type == typeof(string)
-                || type == typeof(decimal);
-        }
-
-        private static string MakeDictionaryPath(string path, object key)
-        {
-            bool isInt = key is sbyte
-                || key is byte
-                || key is short
-                || key is ushort
-                || key is int
-                || key is uint
-                || key is long
-                || key is ulong;
-
-            return isInt
-                ? $"{path}[{key}]"
-                : $"{path}[\"{key}\"]";
         }
     }
 }

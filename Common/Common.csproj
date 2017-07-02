@@ -66,11 +66,14 @@
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Utils\AsyncLazy.cs" />
     <Compile Include="Utils\DisposableStream.cs" />
-    <Compile Include="Validation\IValidatable.cs" />
+    <Compile Include="Validation\IContextValidatable.cs" />
+    <Compile Include="Validation\IEnumerableValidatable.cs" />
+    <Compile Include="Validation\IValidationContext.cs" />
     <Compile Include="Validation\ValidationContext.cs" />
     <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Validation\ValidationExtensions.cs" />
+    <Compile Include="Validation\ValidationHelper.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

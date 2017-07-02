@@ -1,12 +1,12 @@
-﻿using System;
-
-namespace Common.Validation
+﻿namespace Common.Validation
 {
-    public struct ValidationError
+    public class ValidationError
     {
         public string PropertyPath { get; set; }
         public string ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
+
+        public ValidationError() { }
 
         public ValidationError(string path, string code, string message)
         {
