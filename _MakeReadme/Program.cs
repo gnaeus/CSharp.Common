@@ -41,7 +41,13 @@ namespace _MakeReadme
                         .Replace(projectRoot, "")
                         .Replace(Path.DirectorySeparatorChar, '/');
 
-                    sb.AppendLine($"{Environment.NewLine}# [{relativePath}](.{relativePath}){Environment.NewLine}{Environment.NewLine}");
+                    string link = "." + relativePath;
+
+                    string name = relativePath
+                        .Substring(1, relativePath.Length - 1)
+                        .Replace('/', '.');
+
+                    sb.AppendLine($"{Environment.NewLine}# [{name}]({link}){Environment.NewLine}{Environment.NewLine}");
 
                     sb.Append(File.ReadAllText(file.FullName));
                 }

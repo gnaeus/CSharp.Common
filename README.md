@@ -1,13 +1,13 @@
 ﻿
-# [/AspNet.Mvc](./AspNet.Mvc)
+# [AspNet.Mvc](./AspNet.Mvc)
 
 
 
-# [/AspNet.WebApi](./AspNet.WebApi)
+# [AspNet.WebApi](./AspNet.WebApi)
 
 
 
-# [/Common/Api](./Common/Api)
+# [Common.Api](./Common/Api)
 
 
 ## ApiWrapper
@@ -122,7 +122,7 @@ public class ApiStatus<TError> : IApiStatus, IApiError<TError>
 }
 ```
 
-# [/Common/Exceptions](./Common/Exceptions)
+# [Common.Exceptions](./Common/Exceptions)
 
 
 ## BusinessException
@@ -158,7 +158,7 @@ public class ValidationException : Exception
 }
 ```
 
-# [/Common/Extensions](./Common/Extensions)
+# [Common.Extensions](./Common/Extensions)
 
 
 ## ConnectionExtensions
@@ -336,7 +336,7 @@ Execute `Task` synchronously.
 __`void AsSyncronous(this Task task)`__  
 Execute `Task` synchronously.
 
-# [/Common/Helpers](./Common/Helpers)
+# [Common.Helpers](./Common/Helpers)
 
 
 ## StringIntepolationHelper
@@ -524,7 +524,7 @@ __`string ChangeHost(string absoluteUrl, string host)`__
 __`bool CanonicalEqual(string url1, string url2)`__  
 "http://localhost/SomeApp" == "http://localhost/someapp/"
 
-# [/Common/Jobs](./Common/Jobs)
+# [Common.Jobs](./Common/Jobs)
 
 
 ## AsyncJobsManager
@@ -569,7 +569,7 @@ class JobsService
 }
 ```
 
-# [/Common/Mail](./Common/Mail)
+# [Common.Mail](./Common/Mail)
 
 
 ## MailMessageBinarySerializer
@@ -626,7 +626,7 @@ class DelayedMailSender
 }
 ```
 
-# [/Common/Utils](./Common/Utils)
+# [Common.Utils](./Common/Utils)
 
 
 ## AsyncLazy
@@ -699,11 +699,11 @@ Random class replacement with same API but with usage of RNGCryptoServiceProvide
 public class CryptoRandom : Random { }
 ```
 
-# [/Common/Validation](./Common/Validation)
+# [Common.Validation](./Common/Validation)
 
 
 
-# [/EntityFramework](./EntityFramework)
+# [EntityFramework](./EntityFramework)
 
 
 ## DbContextExtensions
@@ -869,14 +869,14 @@ class DbContextTransactionWrapper : IDbTransaction
 }
 ```
 
-# [/MrAdvice](./MrAdvice)
+# [MrAdvice](./MrAdvice)
 
 
 
-# [/Newtonsoft.Json](./Newtonsoft.Json)
+# [Newtonsoft.Json](./Newtonsoft.Json)
 
 
 
-# [/RazorEngine](./RazorEngine)
+# [RazorEngine](./RazorEngine)
 
 
