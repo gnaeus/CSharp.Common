@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace Common.Utils
 {
     /// <summary>
+    /// Like `Lazy<T>` but for wrapping async values.
     /// https://blogs.msdn.microsoft.com/pfxteam/2011/01/15/asynclazyt/
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class AsyncLazy<T> : Lazy<Task<T>>
     {
         public AsyncLazy(Func<T> valueFactory) :

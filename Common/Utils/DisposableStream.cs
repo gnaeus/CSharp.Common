@@ -5,7 +5,7 @@ namespace Common.Utils
 {
     /// <summary>
     /// Wrapper for <see cref="Stream"/> that dispose
-    /// <paramref name="boundObject"/> when stream is disposed
+    /// <paramref name="boundObject"/> when stream is disposed.
     /// </summary>
     public sealed class DisposableStream : Stream
     {
