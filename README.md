@@ -1,13 +1,13 @@
 ﻿
-# [/AspNet.Mvc](./tree/master//AspNet.Mvc)
+# [/AspNet.Mvc](./AspNet.Mvc)
 
 
 
-# [/AspNet.WebApi](./tree/master//AspNet.WebApi)
+# [/AspNet.WebApi](./AspNet.WebApi)
 
 
 
-# [/Common/Api](./tree/master//Common/Api)
+# [/Common/Api](./Common/Api)
 
 
 ## ApiWrapper
@@ -122,7 +122,7 @@ public class ApiStatus<TError> : IApiStatus, IApiError<TError>
 }
 ```
 
-# [/Common/Exceptions](./tree/master//Common/Exceptions)
+# [/Common/Exceptions](./Common/Exceptions)
 
 
 ## BusinessException
@@ -158,7 +158,7 @@ public class ValidationException : Exception
 }
 ```
 
-# [/Common/Extensions](./tree/master//Common/Extensions)
+# [/Common/Extensions](./Common/Extensions)
 
 
 ## ConnectionExtensions
@@ -336,7 +336,7 @@ Execute `Task` synchronously.
 __`void AsSyncronous(this Task task)`__  
 Execute `Task` synchronously.
 
-# [/Common/Helpers](./tree/master//Common/Helpers)
+# [/Common/Helpers](./Common/Helpers)
 
 
 ## StringIntepolationHelper
@@ -524,7 +524,7 @@ __`string ChangeHost(string absoluteUrl, string host)`__
 __`bool CanonicalEqual(string url1, string url2)`__  
 "http://localhost/SomeApp" == "http://localhost/someapp/"
 
-# [/Common/Jobs](./tree/master//Common/Jobs)
+# [/Common/Jobs](./Common/Jobs)
 
 
 ## AsyncJobsManager
@@ -569,7 +569,7 @@ class JobsService
 }
 ```
 
-# [/Common/Mail](./tree/master//Common/Mail)
+# [/Common/Mail](./Common/Mail)
 
 
 ## MailMessageBinarySerializer
@@ -626,7 +626,7 @@ class DelayedMailSender
 }
 ```
 
-# [/Common/Utils](./tree/master//Common/Utils)
+# [/Common/Utils](./Common/Utils)
 
 
 ## AsyncLazy
@@ -699,11 +699,11 @@ Random class replacement with same API but with usage of RNGCryptoServiceProvide
 public class CryptoRandom : Random { }
 ```
 
-# [/Common/Validation](./tree/master//Common/Validation)
+# [/Common/Validation](./Common/Validation)
 
 
 
-# [/EntityFramework](./tree/master//EntityFramework)
+# [/EntityFramework](./EntityFramework)
 
 
 ## DbContextExtensions
@@ -869,14 +869,14 @@ class DbContextTransactionWrapper : IDbTransaction
 }
 ```
 
-# [/MrAdvice](./tree/master//MrAdvice)
+# [/MrAdvice](./MrAdvice)
 
 
 
-# [/Newtonsoft.Json](./tree/master//Newtonsoft.Json)
+# [/Newtonsoft.Json](./Newtonsoft.Json)
 
 
 
-# [/RazorEngine](./tree/master//RazorEngine)
+# [/RazorEngine](./RazorEngine)
 
 
