@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Mail;
 using RazorEngine.Templating;
 
-namespace RazorEngine.Mail
+namespace RazorEngine.Common.Mail
 {
     public class MailTemplateEngine
     {

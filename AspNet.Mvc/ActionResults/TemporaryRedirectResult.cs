@@ -3,7 +3,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
-namespace AspNet.Mvc.ActionResults
+namespace AspNet.Mvc.Common.ActionResults
 {
     public class TemporaryRedirectResult : ActionResult
     {

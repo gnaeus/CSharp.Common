@@ -45,9 +45,11 @@
   <ItemGroup>
     <Compile Include="Mail\MailTemplateEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="_Examples.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

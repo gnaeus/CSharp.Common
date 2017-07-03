@@ -2,7 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 
-namespace AspNet.Mvc.Helpers
+namespace AspNet.Mvc.Common.Helpers
 {
     public static class TimeZoneHelper
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 
-namespace Newtonsoft.Json.Converters
+namespace Newtonsoft.Json.Common.Converters
 {
     public class RawJsonConverter : JsonConverter
     {

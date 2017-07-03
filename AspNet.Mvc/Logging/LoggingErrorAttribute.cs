@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using NLog;
 
-namespace AspNet.Mvc.Logging
+namespace AspNet.Mvc.Common.Logging
 {
     public class LoggingErrorAttribute : HandleErrorAttribute
     {

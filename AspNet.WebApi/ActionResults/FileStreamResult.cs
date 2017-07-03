@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
-namespace AspNet.WebApi.ActionResults
+namespace AspNet.WebApi.Common.ActionResults
 {
     public class FileStreamResult : IHttpActionResult
     {

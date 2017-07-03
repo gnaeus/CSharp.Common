@@ -2,7 +2,7 @@
 using System.Web.Http.ExceptionHandling;
 using NLog;
 
-namespace AspNet.WebApi.Logging
+namespace AspNet.WebApi.Common.Logging
 {
     public class ApiExceptionLogger : ExceptionLogger
     {

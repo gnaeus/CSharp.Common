@@ -86,6 +86,7 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Api\README.md" />
+    <None Include="Exceptions\README.md" />
     <None Include="Extensions\README.md" />
     <None Include="Helpers\Readme.md" />
     <None Include="Jobs\README.md" />

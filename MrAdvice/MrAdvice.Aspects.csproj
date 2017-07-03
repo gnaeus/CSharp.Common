@@ -51,10 +51,12 @@
     <Compile Include="Snapshot\SnapshotAsyncAttribute.cs" />
     <Compile Include="Snapshot\SnapshotAttribute.cs" />
     <Compile Include="Snapshot\SnapshotProfile.cs" />
+    <Compile Include="_Examples.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MrAdvice.2.5.4\build\MrAdvice.targets" Condition="Exists('..\packages\MrAdvice.2.5.4\build\MrAdvice.targets')" />
