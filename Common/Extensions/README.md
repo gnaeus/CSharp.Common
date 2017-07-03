@@ -35,10 +35,77 @@ class SqlRepository
 ```
 
 ## MappingExtensions
-### TODO
+Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs
 
 ```cs
+using System.Collections.Generic;
+using System.Linq;
 
+class OrderModel
+{
+    public int Id { get; set; }
+    public ProductModel[] Products { get; set; }
+}
+
+class ProductModel
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+}
+
+class OrderEntity
+{
+    public int Id { get; set; }
+    public ICollection<ProductEntity> Products { get; } = new HashSet<ProductEntity>();
+}
+
+class ProductEntity
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+}
+
+static class OrderMapper
+{
+    public static void UpdateOrder(OrderEntity entity, OrderModel model)
+    {
+        entity.Id = model.Id;
+
+        entity.Products.UpdateFrom(model.Products)
+            .WithKeys(e => e.Id, m => m.Id)
+            .MapValues(ProductMapper.UpdateProduct);
+    }
+
+    public static OrderModel MapOrder(OrderEntity entity)
+    {
+        return new OrderModel
+        {
+            Id = entity.Id,
+
+            Products = entity.Products
+                .Select(ProductMapper.MapProduct)
+                .ToArray(),
+        };
+    }
+}
+
+static class ProductMapper
+{
+    public static void UpdateProduct(ProductEntity entity, ProductModel model)
+    {
+        entity.Id = model.Id;
+        entity.Title = model.Title;
+    }
+
+    public static ProductModel MapProduct(ProductEntity entity)
+    {
+        return new ProductModel
+        {
+            Id = entity.Id,
+            Title = entity.Title,
+        };
+    }
+}
 ```
 
 ## ArrayExtensions

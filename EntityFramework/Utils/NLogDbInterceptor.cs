@@ -6,13 +6,16 @@ using System.Linq;
 using System.Text;
 using NLog;
 
-namespace EntityFramework.Logging
+namespace EntityFramework.Common.Utils
 {
-    public class LogDbInterceptor : IDbCommandInterceptor 
+    /// <summary>
+    /// Interceptor for logging errors from SQL-queries.
+    /// </summary>
+    public class NLogDbInterceptor : IDbCommandInterceptor 
     {
         protected readonly ILogger Logger;
 
-        public LogDbInterceptor(ILogger logger)
+        public NLogDbInterceptor(ILogger logger)
         {
             Logger = logger;
         }

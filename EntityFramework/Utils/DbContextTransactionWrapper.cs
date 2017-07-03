@@ -1,17 +1,18 @@
 ﻿using System.Data;
 using System.Data.Entity;
 
-namespace EntityFramework.Utils
-{  
+namespace EntityFramework.Common.Utils
+{
     /// <summary>
-    /// A wrapper that allows to present EF transactions (DbContextTransaction) as IDbTransactions
-    /// For example, if you need to implement an interface that requires you to return IDbTransaction
+    /// A wrapper that allows to present EF transactions (<see cref="DbContextTransaction"/>) as <see cref="IDbTransaction"/>.
+    /// For example, if you need to implement an interface that requires you to return <see cref="IDbTransaction"/>.
+    /// Used by <see cref="DbContextExtensions.BeginTransaction"/>.
     /// </summary>
-    public sealed class EFContextTransactionWrapper : IDbTransaction
+    public sealed class DbContextTransactionWrapper : IDbTransaction
     {
         private readonly DbContextTransaction ContextTransaction;
 
-        public EFContextTransactionWrapper(DbContextTransaction transaction)
+        public DbContextTransactionWrapper(DbContextTransaction transaction)
         {
             ContextTransaction = transaction;
         }

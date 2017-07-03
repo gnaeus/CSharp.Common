@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Common.Extensions
 {
+    /// <summary>
+    /// Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs.
+    /// </summary>
     public static class MappingExtensions
     {
         public struct MappingConfig<TEntity, TModel>
@@ -43,8 +46,8 @@ namespace Common.Extensions
 
         public static void MapValues<TEntity, TModel, TKey>(
             this MappingConfig<TEntity, TModel, TKey> config,
-            Func<TModel, TEntity, TEntity> mapping)
-            where TEntity : class
+            Action<TEntity, TModel> mapping)
+            where TEntity : class, new()
         {
             ILookup<TKey, TEntity> entityLookup = config.Entities.ToLookup(config.EntityKey);
 
@@ -53,30 +56,15 @@ namespace Common.Extensions
             foreach (TModel model in config.Models ?? Enumerable.Empty<TModel>())
             {
                 TKey key = config.ModelKey(model);
+                
+                TEntity entity = entityLookup.Contains(key)
+                    ? entityLookup[key].First()
+                    : new TEntity();
 
-                if (entityLookup.Contains(key))
-                {
-                    TEntity entity = entityLookup[key].First();
+                mapping.Invoke(entity, model);
 
-                    config.Entities.Add(mapping.Invoke(model, entity));
-                }
-                else
-                {
-                    config.Entities.Add(mapping.Invoke(model, null));
-                }
+                config.Entities.Add(entity);
             }
-        }
-
-        public static void MapValues<TEntity, TModel, TKey>(
-            this MappingConfig<TEntity, TModel, TKey> config,
-            Action<TModel, TEntity> mapping)
-            where TEntity : class, new()
-        {
-            MapValues(config, (model, entity) =>
-            {
-                mapping.Invoke(model, entity ?? (entity = new TEntity()));
-                return entity;
-            });
         }
     }
 }

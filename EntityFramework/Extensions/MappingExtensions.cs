@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
-namespace EntityFramework.Extensions
+namespace EntityFramework.Common.Extensions
 {
+    /// <summary>
+    /// Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs.
+    /// </summary>
     public static class MappingExtensions
     {
         public struct DbSetMappingConfig<TEntity, TModel>
@@ -52,12 +55,14 @@ namespace EntityFramework.Extensions
 
         public static void MapValues<TEntity, TModel, TKey>(
             this DbSetMappingConfig<TEntity, TModel, TKey> config,
-            Func<TModel, TEntity, TEntity> mapping)
-            where TEntity : class
+            Action<TEntity, TModel> mapping)
+            where TEntity : class, new()
         {
             ILookup<TKey, TEntity> entityLookup = config.Entities.ToLookup(config.EntityKey);
 
             HashSet<TKey> modelKeys = new HashSet<TKey>();
+
+            config.Entities.Clear();
 
             foreach (TModel model in config.Models ?? Enumerable.Empty<TModel>())
             {
@@ -69,11 +74,19 @@ namespace EntityFramework.Extensions
                 {
                     TEntity entity = entityLookup[key].First();
 
-                    mapping.Invoke(model, entity);
+                    mapping.Invoke(entity, model);
+
+                    config.Entities.Add(entity);
                 }
                 else
                 {
-                    config.DbSet.Add(mapping.Invoke(model, null));
+                    TEntity entity = new TEntity();
+
+                    mapping.Invoke(entity, model);
+
+                    config.Entities.Add(entity);
+
+                    config.DbSet.Add(entity);
                 }
             }
 
@@ -84,18 +97,6 @@ namespace EntityFramework.Extensions
                     config.DbSet.Remove(entity);
                 }
             }
-        }
-
-        public static void UpdateValues<TEntity, TModel, TKey>(
-            this DbSetMappingConfig<TEntity, TModel, TKey> config,
-            Action<TModel, TEntity> mapping)
-            where TEntity : class, new()
-        {
-            MapValues(config, (model, entity) =>
-            {
-                mapping.Invoke(model, entity ?? (entity = new TEntity()));
-                return entity;
-            });
         }
     }
 }

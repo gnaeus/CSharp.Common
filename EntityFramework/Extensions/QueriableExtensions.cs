@@ -19,7 +19,7 @@ namespace EntityFramework.Common.Extensions
         /// <param name="inValues">Values that need to be used in IN clause</param>
         /// <param name="propertyGetter">Property that needs to be checked against IN (like a => a.ID)</param>
         /// <param name="chunkSize">Size of chunk</param>
-        public static async Task<IEnumerable<TResult>> LoadContainsQueryChunkedAsync<TResult, TParameter>(
+        public static async Task<List<TResult>> ExecuteChunkedInQueryAsync<TResult, TParameter>(
             this IQueryable<TResult> baseQuery,
             Expression<Func<TResult, TParameter>> propertyGetter,
             IEnumerable<TParameter> inValues,
