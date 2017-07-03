@@ -125,3 +125,25 @@ class SqlServerFullTextSearchService
     }
 }
 ```
+
+## FileSystemHelper
+
+__`void CleanDirectory(string path)`__  
+Reqursively delete all files and folders from directory.
+
+__`string RemoveInvalidCharsFromFileName(string fileName)`__  
+Cleanup `fileName` from invalid characters.
+
+## UriHelper
+
+__`string GetHost(string uriString)`__ 
+"http://localhost/SomeApp" => "localhost"
+
+__`string AddTrailingSlash(string url)`__  
+"http://localhost/SomeApp" => "http://localhost/SomeApp/"
+
+__`string ChangeHost(string absoluteUrl, string host)`__  
+("http://localhost:8080/SomeApp", "127.0.0.1") => "http://127.0.0.1:8080/SomeApp"
+
+__`bool CanonicalEqual(string url1, string url2)`__  
+"http://localhost/SomeApp" == "http://localhost/someapp/"
