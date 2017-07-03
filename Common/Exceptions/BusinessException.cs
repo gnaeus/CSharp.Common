@@ -2,6 +2,9 @@
 
 namespace Common.Exceptions
 {
+    /// <summary>
+    /// Exception with error code and message that passed to end user of application.
+    /// </summary>
     public class BusinessException : Exception
     {
         public string Code { get; set; }
@@ -13,6 +16,9 @@ namespace Common.Exceptions
         }
     }
 
+    /// <summary>
+    /// Exception with error code and message that passed to end user of application.
+    /// </summary>
     public class BusinessException<TError> : Exception
         where TError : struct
     {

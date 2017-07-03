@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace Common.Security
+namespace Common.Utils
 {
     /// <summary>
-    /// Random class replacement with same API but with usage of RNGCryptoServiceProvider inside
+    /// Random class replacement with same API but with usage of RNGCryptoServiceProvider inside.
     /// </summary>
     /// <remarks> https://msdn.microsoft.com/en-us/magazine/cc163367.aspx </remarks>
     public class CryptoRandom : Random

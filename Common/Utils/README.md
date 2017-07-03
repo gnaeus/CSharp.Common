@@ -60,3 +60,10 @@ class BlobStreamingService
     }
 }
 ```
+
+## CryptoRandom
+Random class replacement with same API but with usage of RNGCryptoServiceProvider inside.
+
+```cs
+public class CryptoRandom : Random { }
+```

@@ -44,7 +44,8 @@
     <Compile Include="Api\ApiResult.cs" />
     <Compile Include="Api\ApiStatus.cs" />
     <Compile Include="Api\ApiWrapper.cs" />
-    <Compile Include="Api\Interfaces.cs" />
+    <Compile Include="Api\IApiWrapper.cs" />
+    <Compile Include="Api\InternalInterfaces.cs" />
     <Compile Include="Api\_Examples.cs" />
     <Compile Include="Exceptions\BusinessException.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Mail\MailMessageExtensions.cs" />
     <Compile Include="Mail\_Examples.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sequrity\CryptoRandom.cs" />
+    <Compile Include="Utils\CryptoRandom.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Utils\AsyncLazy.cs" />
     <Compile Include="Utils\DisposableStream.cs" />

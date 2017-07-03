@@ -3,6 +3,9 @@ using Common.Validation;
 
 namespace Common.Exceptions
 {
+    /// <summary>
+    /// Exception for passing validation errors.
+    /// </summary>
     public class ValidationException : Exception
     {
         public ValidationError[] Errors { get; } = ValidationError.EmptyErrors;

@@ -16,7 +16,6 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing status of service operation with possible validation and logic errors.
     /// </summary>
-    /// <typeparam name="TError"></typeparam>
     public class ApiStatus<TError> : IApiStatus, IApiError<TError>
         where TError : struct
     {
