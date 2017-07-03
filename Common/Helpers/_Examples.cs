@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Diagnostics;
 using Common.Helpers;
 using static Common.Helpers.StringInterpolationHelper;
 
@@ -116,6 +119,29 @@ partial class _Examples
             FROM CONTAINSTABLE(Departments, (Title), @ftsQuery) AS fts
             INNER JOIN Articles AS a ON fts.[KEY] = a.ID
             ORDER BY fts.[RANK] DESC";
+        }
+    }
+
+    #endregion
+
+    #region BitHelper
+
+    [Flags]
+    enum UserRoles
+    {
+        Admin = 1, Moderator = 2, User = 4, Reader = 8,
+    }
+    
+    class User
+    {
+        public UserRoles Roles { get; set; }
+    }
+
+    static class UserExtensions
+    {
+        public static IEnumerable<User> OrderByRoles(IEnumerable<User> users)
+        {
+            return users.OrderByDescending(u => BitHelper.ReverseBits((uint)u.Roles));
         }
     }
 

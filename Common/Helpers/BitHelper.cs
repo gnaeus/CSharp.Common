@@ -1,7 +1,7 @@
 ﻿
-namespace Common.Extensions
+namespace Common.Helpers
 {
-    public static class BitExtensions
+    public static class BitHelper
     {
         /// <summary>
         /// http://zimbry.blogspot.ru/2011/09/better-bit-mixing-improving-on.html
@@ -17,6 +17,7 @@ namespace Common.Extensions
         }
 
         /// <summary>
+        /// Reverse bits in `[Flags] enum` value for use in `OrderBy()` extension
         /// http://graphics.stanford.edu/~seander/bithacks.html#ReverseParallel
         /// </summary>
         public static uint ReverseBits(uint value)

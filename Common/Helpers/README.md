@@ -126,6 +126,41 @@ class SqlServerFullTextSearchService
 }
 ```
 
+## BitHelper
+
+__`ulong MurmurHash3(ulong key)`__  
+Compute [MurMurHash](http://zimbry.blogspot.ru/2011/09/better-bit-mixing-improving-on.html)
+
+__`uint ReverseBits(uint value)`__  
+Reverse bits in `[Flags] enum` value for use in `OrderBy()` extension
+
+```cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Common.Helpers;
+
+[Flags]
+enum UserRoles
+{
+    Admin = 1, Moderator = 2, User = 4, Reader = 8,
+}
+
+class User
+{
+    public UserRoles Roles { get; set; }
+}
+
+static class UserExtensions
+{
+    public static IEnumerable<User> OrderByRoles(this IEnumerable<User> users)
+    {
+        return users.OrderByDescending(u => BitHelper.ReverseBits((uint)u.Roles));
+    }
+}
+
+```
+
 ## FileSystemHelper
 
 __`void CleanDirectory(string path)`__  
@@ -136,7 +171,7 @@ Cleanup `fileName` from invalid characters.
 
 ## UriHelper
 
-__`string GetHost(string uriString)`__ 
+__`string GetHost(string uriString)`__  
 "http://localhost/SomeApp" => "localhost"
 
 __`string AddTrailingSlash(string url)`__  

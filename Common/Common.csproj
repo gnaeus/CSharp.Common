@@ -46,14 +46,15 @@
     <Compile Include="Api\ApiWrapper.cs" />
     <Compile Include="Api\Interfaces.cs" />
     <Compile Include="Exceptions\BusinessException.cs" />
-    <Compile Include="Extensions\ArrayHelper.cs" />
-    <Compile Include="Extensions\BitExtensions.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Helpers\BitHelper.cs" />
     <Compile Include="Extensions\ByteArrayExtensions.cs" />
     <Compile Include="Extensions\ConnectionExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\_Examples.cs" />
     <Compile Include="Helpers\FileSystemHelper.cs" />
     <Compile Include="Helpers\SqlFullTextSearchHepler.cs" />
     <Compile Include="Helpers\StringInterpolationHelper.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Validation\ValidationExtensions.cs" />
     <Compile Include="Validation\ValidationHelper.cs" />
+    <Compile Include="Validation\_Examples.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

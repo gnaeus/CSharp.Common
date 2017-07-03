@@ -31,6 +31,10 @@ partial class _Examples
     }
 
     #endregion
+    
+    #region MappingExtensions
 
     // TODO
+
+    #endregion
 }

@@ -9,6 +9,8 @@ __`async Task<Stream> QueryBlobAsStreamAsync(this DbConnection connection, strin
 Read SQL Blob value as stream. Sql Query should return one row with one column.
 
 ```cs
+using Common.Extensions;
+
 class SqlRepository
 {
     readonly DbConnection _connection;
@@ -31,3 +33,75 @@ class SqlRepository
     }
 }
 ```
+
+## MappingExtensions
+### TODO
+
+```cs
+
+```
+
+## ArrayExtensions
+
+__`T[] Add<T>(this T[] array, T item)`__  
+
+__`T[] Remove<T>(this T[] array, T item)`__  
+
+__`T[] Replace<T>(this T[] array, T oldItem, T newItem)`__  
+
+## ByteArrayExtensions
+
+__`bool SequenceEqual(this byte[] first, byte[] second)`__  
+
+__`byte[] ExtractBytes(this byte[] source, int offset, int count)`__  
+
+__`byte[] Concat(this byte[] first, byte[] second)`__  
+
+__`byte[] Combine(params byte[][] arrays)`__  
+
+## EnumerableExtensions
+
+__`void ForEach<T>(this IEnumerable<T> source, Action<T> action)`__  
+Like `List<T>.ForEach(Action<T> action)`.
+
+__`HashSet<T> ToHashSet<T>(this IEnumerable<T> source)`__  
+Create `HashSet<T>` from `IEnumerable<T>`.
+
+__`IEnumerable<TItem> DistinctBy<TItem, TKey>(this IEnumerable<TItem> source, Func<TItem, TKey> keySelector)`__  
+Like `Distinct()` but uses values from `keySelector` for equality check.
+
+__`IEnumerable<T> OmitRepeated<T>(this IEnumerable<T> source)`__  
+Remove repeated values from sequence.
+
+__`IEnumerable<TItem> OmitRepeatedBy<TItem, TKey>(this IEnumerable<TItem> source, Func<TItem, TKey> keySelector)`__  
+Like `OmitRepeated()` but uses values from `keySelector` for equality check.
+
+## EnumExtensions
+
+__`bool In<TEnum>(this TEnum value, params TEnum[] values)`__  
+`color.In(Colors.First, Colors.Second)` is equivalent to `color == Colors.First || color == Colors.Second`.
+
+__`Dictionary<TEnum, bool> ToDictionary<TEnum>(this TEnum value)`__  
+Convert `[Flags] enum` to `Dictionary<TEnum, bool>`.
+
+__`Dictionary<TEnum, bool> ToDictionary<TEnum>(this TEnum? value)`__  
+Convert nullable `[Flags] enum` to `Dictionary<TEnum, bool>`.
+
+__`TEnum? ToEnum<TEnum>(this IDictionary<TEnum, bool> value)`__  
+Convert `Dictionary<TEnum, bool>` to nullable `[Flags] enum`.
+
+## StringExtensions
+
+__`string TrimWhiteSpace(this string input)`__  
+Replace all long white space inside string by one space character.
+
+__`bool IsBase64(this string value)`__  
+Check if string is Base64 string.
+
+## TaskExtensions
+
+__`T AsSyncronous<T>(this Task<T> task)`__  
+Execute `Task` synchronously.
+
+__`void AsSyncronous(this Task task)`__  
+Execute `Task` synchronously.
