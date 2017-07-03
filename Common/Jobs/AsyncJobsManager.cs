@@ -8,6 +8,9 @@ using Common.Extensions;
 
 namespace Common.Jobs
 {
+    /// <summary>
+    /// Utility that skips simultaneous execution of async tasks with same type.
+    /// </summary>
     public class AsyncJobsManager
     {
         private int IsStopped = 0;

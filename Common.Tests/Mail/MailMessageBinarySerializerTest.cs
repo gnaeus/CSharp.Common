@@ -58,9 +58,7 @@ namespace Common.Tests.Mail
                 new MailAddress("test1@mail.com", "Address1"),
                 new MailAddress("test2@mail.com", "Address2")) {
                     Subject = "subject sucbejct",
-                    Body = "Адрес Вашей электронной почты, используемый на портале ССТУ.РФ, был изменен пользователем. "
-                            + "Теперь уведомления от портала ССТУ.РФ будут приходить на адрес. "
-                            + "Это письмо сформировано автоматически. Пожалуйста, не отвечайте на него.",
+                    Body = "Message Body",
                     IsBodyHtml = false,
                     Priority = MailPriority.High,
                     DeliveryNotificationOptions =
