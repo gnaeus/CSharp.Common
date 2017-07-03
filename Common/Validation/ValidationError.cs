@@ -1,5 +1,8 @@
-﻿namespace Common.Validation
+﻿using System.Diagnostics;
+
+namespace Common.Validation
 {
+    [DebuggerDisplay("{ErrorCode} - {ErrorMessage}", Name = "{PropertyPath}")]
     public class ValidationError
     {
         public string PropertyPath { get; set; }

@@ -83,6 +83,7 @@ namespace Common.Validation
                             attributeName.Remove(attributeName.Length - 9),
                             attribute.FormatErrorMessage(property.Name));
 
+                        // accept error from only first invalid annotation per property
                         break;
                     }
                 }
