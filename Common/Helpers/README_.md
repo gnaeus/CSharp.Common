@@ -1,5 +1,6 @@
 ﻿## StringIntepolationHelper
 Simple DSL based on C# 6 String Interpolation for building dynamic SQL queries.
+
 ```cs
 using static Common.Helpers.StringInterpolationHelper;
 
@@ -92,6 +93,11 @@ class ProductsSearchService
 
 ## SqlFullTextSearchHepler
 Utils for Full Text Search in Microsoft SQL Server
+
+__`string PrepareFullTextQuery(string searchPhrase, bool fuzzy = false, int minWordLength = 3)`__  
+Build query for SQL Server FTS Engine CONTAINS function.
+Result should be passed through ADO.NET SqlParameter due to preventing SQL Injection.  
+
 ```cs
 using System.Diagnostics;
 using Common.Helpers;

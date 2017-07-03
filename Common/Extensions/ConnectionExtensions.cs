@@ -25,6 +25,13 @@ namespace Common.Extensions
             }
         }
 
+        /// <summary>
+        /// If connection is already open before `using()` statement
+        /// then it stays open after `using()` statement
+        /// <para/>
+        /// If connection is closed before `using()` statement
+        /// then it will be opened inside `using()` and closed after `using()`
+        /// </summary>
         public static IDisposable EnsureOpen(this IDbConnection connection)
         {
             if (connection == null) {
@@ -45,12 +52,25 @@ namespace Common.Extensions
             return new ConnectionToken(connection);
         }
 
-#if !NET_40
+        /// <summary>
+        /// If connection is already open before `using()` statement
+        /// then it stays open after `using()` statement
+        /// <para/>
+        /// If connection is closed before `using()` statement
+        /// then it will be opened inside `using()` and closed after `using()`
+        /// </summary>
         public static Task<IDisposable> EnsureOpenAsync(this DbConnection connection)
         {
             return EnsureOpenAsync(connection, CancellationToken.None);
         }
 
+        /// <summary>
+        /// If connection is already open before `using()` statement
+        /// then it stays open after `using()` statement
+        /// <para/>
+        /// If connection is closed before `using()` statement
+        /// then it will be opened inside `using()` and closed after `using()`
+        /// </summary>
         public static async Task<IDisposable> EnsureOpenAsync(
             this DbConnection connection, CancellationToken cancellationToken)
         {
@@ -75,9 +95,8 @@ namespace Common.Extensions
         /// <summary>
         /// Read SQL Blob value as stream. Sql Query should return one row with one column.<para />
         /// Example: Stream stream = await Conn.QueryBlobAsStreamAsync(
-        ///     "SELECT Content FROM Files WHERE ID = @ID",
-        ///     new SqlParameter("@ID", fileID)
-        /// );
+        ///     "SELECT Content FROM Files WHERE Id = @fileId",
+        ///     new SqlParameter("@fileId", fileId));
         /// </summary>
         public static async Task<Stream> QueryBlobAsStreamAsync(
             this DbConnection connection, string sql, params object[] parameters)
@@ -115,6 +134,5 @@ namespace Common.Extensions
                 }
             }
         }
-#endif
     }
 }
