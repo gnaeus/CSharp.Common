@@ -1,16 +1,16 @@
 ﻿## StringIntepolationHelper
 Simple DSL based on C# 6 String Interpolation for building dynamic SQL queries.
 ```cs
-using static Common.Helpers.StringIntepolationHelper;
+using static Common.Helpers.StringInterpolationHelper;
 
-public class EmployeesFilter
+class EmployeesFilter
 {
     public bool IncludeDepartment { get; set; }
     public int? DepartmentId { get; set; }
     public string[] Names { get; set; }
 }
 
-public class EmployeesSearchService
+class EmployeesSearchService
 {
     public void SearchEmployees(EmployeesFilter filter)
     {
@@ -42,7 +42,7 @@ public class EmployeesSearchService
     }
 }
 
-public class ProductsFilter
+class ProductsFilter
 {
     public string Title { get; set; }
     public decimal? MinPrice { get; set; }
@@ -51,9 +51,9 @@ public class ProductsFilter
     public ProductsSortBy SortBy { get; set; }
 }
 
-public enum ProductsSortBy { Title, Price }
+enum ProductsSortBy { Title, Price }
 
-public class ProductsSearchService
+class ProductsSearchService
 {
     public void SearchProducts(ProductsFilter filter)
     {
@@ -86,6 +86,36 @@ public class ProductsSearchService
             @case(ProductsSortBy.Title, " Title ASC"),
             @case(ProductsSortBy.Price, " Price ASC")
         )}";
+    }
+}
+```
+
+## SqlFullTextSearchHepler
+Utils for Full Text Search in Microsoft SQL Server
+```cs
+using System.Diagnostics;
+using Common.Helpers;
+
+class SqlServerFullTextSearchService
+{
+    public void SearchArticles(string title = "Я на Cолнышке лежу")
+    {
+        string ftsQuery = SqlFullTextSearchHepler.PrepareFullTextQuery(title, fuzzy: true);
+
+        Debug.Assert(ftsQuery ==
+            "\"cолнышке*\" NEAR \"лежу*\"\n" +
+            " OR FORMSOF(FREETEXT, \"cолнышке\")"+
+            " AND FORMSOF(FREETEXT, \"лежу\")");
+
+        string sql = @"
+        SELECT TOP (10)
+            a.Id,
+            a.Title,
+            a.Content,
+            fts.[RANK]
+        FROM CONTAINSTABLE(Departments, (Title), @ftsQuery) AS fts
+        INNER JOIN Articles AS a ON fts.[KEY] = a.ID
+        ORDER BY fts.[RANK] DESC";
     }
 }
 ```

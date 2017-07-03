@@ -55,9 +55,10 @@
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\FileSystemHelper.cs" />
-    <Compile Include="Helpers\QueryHelper.cs" />
+    <Compile Include="Helpers\SqlFullTextSearchHepler.cs" />
     <Compile Include="Helpers\StringInterpolationHelper.cs" />
     <Compile Include="Helpers\UriHelper.cs" />
+    <Compile Include="Helpers\_Examples.cs" />
     <Compile Include="Jobs\AsyncJobsManager.cs" />
     <Compile Include="Mail\MailMessageBinarySerializer.cs" />
     <Compile Include="Mail\MailMessageExtensions.cs" />

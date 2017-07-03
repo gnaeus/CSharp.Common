@@ -6,12 +6,12 @@ using Common.Helpers;
 namespace Common.Tests.Helpers
 {
     [TestClass]
-    public class QueryHelperTest
+    public class SqlFullTextSearchHeplerTest
     {
         [TestMethod]
         public void TestPrepareFullTextQuery()
         {
-            string query = QueryHelper.PrepareFullTextQuery("Я на Cолнышке лежу", true);
+            string query = SqlFullTextSearchHepler.PrepareFullTextQuery("Я на Cолнышке лежу", true);
 
             Debug.Write(query);
 
@@ -24,10 +24,10 @@ namespace Common.Tests.Helpers
         [TestMethod]
         public void TestPrepareFullTextQueryEmptyQuery()
         {
-            Assert.IsNull(QueryHelper.PrepareFullTextQuery(null));
-            Assert.IsNull(QueryHelper.PrepareFullTextQuery(""));
-            Assert.IsNull(QueryHelper.PrepareFullTextQuery("  \r\n\t "));
-            Assert.IsNull(QueryHelper.PrepareFullTextQuery("я он в на за"));
+            Assert.IsNull(SqlFullTextSearchHepler.PrepareFullTextQuery(null));
+            Assert.IsNull(SqlFullTextSearchHepler.PrepareFullTextQuery(""));
+            Assert.IsNull(SqlFullTextSearchHepler.PrepareFullTextQuery("  \r\n\t "));
+            Assert.IsNull(SqlFullTextSearchHepler.PrepareFullTextQuery("я он в на за"));
         }
         
         [TestMethod]
@@ -35,7 +35,7 @@ namespace Common.Tests.Helpers
         {
             string phrase = new String('A', 2048);
 
-            string query = QueryHelper.PrepareFullTextQuery(phrase);
+            string query = SqlFullTextSearchHepler.PrepareFullTextQuery(phrase);
 
             Assert.AreEqual(1027, query.Length);
         }
