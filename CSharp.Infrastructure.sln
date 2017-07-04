@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrAdvice.Aspects", "MrAdvic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrArvice.Aspects.Tests", "MrArvice.Tests\MrArvice.Aspects.Tests.csproj", "{915A7F33-0E37-4C70-B425-D60FA5CC9F86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Common.Tests", "EntityFramework.Common.Tests\EntityFramework.Common.Tests.csproj", "{908A20BB-F0ED-41F4-A4D8-753D723C29A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{915A7F33-0E37-4C70-B425-D60FA5CC9F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{915A7F33-0E37-4C70-B425-D60FA5CC9F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{915A7F33-0E37-4C70-B425-D60FA5CC9F86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{908A20BB-F0ED-41F4-A4D8-753D723C29A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{908A20BB-F0ED-41F4-A4D8-753D723C29A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{908A20BB-F0ED-41F4-A4D8-753D723C29A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{908A20BB-F0ED-41F4-A4D8-753D723C29A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
