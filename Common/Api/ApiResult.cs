@@ -1,4 +1,5 @@
-﻿using Common.Validation;
+﻿using Common.Api.Tags;
+using Common.Validation;
 
 namespace Common.Api
 {
@@ -12,6 +13,25 @@ namespace Common.Api
         public string ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        public static implicit operator ApiResult<TResult>(SuccessTag<TResult> successTag)
+        {
+            return new ApiResult<TResult>
+            {
+                IsSuccess = true,
+                Data = successTag.Data,
+            };
+        }
+
+        public static implicit operator ApiResult<TResult>(ErrorTag<string> tag)
+        {
+            return new ApiResult<TResult>
+            {
+                IsSuccess = false,
+                ErrorCode = tag.ErrorCode,
+                ErrorMessage = tag.ErrorMessage,
+            };
+        }
     }
 
     /// <summary>
@@ -25,5 +45,24 @@ namespace Common.Api
         public TError? ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        public static implicit operator ApiResult<TResult, TError>(SuccessTag<TResult> successTag)
+        {
+            return new ApiResult<TResult, TError>
+            {
+                IsSuccess = true,
+                Data = successTag.Data,
+            };
+        }
+
+        public static implicit operator ApiResult<TResult, TError>(ErrorTag<TError> tag)
+        {
+            return new ApiResult<TResult, TError>
+            {
+                IsSuccess = false,
+                ErrorCode = tag.ErrorCode,
+                ErrorMessage = tag.ErrorMessage,
+            };
+        }
     }
 }

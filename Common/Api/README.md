@@ -22,6 +22,7 @@ Example:
 using System.Data.SqlClient;
 using Common.Api;
 using Common.Exceptions;
+using static Common.Api.ApiHelper;
 
 class Model { }
 
@@ -38,6 +39,15 @@ class WebService
         {
             return _applicationService.DoSomething(argument);
         });
+    }
+
+    public ApiResult<Model, ErrorCodes> DoSomethingElse(Model argument)
+    {
+        if (argument == null)
+        {
+            return Error(ErrorCodes.GeneralError, $"Argument {nameof(argument)} is required");
+        }
+        return Ok(new Model());
     }
 }
 
@@ -109,3 +119,15 @@ public class ApiStatus<TError> : IApiStatus, IApiError<TError>
     public ValidationError[] ValidationErrors { get; set; };
 }
 ```
+
+## ApiHelper
+Static helper for wrapping operation results and errors to common structures
+
+__`Ok()`__  
+Utility for returning result from method
+
+__`Ok<TResult>(TResult data)`__  
+Utility for returning result from method
+
+__`Error<TError>(TError code, string message = null)`__  
+Utility for returning error from method

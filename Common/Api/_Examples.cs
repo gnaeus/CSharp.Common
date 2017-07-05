@@ -1,6 +1,7 @@
 ﻿using System.Data.SqlClient;
 using Common.Api;
 using Common.Exceptions;
+using static Common.Api.ApiHelper;
 
 partial class _Examples
 {
@@ -19,6 +20,15 @@ partial class _Examples
             {
                 return _applicationService.DoSomething(argument);
             });
+        }
+
+        public ApiResult<Model, ErrorCodes> DoSomethingElse(Model argument)
+        {
+            if (argument == null)
+            {
+                return Error(ErrorCodes.GeneralError, $"Argument {nameof(argument)} is required");
+            }
+            return Ok(new Model());
         }
     }
     
