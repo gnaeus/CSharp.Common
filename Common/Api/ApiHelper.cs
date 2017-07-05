@@ -2,6 +2,9 @@
 
 namespace Common.Api
 {
+    /// <summary>
+    /// Static helper for wrapping operation results and errors to common structures
+    /// </summary>
     public static class ApiHelper
     {
         public static SuccessTag Ok()

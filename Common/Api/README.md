@@ -121,7 +121,7 @@ public class ApiStatus<TError> : IApiStatus, IApiError<TError>
 ```
 
 ## ApiHelper
-Static helper for wrapping operation results and errors to common structures
+Static helper for wrapping operation results and errors to common structures.
 
 __`Ok()`__  
 Utility for returning result from method

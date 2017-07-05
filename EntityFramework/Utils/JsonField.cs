@@ -3,6 +3,9 @@ using Jil;
 
 namespace EntityFramework.Common.Utils
 {
+    /// <summary>
+    /// Utility struct for storing complex types as JSON strings in database table.
+    /// </summary>
     public struct JsonField<TValue>
         where TValue : class
     {

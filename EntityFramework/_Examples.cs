@@ -7,11 +7,55 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using EntityFramework.Common.Extensions;
+using EntityFramework.Common.Utils;
 
 partial class _Examples
 {
+    #region JsonField
+
+    class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Login { get; set; }
+
+        private JsonField<Address> _address;
+        internal string AddressJson
+        {
+            get { return _address.Json; }
+            set { _address.Json = value; }
+        }
+        public Address Address
+        {
+            get { return _address.Value; }
+            set { _address.Value = value; }
+        }
+
+        private JsonField<ICollection<string>> _phones = new HashSet<string>();
+        internal string PhonesJson
+        {
+            get { return _phones.Json; }
+            set { _phones.Json = value; }
+        }
+        public ICollection<string> Phones
+        {
+            get { return _phones.Value; }
+            set { _phones.Value = value; }
+        }
+    }
+
+    [NotMapped]
+    class Address
+    {
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string Building { get; set; }
+    }
+
+    #endregion
+
     #region MappingExtensions
-    
+
     class ProductModel
     {
         public int Id { get; set; }
