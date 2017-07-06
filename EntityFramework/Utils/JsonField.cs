@@ -37,7 +37,7 @@ namespace EntityFramework.Common.Utils
             {
                 if (!_isMaterialized)
                 {
-                    if (String.IsNullOrEmpty(_json))
+                    if (String.IsNullOrEmpty(_json) || _json == "null")
                     {
                         if (_hasDefault)
                         {

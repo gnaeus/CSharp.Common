@@ -80,6 +80,17 @@ namespace EntityFramework.Common.Tests.Utils
         }
 
         [TestMethod]
+        public void ShouldUseDefaultValueWhenDbContainsNullJson()
+        {
+            var user = new User();
+
+            user.PhonesJson = "null";
+
+            Assert.IsNotNull(user.Phones);
+            Assert.IsInstanceOfType(user.Phones, typeof(HashSet<Phone>));
+        }
+
+        [TestMethod]
         public void ShouldNotUseDefaultValueAfterReload()
         {
             var user = new User();
