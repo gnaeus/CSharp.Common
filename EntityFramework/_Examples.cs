@@ -20,24 +20,25 @@ partial class _Examples
         public string Login { get; set; }
 
         private JsonField<Address> _address;
-        internal string AddressJson
+        internal string AddressJson // used by EntityFramework
         {
             get { return _address.Json; }
             set { _address.Json = value; }
         }
-        public Address Address
+        public Address Address // used by application code
         {
             get { return _address.Value; }
             set { _address.Value = value; }
         }
 
+        // collection initialization by default
         private JsonField<ICollection<string>> _phones = new HashSet<string>();
-        internal string PhonesJson
+        internal string PhonesJson // used by EntityFramework
         {
             get { return _phones.Json; }
             set { _phones.Json = value; }
         }
-        public ICollection<string> Phones
+        public ICollection<string> Phones // used by application code
         {
             get { return _phones.Value; }
             set { _phones.Value = value; }

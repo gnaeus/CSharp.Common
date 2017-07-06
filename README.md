@@ -751,24 +751,25 @@ class User
     public string Login { get; set; }
 
     private JsonField<Address> _address;
-    internal string AddressJson
+    internal string AddressJson // used by EntityFramework
     {
         get { return _address.Json; }
         set { _address.Json = value; }
     }
-    public Address Address
+    public Address Address // used by application code
     {
         get { return _address.Value; }
         set { _address.Value = value; }
     }
 
+    // collection initialization by default
     private JsonField<ICollection<string>> _phones = new HashSet<string>();
-    internal string PhonesJson
+    internal string PhonesJson // used by EntityFramework
     {
         get { return _phones.Json; }
         set { _phones.Json = value; }
     }
-    public ICollection<string> Phones
+    public ICollection<string> Phones // used by application code
     {
         get { return _phones.Value; }
         set { _phones.Value = value; }
@@ -954,6 +955,34 @@ class DbContextTransactionWrapper : IDbTransaction
 # [Newtonsoft.Json](./Newtonsoft.Json)
 
 
+## RawJsonConverter
+Custom value converter for passing string properties as RAW JSON values.
+
+```cs
+using Newtonsoft.Json.Common.Converters;
+
+class Book
+{
+    [JsonConverter(typeof(RawJsonConverter))]
+    public string Chapters { get; set; }
+}
+
+class BookService
+{
+    public string GetBookJson()
+    {
+        var book = new Book
+        {
+            Chapters = "[1, 2, 3, 4, 5]",
+        };
+
+        return JsonConvert.SerializeObject(book);
+        // {"Chapters": [1, 2, 3, 4, 5]}
+        // instead of
+        // {"Chapters": "[1, 2, 3, 4, 5]"}
+    }
+}
+```
 
 # [RazorEngine](./RazorEngine)
 
