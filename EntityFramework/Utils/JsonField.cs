@@ -20,7 +20,7 @@ namespace EntityFramework.Common.Utils
             {
                 if (_isMaterialized)
                 {
-                    _json = JSON.Serialize(_value);
+                    _json = _value == null ? null : JSON.Serialize(_value);
                 }
                 return _json;
             }
