@@ -108,10 +108,7 @@ class SqlServerFullTextSearchService
     {
         string ftsQuery = SqlFullTextSearchHepler.PrepareFullTextQuery(title, fuzzy: true);
 
-        Debug.Assert(ftsQuery ==
-            "\"cолнышке*\" NEAR \"лежу*\"\n" +
-            " OR FORMSOF(FREETEXT, \"cолнышке\")"+
-            " AND FORMSOF(FREETEXT, \"лежу\")");
+        // "cолнышке*" NEAR "лежу*" OR FORMSOF(FREETEXT, "cолнышке") AND FORMSOF(FREETEXT, "лежу")
 
         string sql = @"
         SELECT TOP (10)
