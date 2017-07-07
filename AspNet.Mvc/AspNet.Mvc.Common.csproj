@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResults\HttpCustomErrorResult.cs" />
     <Compile Include="ActionResults\TemporaryRedirectResult.cs" />
     <Compile Include="Helpers\TimeZoneHelper.cs" />
     <Compile Include="Logging\LoggingErrorAttribute.cs" />
@@ -82,6 +83,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="README.md" />
+    <None Include="_Examples.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

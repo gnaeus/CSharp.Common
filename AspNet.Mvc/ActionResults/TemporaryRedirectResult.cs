@@ -5,6 +5,10 @@ using System.Web.Mvc;
 
 namespace AspNet.Mvc.Common.ActionResults
 {
+    /// <summary>
+    /// <see cref="ActionResult"/> for (307 Temporary Redirect) HTTP status code.
+    /// Unlike <see cref="RedirectResult"/> (302 Found) keeps Request's HTTP verb.
+    /// </summary>
     public class TemporaryRedirectResult : ActionResult
     {
         public string Url { get; }

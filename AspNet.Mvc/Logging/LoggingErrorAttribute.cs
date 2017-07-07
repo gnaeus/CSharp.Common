@@ -4,6 +4,9 @@ using NLog;
 
 namespace AspNet.Mvc.Common.Logging
 {
+    /// <summary>
+    /// Global exception logger for AspNet MVC.
+    /// </summary>
     public class LoggingErrorAttribute : HandleErrorAttribute
     {
         private readonly ILogger Logger;

@@ -4,10 +4,16 @@ using System.Web.Mvc;
 
 namespace AspNet.Mvc.Common.Helpers
 {
+    /// <summary>
+    /// Utility for detecting user's TimeZone.
+    /// </summary>
     public static class TimeZoneHelper
     {
         private const string CookieName = "tzOffset";
 
+        /// <summary>
+        /// Get TimeZone offset from cookie.
+        /// </summary>
         public static TimeSpan GetClientTimeZoneOffset(ActionExecutingContext filterContext)
         {
             HttpContextBase context = filterContext.HttpContext;
@@ -22,6 +28,9 @@ namespace AspNet.Mvc.Common.Helpers
             return default (TimeSpan);
         }
 
+        /// <summary>
+        /// Inject script tag for populating TimeZone cookie to Razor view.
+        /// </summary>
         public static MvcHtmlString GenerateCookieScrpt()
         {
             string script = String.Format(
