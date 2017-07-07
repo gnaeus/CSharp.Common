@@ -1086,7 +1086,7 @@ class ProductService
 }
 ```
 
-### Utils.NLogDbInterceptor
+### NLogDbInterceptor
 `IDbCommandInterceptor` implementation for logging errors from SQL-queries.
 
 ```cs
@@ -1096,7 +1096,7 @@ class NLogDbInterceptor : IDbCommandInterceptor
 }
 ```
 
-### Utils.DbContextTransactionWrapper
+### DbContextTransactionWrapper
 A wrapper that allows to present EF transactions (`DbContextTransaction`) as `IDbTransaction`.  
 For example, if you need to implement an interface that requires you to return `IDbTransaction`.  
 Used by `DbContextExtensions.BeginTransaction()`.
