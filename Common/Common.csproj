@@ -71,6 +71,10 @@
     <Compile Include="Mail\MailMessageExtensions.cs" />
     <Compile Include="Mail\_Examples.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Smtp\ISmtpConnectionSettings.cs" />
+    <Compile Include="Smtp\SmtpConnectionChecker.cs" />
+    <Compile Include="Smtp\SmtpEmailSender.cs" />
+    <Compile Include="Smtp\_Examples.cs" />
     <Compile Include="Utils\CryptoRandom.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Utils\AsyncLazy.cs" />
@@ -95,6 +99,7 @@
     <None Include="Jobs\README.md" />
     <None Include="Mail\README.md" />
     <None Include="packages.config" />
+    <None Include="Smtp\README.md" />
     <None Include="Utils\README.md" />
     <None Include="Validation\README.md" />
   </ItemGroup>
