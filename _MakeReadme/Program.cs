@@ -16,21 +16,30 @@ namespace _MakeReadme
 
             Directory.SetCurrentDirectory(projectDir.FullName);
 
-            var sb = new StringBuilder();
+            var body = new StringBuilder();
+            var menu = new StringBuilder();
 
             foreach (DirectoryInfo nestedDir in projectDir.GetDirectories())
             {
-                PopulateReadme(sb, projectDir.FullName, nestedDir);
+                PopulateReadme(body, menu, projectDir.FullName, nestedDir);
             }
 
-            File.WriteAllText("README.md", sb.ToString(), Encoding.UTF8);
+            var document = new StringBuilder();
+
+            document.Append(menu.ToString());
+            document.AppendLine();
+            document.AppendLine("<hr />");
+            document.AppendLine(body.ToString());
+
+            File.WriteAllText("README.md", document.ToString(), Encoding.UTF8);
         }
 
-        static void PopulateReadme(StringBuilder sb, string projectRoot, DirectoryInfo directory)
+        static void PopulateReadme(
+            StringBuilder body, StringBuilder menu, string projectRoot, DirectoryInfo directory)
         {
             foreach (DirectoryInfo nestedDir in directory.GetDirectories())
             {
-                PopulateReadme(sb, projectRoot, nestedDir);
+                PopulateReadme(body, menu, projectRoot, nestedDir);
             }
 
             foreach (FileInfo file in directory.GetFiles())
@@ -47,12 +56,12 @@ namespace _MakeReadme
                         .Substring(1, relativePath.Length - 1)
                         .Replace('/', '.');
 
-                    sb.AppendLine($@"
-<details id=""{name}"">
-    <summary style=""font-size: 1.8em"">{name} <a href=""{link}"">[docs]</a></summary>
-");
-                    sb.Append(File.ReadAllText(file.FullName));
-                    sb.AppendLine("</details>");
+                    menu.AppendLine($" * [{name}](#link-{name})");
+
+                    body.AppendLine();
+                    body.AppendLine($"## <a name=\"link-{name}\"></a>[{name}]({link})");
+                    body.AppendLine();
+                    body.Append(File.ReadAllText(file.FullName));
                 }
             }
         }

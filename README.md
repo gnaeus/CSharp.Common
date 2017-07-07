@@ -1,16 +1,27 @@
-﻿
-<details id="AspNet.Mvc">
-    <summary style="font-size: 1.8em">AspNet.Mvc <a href="./AspNet.Mvc">[docs]</a></summary>
+﻿ * [AspNet.Mvc](#link-AspNet.Mvc)
+ * [AspNet.WebApi](#link-AspNet.WebApi)
+ * [Common.Api](#link-Common.Api)
+ * [Common.Exceptions](#link-Common.Exceptions)
+ * [Common.Extensions](#link-Common.Extensions)
+ * [Common.Helpers](#link-Common.Helpers)
+ * [Common.Jobs](#link-Common.Jobs)
+ * [Common.Mail](#link-Common.Mail)
+ * [Common.Utils](#link-Common.Utils)
+ * [Common.Validation](#link-Common.Validation)
+ * [EntityFramework](#link-EntityFramework)
+ * [MrAdvice](#link-MrAdvice)
+ * [Newtonsoft.Json](#link-Newtonsoft.Json)
+ * [RazorEngine](#link-RazorEngine)
 
-</details>
+<hr />
 
-<details id="AspNet.WebApi">
-    <summary style="font-size: 1.8em">AspNet.WebApi <a href="./AspNet.WebApi">[docs]</a></summary>
+## <a name="link-AspNet.Mvc"></a>[AspNet.Mvc](./AspNet.Mvc)
 
-</details>
 
-<details id="Common.Api">
-    <summary style="font-size: 1.8em">Common.Api <a href="./Common/Api">[docs]</a></summary>
+## <a name="link-AspNet.WebApi"></a>[AspNet.WebApi](./AspNet.WebApi)
+
+
+## <a name="link-Common.Api"></a>[Common.Api](./Common/Api)
 
 ## ApiWrapper
 Utility for wrapping operation results and logging exceptions.
@@ -145,10 +156,8 @@ Utility for returning result from method
 
 __`Error<TError>(TError code, string message = null)`__  
 Utility for returning error from method
-</details>
 
-<details id="Common.Exceptions">
-    <summary style="font-size: 1.8em">Common.Exceptions <a href="./Common/Exceptions">[docs]</a></summary>
+## <a name="link-Common.Exceptions"></a>[Common.Exceptions](./Common/Exceptions)
 
 ## BusinessException
 Exception with error code and message that passed to end user of application.
@@ -182,10 +191,8 @@ public class ValidationException : Exception
     public ValidationException(params ValidationError[] errors);
 }
 ```
-</details>
 
-<details id="Common.Extensions">
-    <summary style="font-size: 1.8em">Common.Extensions <a href="./Common/Extensions">[docs]</a></summary>
+## <a name="link-Common.Extensions"></a>[Common.Extensions](./Common/Extensions)
 
 ## ConnectionExtensions
 Some helpers for `IDbConnection` and `DbConnection`.
@@ -361,10 +368,8 @@ Execute `Task` synchronously.
 
 __`void AsSyncronous(this Task task)`__  
 Execute `Task` synchronously.
-</details>
 
-<details id="Common.Helpers">
-    <summary style="font-size: 1.8em">Common.Helpers <a href="./Common/Helpers">[docs]</a></summary>
+## <a name="link-Common.Helpers"></a>[Common.Helpers](./Common/Helpers)
 
 ## StringIntepolationHelper
 Simple DSL based on C# 6 String Interpolation for building dynamic SQL queries.
@@ -550,10 +555,8 @@ __`string ChangeHost(string absoluteUrl, string host)`__
 
 __`bool CanonicalEqual(string url1, string url2)`__  
 "http://localhost/SomeApp" == "http://localhost/someapp/"
-</details>
 
-<details id="Common.Jobs">
-    <summary style="font-size: 1.8em">Common.Jobs <a href="./Common/Jobs">[docs]</a></summary>
+## <a name="link-Common.Jobs"></a>[Common.Jobs](./Common/Jobs)
 
 ## AsyncJobsManager
 Utility that skips simultaneous execution of async tasks with same type.
@@ -596,10 +599,8 @@ class JobsService
     }
 }
 ```
-</details>
 
-<details id="Common.Mail">
-    <summary style="font-size: 1.8em">Common.Mail <a href="./Common/Mail">[docs]</a></summary>
+## <a name="link-Common.Mail"></a>[Common.Mail](./Common/Mail)
 
 ## MailMessageBinarySerializer
 Utility for de(serialiaing) `MailMessage` to byte array. Supports .NET 4.0, 4.5.
@@ -654,10 +655,8 @@ class DelayedMailSender
     }
 }
 ```
-</details>
 
-<details id="Common.Utils">
-    <summary style="font-size: 1.8em">Common.Utils <a href="./Common/Utils">[docs]</a></summary>
+## <a name="link-Common.Utils"></a>[Common.Utils](./Common/Utils)
 
 ## AsyncLazy
 Like `Lazy<T>` but for wrapping async values.
@@ -728,15 +727,11 @@ Random class replacement with same API but with usage of RNGCryptoServiceProvide
 ```cs
 public class CryptoRandom : Random { }
 ```
-</details>
 
-<details id="Common.Validation">
-    <summary style="font-size: 1.8em">Common.Validation <a href="./Common/Validation">[docs]</a></summary>
+## <a name="link-Common.Validation"></a>[Common.Validation](./Common/Validation)
 
-</details>
 
-<details id="EntityFramework">
-    <summary style="font-size: 1.8em">EntityFramework <a href="./EntityFramework">[docs]</a></summary>
+## <a name="link-EntityFramework"></a>[EntityFramework](./EntityFramework)
 
 ## JsonField
 Utility struct for storing complex types as JSON strings in database table.
@@ -959,15 +954,11 @@ class DbContextTransactionWrapper : IDbTransaction
     public DbContextTransactionWrapper(DbContextTransaction transaction);
 }
 ```
-</details>
 
-<details id="MrAdvice">
-    <summary style="font-size: 1.8em">MrAdvice <a href="./MrAdvice">[docs]</a></summary>
+## <a name="link-MrAdvice"></a>[MrAdvice](./MrAdvice)
 
-</details>
 
-<details id="Newtonsoft.Json">
-    <summary style="font-size: 1.8em">Newtonsoft.Json <a href="./Newtonsoft.Json">[docs]</a></summary>
+## <a name="link-Newtonsoft.Json"></a>[Newtonsoft.Json](./Newtonsoft.Json)
 
 ## RawJsonConverter
 Custom value converter for passing string properties as RAW JSON values.
@@ -997,9 +988,7 @@ class BookService
     }
 }
 ```
-</details>
 
-<details id="RazorEngine">
-    <summary style="font-size: 1.8em">RazorEngine <a href="./RazorEngine">[docs]</a></summary>
+## <a name="link-RazorEngine"></a>[RazorEngine](./RazorEngine)
 
-</details>
+
