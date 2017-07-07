@@ -47,9 +47,12 @@ namespace _MakeReadme
                         .Substring(1, relativePath.Length - 1)
                         .Replace('/', '.');
 
-                    sb.AppendLine($"{Environment.NewLine}# [{name}]({link}){Environment.NewLine}{Environment.NewLine}");
-
+                    sb.AppendLine($@"
+<details id=""{name}"">
+    <summary style=""font-size: 1.8em"">{name} <a href=""{link}"">[docs]</a></summary>
+");
                     sb.Append(File.ReadAllText(file.FullName));
+                    sb.AppendLine("</details>");
                 }
             }
         }

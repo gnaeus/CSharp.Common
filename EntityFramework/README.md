@@ -21,12 +21,14 @@ class User
     public string Login { get; set; }
 
     private JsonField<Address> _address;
-    internal string AddressJson // used by EntityFramework
+    // used by EntityFramework
+    internal string AddressJson
     {
         get { return _address.Json; }
         set { _address.Json = value; }
     }
-    public Address Address // used by application code
+    // used by application code
+    public Address Address
     {
         get { return _address.Value; }
         set { _address.Value = value; }
@@ -34,12 +36,12 @@ class User
 
     // collection initialization by default
     private JsonField<ICollection<string>> _phones = new HashSet<string>();
-    internal string PhonesJson // used by EntityFramework
+    internal string PhonesJson
     {
         get { return _phones.Json; }
         set { _phones.Json = value; }
     }
-    public ICollection<string> Phones // used by application code
+    public ICollection<string> Phones
     {
         get { return _phones.Value; }
         set { _phones.Value = value; }

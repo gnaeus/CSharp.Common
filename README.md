@@ -1,14 +1,16 @@
 ﻿
-# [AspNet.Mvc](./AspNet.Mvc)
+<details id="AspNet.Mvc">
+    <summary style="font-size: 1.8em">AspNet.Mvc <a href="./AspNet.Mvc">[docs]</a></summary>
 
+</details>
 
+<details id="AspNet.WebApi">
+    <summary style="font-size: 1.8em">AspNet.WebApi <a href="./AspNet.WebApi">[docs]</a></summary>
 
-# [AspNet.WebApi](./AspNet.WebApi)
+</details>
 
-
-
-# [Common.Api](./Common/Api)
-
+<details id="Common.Api">
+    <summary style="font-size: 1.8em">Common.Api <a href="./Common/Api">[docs]</a></summary>
 
 ## ApiWrapper
 Utility for wrapping operation results and logging exceptions.
@@ -143,9 +145,10 @@ Utility for returning result from method
 
 __`Error<TError>(TError code, string message = null)`__  
 Utility for returning error from method
+</details>
 
-# [Common.Exceptions](./Common/Exceptions)
-
+<details id="Common.Exceptions">
+    <summary style="font-size: 1.8em">Common.Exceptions <a href="./Common/Exceptions">[docs]</a></summary>
 
 ## BusinessException
 Exception with error code and message that passed to end user of application.
@@ -179,9 +182,10 @@ public class ValidationException : Exception
     public ValidationException(params ValidationError[] errors);
 }
 ```
+</details>
 
-# [Common.Extensions](./Common/Extensions)
-
+<details id="Common.Extensions">
+    <summary style="font-size: 1.8em">Common.Extensions <a href="./Common/Extensions">[docs]</a></summary>
 
 ## ConnectionExtensions
 Some helpers for `IDbConnection` and `DbConnection`.
@@ -357,9 +361,10 @@ Execute `Task` synchronously.
 
 __`void AsSyncronous(this Task task)`__  
 Execute `Task` synchronously.
+</details>
 
-# [Common.Helpers](./Common/Helpers)
-
+<details id="Common.Helpers">
+    <summary style="font-size: 1.8em">Common.Helpers <a href="./Common/Helpers">[docs]</a></summary>
 
 ## StringIntepolationHelper
 Simple DSL based on C# 6 String Interpolation for building dynamic SQL queries.
@@ -545,9 +550,10 @@ __`string ChangeHost(string absoluteUrl, string host)`__
 
 __`bool CanonicalEqual(string url1, string url2)`__  
 "http://localhost/SomeApp" == "http://localhost/someapp/"
+</details>
 
-# [Common.Jobs](./Common/Jobs)
-
+<details id="Common.Jobs">
+    <summary style="font-size: 1.8em">Common.Jobs <a href="./Common/Jobs">[docs]</a></summary>
 
 ## AsyncJobsManager
 Utility that skips simultaneous execution of async tasks with same type.
@@ -590,9 +596,10 @@ class JobsService
     }
 }
 ```
+</details>
 
-# [Common.Mail](./Common/Mail)
-
+<details id="Common.Mail">
+    <summary style="font-size: 1.8em">Common.Mail <a href="./Common/Mail">[docs]</a></summary>
 
 ## MailMessageBinarySerializer
 Utility for de(serialiaing) `MailMessage` to byte array. Supports .NET 4.0, 4.5.
@@ -647,9 +654,10 @@ class DelayedMailSender
     }
 }
 ```
+</details>
 
-# [Common.Utils](./Common/Utils)
-
+<details id="Common.Utils">
+    <summary style="font-size: 1.8em">Common.Utils <a href="./Common/Utils">[docs]</a></summary>
 
 ## AsyncLazy
 Like `Lazy<T>` but for wrapping async values.
@@ -720,13 +728,15 @@ Random class replacement with same API but with usage of RNGCryptoServiceProvide
 ```cs
 public class CryptoRandom : Random { }
 ```
+</details>
 
-# [Common.Validation](./Common/Validation)
+<details id="Common.Validation">
+    <summary style="font-size: 1.8em">Common.Validation <a href="./Common/Validation">[docs]</a></summary>
 
+</details>
 
-
-# [EntityFramework](./EntityFramework)
-
+<details id="EntityFramework">
+    <summary style="font-size: 1.8em">EntityFramework <a href="./EntityFramework">[docs]</a></summary>
 
 ## JsonField
 Utility struct for storing complex types as JSON strings in database table.
@@ -751,12 +761,14 @@ class User
     public string Login { get; set; }
 
     private JsonField<Address> _address;
-    internal string AddressJson // used by EntityFramework
+    // used by EntityFramework
+    internal string AddressJson
     {
         get { return _address.Json; }
         set { _address.Json = value; }
     }
-    public Address Address // used by application code
+    // used by application code
+    public Address Address
     {
         get { return _address.Value; }
         set { _address.Value = value; }
@@ -764,12 +776,12 @@ class User
 
     // collection initialization by default
     private JsonField<ICollection<string>> _phones = new HashSet<string>();
-    internal string PhonesJson // used by EntityFramework
+    internal string PhonesJson
     {
         get { return _phones.Json; }
         set { _phones.Json = value; }
     }
-    public ICollection<string> Phones // used by application code
+    public ICollection<string> Phones
     {
         get { return _phones.Value; }
         set { _phones.Value = value; }
@@ -947,13 +959,15 @@ class DbContextTransactionWrapper : IDbTransaction
     public DbContextTransactionWrapper(DbContextTransaction transaction);
 }
 ```
+</details>
 
-# [MrAdvice](./MrAdvice)
+<details id="MrAdvice">
+    <summary style="font-size: 1.8em">MrAdvice <a href="./MrAdvice">[docs]</a></summary>
 
+</details>
 
-
-# [Newtonsoft.Json](./Newtonsoft.Json)
-
+<details id="Newtonsoft.Json">
+    <summary style="font-size: 1.8em">Newtonsoft.Json <a href="./Newtonsoft.Json">[docs]</a></summary>
 
 ## RawJsonConverter
 Custom value converter for passing string properties as RAW JSON values.
@@ -983,7 +997,9 @@ class BookService
     }
 }
 ```
+</details>
 
-# [RazorEngine](./RazorEngine)
+<details id="RazorEngine">
+    <summary style="font-size: 1.8em">RazorEngine <a href="./RazorEngine">[docs]</a></summary>
 
-
+</details>
