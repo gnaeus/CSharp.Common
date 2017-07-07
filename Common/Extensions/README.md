@@ -1,4 +1,4 @@
-## ConnectionExtensions
+### ConnectionExtensions
 Some helpers for `IDbConnection` and `DbConnection`.
 
 __`async Task<IDisposable> EnsureOpenAsync(this DbConnection connection)`__  
@@ -34,7 +34,7 @@ class SqlRepository
 }
 ```
 
-## MappingExtensions
+### MappingExtensions
 Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs
 
 ```cs
@@ -108,7 +108,7 @@ static class ProductMapper
 }
 ```
 
-## ArrayExtensions
+### ArrayExtensions
 
 __`T[] Add<T>(this T[] array, T item)`__  
 
@@ -116,7 +116,7 @@ __`T[] Remove<T>(this T[] array, T item)`__
 
 __`T[] Replace<T>(this T[] array, T oldItem, T newItem)`__  
 
-## ByteArrayExtensions
+### ByteArrayExtensions
 
 __`bool SequenceEqual(this byte[] first, byte[] second)`__  
 
@@ -126,7 +126,7 @@ __`byte[] Concat(this byte[] first, byte[] second)`__
 
 __`byte[] Combine(params byte[][] arrays)`__  
 
-## EnumerableExtensions
+### EnumerableExtensions
 
 __`void ForEach<T>(this IEnumerable<T> source, Action<T> action)`__  
 Like `List<T>.ForEach(Action<T> action)`.
@@ -143,7 +143,7 @@ Remove repeated values from sequence.
 __`IEnumerable<TItem> OmitRepeatedBy<TItem, TKey>(this IEnumerable<TItem> source, Func<TItem, TKey> keySelector)`__  
 Like `OmitRepeated()` but uses values from `keySelector` for equality check.
 
-## EnumExtensions
+### EnumExtensions
 
 __`bool In<TEnum>(this TEnum value, params TEnum[] values)`__  
 `color.In(Colors.First, Colors.Second)` is equivalent to `color == Colors.First || color == Colors.Second`.
@@ -157,7 +157,7 @@ Convert nullable `[Flags] enum` to `Dictionary<TEnum, bool>`.
 __`TEnum? ToEnum<TEnum>(this IDictionary<TEnum, bool> value)`__  
 Convert `Dictionary<TEnum, bool>` to nullable `[Flags] enum`.
 
-## StringExtensions
+### StringExtensions
 
 __`string TrimWhiteSpace(this string input)`__  
 Replace all long white space inside string by one space character.
@@ -165,7 +165,7 @@ Replace all long white space inside string by one space character.
 __`bool IsBase64(this string value)`__  
 Check if string is Base64 string.
 
-## TaskExtensions
+### TaskExtensions
 
 __`T AsSyncronous<T>(this Task<T> task)`__  
 Execute `Task` synchronously.

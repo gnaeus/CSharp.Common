@@ -1,4 +1,4 @@
-## MailMessageBinarySerializer
+### MailMessageBinarySerializer
 Utility for de(serialiaing) `MailMessage` to byte array. Supports .NET 4.0, 4.5.
 
 __`static byte[] Serialize(MailMessage msg)`__  

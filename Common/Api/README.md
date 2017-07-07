@@ -1,4 +1,4 @@
-## ApiWrapper
+### ApiWrapper
 Utility for wrapping operation results and logging exceptions.
 
 ```cs
@@ -74,7 +74,7 @@ class ApplicationService
 }
 ```
 
-## ApiResult
+### ApiResult
 Structure for passing result of service operation with possible validation and logic errors.
 
 ```cs
@@ -98,7 +98,7 @@ public class ApiResult<TResult, TError>
 }
 ```
 
-## ApiStatus
+### ApiStatus
 Structure for passing status of service operation with possible validation and logic errors.
 
 ```cs
@@ -120,7 +120,7 @@ public class ApiStatus<TError> : IApiStatus, IApiError<TError>
 }
 ```
 
-## ApiHelper
+### ApiHelper
 Static helper for wrapping operation results and errors to common structures.
 
 __`Ok()`__  

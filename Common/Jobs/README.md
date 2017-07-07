@@ -1,4 +1,4 @@
-## AsyncJobsManager
+### AsyncJobsManager
 Utility that skips simultaneous execution of async tasks with same type.
 
 __`async Task ExecuteAsync(Func<Task> asyncAction)`__  

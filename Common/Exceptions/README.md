@@ -1,4 +1,4 @@
-## BusinessException
+### BusinessException
 Exception with error code and message that passed to end user of application.
 
 ```cs
@@ -18,7 +18,7 @@ public class BusinessException<TError> : Exception
 }
 ```
 
-## ValidationException
+### ValidationException
 Exception for passing validation errors.
 
 ```cs

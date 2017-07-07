@@ -23,7 +23,7 @@
 
 ## <a name="link-Common.Api"></a>[Common.Api](./Common/Api)
 
-## ApiWrapper
+### ApiWrapper
 Utility for wrapping operation results and logging exceptions.
 
 ```cs
@@ -99,7 +99,7 @@ class ApplicationService
 }
 ```
 
-## ApiResult
+### ApiResult
 Structure for passing result of service operation with possible validation and logic errors.
 
 ```cs
@@ -123,7 +123,7 @@ public class ApiResult<TResult, TError>
 }
 ```
 
-## ApiStatus
+### ApiStatus
 Structure for passing status of service operation with possible validation and logic errors.
 
 ```cs
@@ -145,7 +145,7 @@ public class ApiStatus<TError> : IApiStatus, IApiError<TError>
 }
 ```
 
-## ApiHelper
+### ApiHelper
 Static helper for wrapping operation results and errors to common structures.
 
 __`Ok()`__  
@@ -159,7 +159,7 @@ Utility for returning error from method
 
 ## <a name="link-Common.Exceptions"></a>[Common.Exceptions](./Common/Exceptions)
 
-## BusinessException
+### BusinessException
 Exception with error code and message that passed to end user of application.
 
 ```cs
@@ -179,7 +179,7 @@ public class BusinessException<TError> : Exception
 }
 ```
 
-## ValidationException
+### ValidationException
 Exception for passing validation errors.
 
 ```cs
@@ -194,7 +194,7 @@ public class ValidationException : Exception
 
 ## <a name="link-Common.Extensions"></a>[Common.Extensions](./Common/Extensions)
 
-## ConnectionExtensions
+### ConnectionExtensions
 Some helpers for `IDbConnection` and `DbConnection`.
 
 __`async Task<IDisposable> EnsureOpenAsync(this DbConnection connection)`__  
@@ -230,7 +230,7 @@ class SqlRepository
 }
 ```
 
-## MappingExtensions
+### MappingExtensions
 Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs
 
 ```cs
@@ -304,7 +304,7 @@ static class ProductMapper
 }
 ```
 
-## ArrayExtensions
+### ArrayExtensions
 
 __`T[] Add<T>(this T[] array, T item)`__  
 
@@ -312,7 +312,7 @@ __`T[] Remove<T>(this T[] array, T item)`__
 
 __`T[] Replace<T>(this T[] array, T oldItem, T newItem)`__  
 
-## ByteArrayExtensions
+### ByteArrayExtensions
 
 __`bool SequenceEqual(this byte[] first, byte[] second)`__  
 
@@ -322,7 +322,7 @@ __`byte[] Concat(this byte[] first, byte[] second)`__
 
 __`byte[] Combine(params byte[][] arrays)`__  
 
-## EnumerableExtensions
+### EnumerableExtensions
 
 __`void ForEach<T>(this IEnumerable<T> source, Action<T> action)`__  
 Like `List<T>.ForEach(Action<T> action)`.
@@ -339,7 +339,7 @@ Remove repeated values from sequence.
 __`IEnumerable<TItem> OmitRepeatedBy<TItem, TKey>(this IEnumerable<TItem> source, Func<TItem, TKey> keySelector)`__  
 Like `OmitRepeated()` but uses values from `keySelector` for equality check.
 
-## EnumExtensions
+### EnumExtensions
 
 __`bool In<TEnum>(this TEnum value, params TEnum[] values)`__  
 `color.In(Colors.First, Colors.Second)` is equivalent to `color == Colors.First || color == Colors.Second`.
@@ -353,7 +353,7 @@ Convert nullable `[Flags] enum` to `Dictionary<TEnum, bool>`.
 __`TEnum? ToEnum<TEnum>(this IDictionary<TEnum, bool> value)`__  
 Convert `Dictionary<TEnum, bool>` to nullable `[Flags] enum`.
 
-## StringExtensions
+### StringExtensions
 
 __`string TrimWhiteSpace(this string input)`__  
 Replace all long white space inside string by one space character.
@@ -361,7 +361,7 @@ Replace all long white space inside string by one space character.
 __`bool IsBase64(this string value)`__  
 Check if string is Base64 string.
 
-## TaskExtensions
+### TaskExtensions
 
 __`T AsSyncronous<T>(this Task<T> task)`__  
 Execute `Task` synchronously.
@@ -371,7 +371,7 @@ Execute `Task` synchronously.
 
 ## <a name="link-Common.Helpers"></a>[Common.Helpers](./Common/Helpers)
 
-## StringIntepolationHelper
+#### tringIntepolationHelper
 Simple DSL based on C# 6 String Interpolation for building dynamic SQL queries.
 
 ```cs
@@ -464,7 +464,7 @@ class ProductsSearchService
 }
 ```
 
-## SqlFullTextSearchHepler
+### SqlFullTextSearchHepler
 Utils for Full Text Search in Microsoft SQL Server
 
 __`string PrepareFullTextQuery(string searchPhrase, bool fuzzy = false, int minWordLength = 3)`__  
@@ -499,7 +499,7 @@ class SqlServerFullTextSearchService
 }
 ```
 
-## BitHelper
+### BitHelper
 
 __`ulong MurmurHash3(ulong key)`__  
 Compute [MurMurHash](http://zimbry.blogspot.ru/2011/09/better-bit-mixing-improving-on.html)
@@ -534,7 +534,7 @@ static class UserExtensions
 
 ```
 
-## FileSystemHelper
+### FileSystemHelper
 
 __`void CleanDirectory(string path)`__  
 Reqursively delete all files and folders from directory.
@@ -542,7 +542,7 @@ Reqursively delete all files and folders from directory.
 __`string RemoveInvalidCharsFromFileName(string fileName)`__  
 Cleanup `fileName` from invalid characters.
 
-## UriHelper
+### UriHelper
 
 __`string GetHost(string uriString)`__  
 "http://localhost/SomeApp" => "localhost"
@@ -558,7 +558,7 @@ __`bool CanonicalEqual(string url1, string url2)`__
 
 ## <a name="link-Common.Jobs"></a>[Common.Jobs](./Common/Jobs)
 
-## AsyncJobsManager
+### AsyncJobsManager
 Utility that skips simultaneous execution of async tasks with same type.
 
 __`async Task ExecuteAsync(Func<Task> asyncAction)`__  
@@ -602,7 +602,7 @@ class JobsService
 
 ## <a name="link-Common.Mail"></a>[Common.Mail](./Common/Mail)
 
-## MailMessageBinarySerializer
+### MailMessageBinarySerializer
 Utility for de(serialiaing) `MailMessage` to byte array. Supports .NET 4.0, 4.5.
 
 __`static byte[] Serialize(MailMessage msg)`__  
@@ -658,7 +658,7 @@ class DelayedMailSender
 
 ## <a name="link-Common.Utils"></a>[Common.Utils](./Common/Utils)
 
-## AsyncLazy
+### AsyncLazy
 Like `Lazy<T>` but for wrapping async values.
 
 ```cs
@@ -689,7 +689,7 @@ class AsyncService
 }
 ```
 
-## DisposableStream
+### DisposableStream
 Wrapper for `Stream` that dispose `boundObject` when stream is disposed.
 
 ```cs
@@ -721,7 +721,7 @@ class BlobStreamingService
 }
 ```
 
-## CryptoRandom
+### CryptoRandom
 Random class replacement with same API but with usage of RNGCryptoServiceProvider inside.
 
 ```cs
@@ -733,7 +733,7 @@ public class CryptoRandom : Random { }
 
 ## <a name="link-EntityFramework"></a>[EntityFramework](./EntityFramework)
 
-## JsonField
+### JsonField
 Utility struct for storing complex types as JSON strings in database table.
 
 ```cs
@@ -792,7 +792,7 @@ class Address
 }
 ```
 
-## DbContextExtensions
+### DbContextExtensions
 
 __`EntityKeyMember[] GetPrimaryKeys(this DbContext context, object entity)`__  
 Get composite primary key from entity.
@@ -844,7 +844,7 @@ class PassportsService
 }
 ```
 
-## QueriableExtensions
+### QueriableExtensions
 
 ```cs
 async Task<List<TResult>> ExecuteChunkedInQueryAsync<TResult, TParameter>(
@@ -883,7 +883,7 @@ class PostsService
 }
 ```
 
-## MappingExtensions
+### MappingExtensions
 Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs.
 
 ```cs
@@ -933,7 +933,7 @@ class ProductService
 }
 ```
 
-## Utils.NLogDbInterceptor
+### Utils.NLogDbInterceptor
 `IDbCommandInterceptor` implementation for logging errors from SQL-queries.
 
 ```cs
@@ -943,7 +943,7 @@ class NLogDbInterceptor : IDbCommandInterceptor
 }
 ```
 
-## Utils.DbContextTransactionWrapper
+### Utils.DbContextTransactionWrapper
 A wrapper that allows to present EF transactions (`DbContextTransaction`) as `IDbTransaction`.  
 For example, if you need to implement an interface that requires you to return `IDbTransaction`.  
 Used by `DbContextExtensions.BeginTransaction()`.
@@ -960,7 +960,7 @@ class DbContextTransactionWrapper : IDbTransaction
 
 ## <a name="link-Newtonsoft.Json"></a>[Newtonsoft.Json](./Newtonsoft.Json)
 
-## RawJsonConverter
+### RawJsonConverter
 Custom value converter for passing string properties as RAW JSON values.
 
 ```cs

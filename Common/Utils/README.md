@@ -1,4 +1,4 @@
-## AsyncLazy
+### AsyncLazy
 Like `Lazy<T>` but for wrapping async values.
 
 ```cs
@@ -29,7 +29,7 @@ class AsyncService
 }
 ```
 
-## DisposableStream
+### DisposableStream
 Wrapper for `Stream` that dispose `boundObject` when stream is disposed.
 
 ```cs
@@ -61,7 +61,7 @@ class BlobStreamingService
 }
 ```
 
-## CryptoRandom
+### CryptoRandom
 Random class replacement with same API but with usage of RNGCryptoServiceProvider inside.
 
 ```cs

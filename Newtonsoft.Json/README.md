@@ -1,4 +1,4 @@
-## RawJsonConverter
+### RawJsonConverter
 Custom value converter for passing string properties as RAW JSON values.
 
 ```cs

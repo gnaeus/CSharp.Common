@@ -1,4 +1,4 @@
-## JsonField
+### JsonField
 Utility struct for storing complex types as JSON strings in database table.
 
 ```cs
@@ -57,7 +57,7 @@ class Address
 }
 ```
 
-## DbContextExtensions
+### DbContextExtensions
 
 __`EntityKeyMember[] GetPrimaryKeys(this DbContext context, object entity)`__  
 Get composite primary key from entity.
@@ -109,7 +109,7 @@ class PassportsService
 }
 ```
 
-## QueriableExtensions
+### QueriableExtensions
 
 ```cs
 async Task<List<TResult>> ExecuteChunkedInQueryAsync<TResult, TParameter>(
@@ -148,7 +148,7 @@ class PostsService
 }
 ```
 
-## MappingExtensions
+### MappingExtensions
 Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs.
 
 ```cs
@@ -198,7 +198,7 @@ class ProductService
 }
 ```
 
-## Utils.NLogDbInterceptor
+### Utils.NLogDbInterceptor
 `IDbCommandInterceptor` implementation for logging errors from SQL-queries.
 
 ```cs
@@ -208,7 +208,7 @@ class NLogDbInterceptor : IDbCommandInterceptor
 }
 ```
 
-## Utils.DbContextTransactionWrapper
+### Utils.DbContextTransactionWrapper
 A wrapper that allows to present EF transactions (`DbContextTransaction`) as `IDbTransaction`.  
 For example, if you need to implement an interface that requires you to return `IDbTransaction`.  
 Used by `DbContextExtensions.BeginTransaction()`.

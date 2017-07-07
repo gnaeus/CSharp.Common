@@ -1,4 +1,4 @@
-﻿## StringIntepolationHelper
+﻿#### tringIntepolationHelper
 Simple DSL based on C# 6 String Interpolation for building dynamic SQL queries.
 
 ```cs
@@ -91,7 +91,7 @@ class ProductsSearchService
 }
 ```
 
-## SqlFullTextSearchHepler
+### SqlFullTextSearchHepler
 Utils for Full Text Search in Microsoft SQL Server
 
 __`string PrepareFullTextQuery(string searchPhrase, bool fuzzy = false, int minWordLength = 3)`__  
@@ -126,7 +126,7 @@ class SqlServerFullTextSearchService
 }
 ```
 
-## BitHelper
+### BitHelper
 
 __`ulong MurmurHash3(ulong key)`__  
 Compute [MurMurHash](http://zimbry.blogspot.ru/2011/09/better-bit-mixing-improving-on.html)
@@ -161,7 +161,7 @@ static class UserExtensions
 
 ```
 
-## FileSystemHelper
+### FileSystemHelper
 
 __`void CleanDirectory(string path)`__  
 Reqursively delete all files and folders from directory.
@@ -169,7 +169,7 @@ Reqursively delete all files and folders from directory.
 __`string RemoveInvalidCharsFromFileName(string fileName)`__  
 Cleanup `fileName` from invalid characters.
 
-## UriHelper
+### UriHelper
 
 __`string GetHost(string uriString)`__  
 "http://localhost/SomeApp" => "localhost"
