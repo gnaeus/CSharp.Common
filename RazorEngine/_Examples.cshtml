@@ -1,0 +1,13 @@
+﻿@*~/Views/Email/ResetPassword.cshtml*@
+@model EmailModel
+@{ 
+    ViewBag.Subject = "Please reset your password";
+}
+Dear @Model.UserName, please <a href="@Model.PasswordLink">reset</a> your password.
+
+@*~/Views/Email/Attachments/ResetPassword.cshtml*@
+@model EmailModel
+@{
+    ViewBag.FileName = "reset_password_link_" + Model.UserName + ".txt";
+}
+@Model.PasswordLink

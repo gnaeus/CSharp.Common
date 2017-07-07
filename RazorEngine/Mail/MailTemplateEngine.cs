@@ -5,6 +5,9 @@ using RazorEngine.Templating;
 
 namespace RazorEngine.Common.Mail
 {
+    /// <summary>
+    /// Utility for creating <see cref="MailMessage"/> from Razor view.
+    /// </summary>
     public class MailTemplateEngine
     {
         public MailMessage CreateMessage(
