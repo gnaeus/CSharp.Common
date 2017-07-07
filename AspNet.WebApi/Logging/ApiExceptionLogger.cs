@@ -4,6 +4,9 @@ using NLog;
 
 namespace AspNet.WebApi.Common.Logging
 {
+    /// <summary>
+    /// NLog global exception logger for AspNet Web API.
+    /// </summary>
     public class ApiExceptionLogger : ExceptionLogger
     {
         private readonly ILogger Logger;

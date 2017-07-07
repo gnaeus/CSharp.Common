@@ -10,6 +10,10 @@ using System.Web.Http;
 
 namespace AspNet.WebApi.Common.ActionResults
 {
+    /// <summary>
+    /// <see cref="IHttpActionResult"/> for passing streams as files to client
+    /// (streams are not materialized to RAM).
+    /// </summary>
     public class FileStreamResult : IHttpActionResult
     {
         public string FileName { get; }
