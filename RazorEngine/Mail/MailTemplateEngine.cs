@@ -29,6 +29,8 @@ namespace RazorEngine.Common.Mail
             };
         }
 
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="InvalidOperationException" />
         public MailMessage CreateMessage(
             string from,
             string to,
@@ -103,9 +105,7 @@ namespace RazorEngine.Common.Mail
                 path = Path.Combine(baseDir, path.Substring(2));
             }
             if (!File.Exists(path)) {
-                throw new InvalidOperationException(String.Format(
-                    "TemplatePath {0} is not resolved", path
-                ));
+                throw new InvalidOperationException($"TemplatePath {path} is not resolved");
             }
             return path;
         }

@@ -16,6 +16,7 @@ namespace Common.Validation
 
         public bool HasErrors => Errors.Count > 0;
 
+        /// <exception cref="Exceptions.ValidationException" />
         public void ThrowIfHasErrors()
         {
             if (Errors.Count > 0)

@@ -18,6 +18,7 @@ namespace Common.Extensions
         /// <summary>
         /// Convert `[Flags] enum` to `Dictionary<TEnum, bool>`.
         /// </summary>
+        /// <exception cref="NotSupportedException" />
         public static Dictionary<TEnum, bool> ToDictionary<TEnum>(this TEnum value)
             where TEnum : struct, IComparable
         {
@@ -36,6 +37,7 @@ namespace Common.Extensions
         /// <summary>
         /// Convert nullable `[Flags] enum` to `Dictionary<TEnum, bool>`.
         /// </summary>
+        /// <exception cref="NotSupportedException" />
 	    public static Dictionary<TEnum, bool> ToDictionary<TEnum>(this TEnum? value)
 	        where TEnum : struct, IComparable
 	    {
@@ -49,6 +51,7 @@ namespace Common.Extensions
         /// <summary>
         /// Convert `Dictionary<TEnum, bool>` to nullable `[Flags] enum`.
         /// </summary>
+        /// <exception cref="NotSupportedException" />
         public static TEnum? ToEnum<TEnum>(this IDictionary<TEnum, bool> value)
             where TEnum : struct, IComparable
         {

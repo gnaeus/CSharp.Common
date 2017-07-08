@@ -12,6 +12,8 @@ namespace Common.Smtp
     {
         readonly SmtpConnectionSettings _settings;
 
+        /// <exception cref="ArgumentException" />
+        /// <exception cref="ArgumentOutOfRangeException" />
         public SmtpConnectionChecker(SmtpConnectionSettings settings)
         {
             if (String.IsNullOrEmpty(settings.Server))

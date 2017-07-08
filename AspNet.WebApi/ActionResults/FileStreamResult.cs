@@ -20,6 +20,7 @@ namespace AspNet.WebApi.Common.ActionResults
         public string ContentType { get; }
         private readonly Stream Stream;
 
+        /// <exception cref="ArgumentNullException" />
         public FileStreamResult(Stream stream, string fileName, string contentType = null)
         {
             if (stream == null) {

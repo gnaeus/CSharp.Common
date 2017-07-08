@@ -19,6 +19,7 @@ namespace Common.Utils
             return BitConverter.ToInt32(_uint32Buffer, 0) & 0x7FFFFFFF;
         }
 
+        /// <exception cref="ArgumentOutOfRangeException" />
         public override int Next(int maxValue)
         {
             if (maxValue < 0)
@@ -28,6 +29,7 @@ namespace Common.Utils
             return Next(0, maxValue);
         }
 
+        /// <exception cref="ArgumentOutOfRangeException" />
         public override int Next(int minValue, int maxValue)
         {
             if (minValue > maxValue)
@@ -60,6 +62,7 @@ namespace Common.Utils
             return rand / (1.0 + UInt32.MaxValue);
         }
 
+        /// <exception cref="ArgumentNullException" />
         public override void NextBytes(byte[] buffer)
         {
             if (buffer == null)

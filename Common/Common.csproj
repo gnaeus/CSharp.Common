@@ -71,9 +71,9 @@
     <Compile Include="Mail\MailMessageExtensions.cs" />
     <Compile Include="Mail\_Examples.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Smtp\ISmtpConnectionSettings.cs" />
     <Compile Include="Smtp\SmtpConnectionChecker.cs" />
-    <Compile Include="Smtp\SmtpEmailSender.cs" />
+    <Compile Include="Smtp\SmtpConnectionSettings.cs" />
+    <Compile Include="Smtp\SmtpMailSender.cs" />
     <Compile Include="Smtp\_Examples.cs" />
     <Compile Include="Utils\CryptoRandom.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />

@@ -32,6 +32,8 @@ namespace Common.Extensions
         /// If connection is closed before `using()` statement
         /// then it will be opened inside `using()` and closed after `using()`
         /// </summary>
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="InvalidOperationException" />
         public static IDisposable EnsureOpen(this IDbConnection connection)
         {
             if (connection == null) {
@@ -71,6 +73,8 @@ namespace Common.Extensions
         /// If connection is closed before `using()` statement
         /// then it will be opened inside `using()` and closed after `using()`
         /// </summary>
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="InvalidOperationException" />
         public static async Task<IDisposable> EnsureOpenAsync(
             this DbConnection connection, CancellationToken cancellationToken)
         {

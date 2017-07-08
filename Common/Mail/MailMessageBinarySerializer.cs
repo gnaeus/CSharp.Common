@@ -339,6 +339,7 @@ namespace Common.Mail
             return new MemoryStream(r.ReadBytes(length), false);
         }
 
+        /// <exception cref="NotSupportedException" />
         internal static void Write(this BinaryWriter w, Stream stream)
         {
             if (!stream.CanSeek) {

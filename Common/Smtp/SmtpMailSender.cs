@@ -22,7 +22,8 @@ namespace Common.Smtp
             _settings = settings;
             _logger = logger;
         }
-        
+
+        /// <exception cref="SmtpException" />
         public virtual async Task<bool> TrySend(MailMessage message)
         {
             using (var client = new SmtpClient(_settings.Server, _settings.Port))

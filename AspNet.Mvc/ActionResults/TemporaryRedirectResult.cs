@@ -18,6 +18,8 @@ namespace AspNet.Mvc.Common.ActionResults
             Url = url;
         }
 
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="InvalidOperationException" />
         public override void ExecuteResult(ControllerContext context)
         {
             if (context == null) {
