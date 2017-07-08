@@ -14,6 +14,15 @@ namespace Common.Api
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
 
+        public static implicit operator ApiResult<TResult>(TResult data)
+        {
+            return new ApiResult<TResult>
+            {
+                IsSuccess = true,
+                Data = data,
+            };
+        }
+
         public static implicit operator ApiResult<TResult>(SuccessTag<TResult> successTag)
         {
             return new ApiResult<TResult>
@@ -45,6 +54,15 @@ namespace Common.Api
         public TError? ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        public static implicit operator ApiResult<TResult, TError>(TResult data)
+        {
+            return new ApiResult<TResult, TError>
+            {
+                IsSuccess = true,
+                Data = data,
+            };
+        }
 
         public static implicit operator ApiResult<TResult, TError>(SuccessTag<TResult> successTag)
         {
