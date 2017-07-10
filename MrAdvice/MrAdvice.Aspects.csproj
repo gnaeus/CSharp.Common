@@ -51,9 +51,16 @@
     <Compile Include="Snapshot\SnapshotAsyncAttribute.cs" />
     <Compile Include="Snapshot\SnapshotAttribute.cs" />
     <Compile Include="Snapshot\SnapshotProfile.cs" />
+    <Compile Include="WrapError\WrapErrorAsyncAttribute.cs" />
+    <Compile Include="WrapError\WrapErrorAttribute.cs" />
     <Compile Include="_Examples.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{e474f8be-00de-457d-bdd0-5ab2f8aa1c18}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="README.md" />

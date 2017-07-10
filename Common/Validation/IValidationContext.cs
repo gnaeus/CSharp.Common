@@ -8,6 +8,7 @@ namespace Common.Validation
         string CurrentPath { get; }
         List<ValidationError> Errors { get; }
         bool HasErrors { get; }
+        /// <exception cref="Exceptions.ValidationException" />
         void ThrowIfHasErrors();
         void AddError(string path, string code, string message);
         void ValidateAnnotations(object model, string path = null);

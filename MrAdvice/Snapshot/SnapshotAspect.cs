@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace MrAdvice.Aspects.Snapshot
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class SnapshotAspect : Attribute
     {
         public static AsyncLocal<SnapshotProfile> Profile = new AsyncLocal<SnapshotProfile>();

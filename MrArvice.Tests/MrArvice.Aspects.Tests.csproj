@@ -59,6 +59,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Snapshot\SnapshotAsyncTest.cs" />
     <Compile Include="Snapshot\SnapshotTest.cs" />
+    <Compile Include="WrapError\WrapErrorAsyncTest.cs" />
+    <Compile Include="WrapError\WrapErrorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -67,6 +69,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{E474F8BE-00DE-457D-BDD0-5AB2F8AA1C18}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MrAdvice\MrAdvice.Aspects.csproj">
       <Project>{8b8fb435-a33b-4021-ae3d-3aa314af1e6a}</Project>
       <Name>MrAdvice.Aspects</Name>

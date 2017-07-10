@@ -13,6 +13,14 @@ namespace Common.Api
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
 
+        public static implicit operator ApiStatus(bool isSuccess)
+        {
+            return new ApiStatus
+            {
+                IsSuccess = isSuccess,
+            };
+        }
+
         public static implicit operator ApiStatus(SuccessTag tag)
         {
             return new ApiStatus
@@ -42,6 +50,14 @@ namespace Common.Api
         public TError? ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        public static implicit operator ApiStatus<TError>(bool isSuccess)
+        {
+            return new ApiStatus<TError>
+            {
+                IsSuccess = isSuccess,
+            };
+        }
 
         public static implicit operator ApiStatus<TError>(SuccessTag tag)
         {
