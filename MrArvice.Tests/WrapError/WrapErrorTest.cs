@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Common.Api;
 using Common.Exceptions;
 
-namespace MrArvice.Aspects.WrapError.Tests
+namespace MrArvice.Aspects.Tests.WrapError
 {
     [TestClass]
     public class WrapErrorTest

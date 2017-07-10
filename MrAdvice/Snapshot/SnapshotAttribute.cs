@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using ArxOne.MrAdvice.Advice;
 
-namespace MrAdvice.Aspects.Snapshot
+namespace MrAdvice.Aspects
 {
     public class SnapshotAttribute : SnapshotAspect, IMethodAdvice
     {

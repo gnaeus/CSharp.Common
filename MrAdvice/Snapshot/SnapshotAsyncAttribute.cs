@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ArxOne.MrAdvice.Advice;
 
-namespace MrAdvice.Aspects.Snapshot
+namespace MrAdvice.Aspects
 {
     public class SnapshotAsyncAttribute : SnapshotAspect, IMethodAsyncAdvice
     {

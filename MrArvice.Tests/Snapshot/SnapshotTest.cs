@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MrAdvice.Aspects.Snapshot.Tests
+namespace MrAdvice.Aspects.Tests.Snapshot
 {
     [TestClass]
     public class SnapshotTest

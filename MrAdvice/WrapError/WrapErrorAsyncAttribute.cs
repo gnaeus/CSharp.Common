@@ -5,7 +5,7 @@ using ArxOne.MrAdvice.Advice;
 using Common.Api;
 using Common.Exceptions;
 
-namespace MrArvice.Aspects.WrapError
+namespace MrArvice.Aspects
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class WrapErrorAsyncAttribute : Attribute, IMethodAsyncAdvice

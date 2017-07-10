@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MrAdvice.Aspects.Snapshot
+namespace MrAdvice.Aspects
 {
     public enum SnapshotMode
     {
