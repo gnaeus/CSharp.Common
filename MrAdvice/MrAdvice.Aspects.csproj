@@ -51,6 +51,8 @@
     <Compile Include="Snapshot\SnapshotAsyncAttribute.cs" />
     <Compile Include="Snapshot\SnapshotAttribute.cs" />
     <Compile Include="Snapshot\SnapshotProfile.cs" />
+    <Compile Include="ValidateAnnotations\ValidateAnnotationsAsyncAttribute.cs" />
+    <Compile Include="ValidateAnnotations\ValidateAnnotationsAttribute.cs" />
     <Compile Include="WrapError\WrapErrorAsyncAttribute.cs" />
     <Compile Include="WrapError\WrapErrorAttribute.cs" />
     <Compile Include="_Examples.cs" />
