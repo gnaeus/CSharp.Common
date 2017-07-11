@@ -54,7 +54,7 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing status of service operation with possible validation and logic errors.
     /// </summary>
-    public class ApiStatus<TError> : IApiResponse, IApiError, IApiError<TError>
+    public class ApiStatus<TError> : IApiResponse, IApiError
         where TError : struct
     {
         public bool IsSuccess { get; set; }

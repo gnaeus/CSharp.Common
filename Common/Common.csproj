@@ -44,8 +44,6 @@
     <Compile Include="Api\ApiHelper.cs" />
     <Compile Include="Api\ApiResult.cs" />
     <Compile Include="Api\ApiStatus.cs" />
-    <Compile Include="Api\ApiWrapper.cs" />
-    <Compile Include="Api\IApiWrapper.cs" />
     <Compile Include="Api\InternalInterfaces.cs" />
     <Compile Include="Api\Tags\ErrorTag.cs" />
     <Compile Include="Api\Tags\SuccessTag.cs" />

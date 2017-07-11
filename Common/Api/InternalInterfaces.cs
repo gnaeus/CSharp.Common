@@ -13,20 +13,9 @@ namespace Common.Api
     {
         object Data { set; }
     }
-
-    internal interface IApiResult<TResult>
-    {
-        TResult Data { set; }
-    }
-
+    
     internal interface IApiError
     {
         object ErrorCode { set; }
-    }
-
-    internal interface IApiError<TError>
-        where TError : struct
-    {
-        TError? ErrorCode { set; }
     }
 }

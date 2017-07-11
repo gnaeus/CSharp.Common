@@ -6,7 +6,7 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing result of service operation with possible validation and logic errors.
     /// </summary>
-    public class ApiResult<TResult> : IApiResponse, IApiError, IApiResult, IApiResult<TResult>
+    public class ApiResult<TResult> : IApiResponse, IApiError, IApiResult
     {
         public bool IsSuccess { get; set; }
         public virtual TResult Data { get; set; }
@@ -68,7 +68,7 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing result of service operation with possible validation and logic errors.
     /// </summary>
-    public class ApiResult<TResult, TError> : IApiResponse, IApiError, IApiError<TError>, IApiResult, IApiResult<TResult>
+    public class ApiResult<TResult, TError> : IApiResponse, IApiError, IApiResult
         where TError : struct
     {
         public bool IsSuccess { get; set; }

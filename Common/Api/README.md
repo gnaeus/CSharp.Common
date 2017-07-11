@@ -1,27 +1,8 @@
-### ApiWrapper
-Utility for wrapping operation results and logging exceptions.
-
-```cs
-public class ApiWrapper : IApiWrapper
-{
-    public ApiWrapper(NLog.ILogger logger);
-
-    public ApiStatus Execute(Action method);
-    public ApiStatus<TError> Execute<TError>(Action method);
-    public ApiResult<TResult> Execute<TResult>(Func<TResult> method);
-    public ApiResult<TResult, TError> Execute<TResult, TError>(Func<TResult> method);
-    public async Task<ApiStatus> ExecuteAsync(Func<Task> method);
-    public async Task<ApiStatus<TError>> ExecuteAsync<TError>(Func<Task> method);
-    public async Task<ApiResult<TResult>> ExecuteAsync<TResult>(Func<Task<TResult>> method);
-    public async Task<ApiResult<TResult, TError>> ExecuteAsync<TResult, TError>(Func<Task<TResult>> method);
-}
-```
-
-Example:
 ```cs
 using System.Data.SqlClient;
 using Common.Api;
 using Common.Exceptions;
+using Common.MethodMiddleware;
 using static Common.Api.ApiHelper;
 
 class Model { }
@@ -30,12 +11,20 @@ enum ErrorCodes { GeneralError }
 
 class WebService
 {
-    readonly ApiWrapper _apiWrapper;
+    readonly MethodDecorator _methodDecorator;
     readonly ApplicationService _applicationService;
+
+    public WebService(ApplicationService applicationService)
+    {
+        _applicationService = applicationService;
+
+        _methodDecorator = new MethodDecorator()
+            .Use(new WrapExceptionMiddleware());
+    }
 
     public ApiResult<Model, ErrorCodes> DoSomething(Model argument)
     {
-        return _apiWrapper.Execute<Model, ErrorCodes>(() =>
+        return _methodDecorator.Execute(new { argument }, () =>
         {
             return _applicationService.DoSomething(argument);
         });

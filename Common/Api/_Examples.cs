@@ -1,6 +1,7 @@
 ﻿using System.Data.SqlClient;
 using Common.Api;
 using Common.Exceptions;
+using Common.MethodMiddleware;
 using static Common.Api.ApiHelper;
 
 partial class _Examples
@@ -11,12 +12,20 @@ partial class _Examples
 
     class WebService
     {
-        readonly ApiWrapper _apiWrapper;
+        readonly MethodDecorator _methodDecorator;
         readonly ApplicationService _applicationService;
+
+        public WebService(ApplicationService applicationService)
+        {
+            _applicationService = applicationService;
+
+            _methodDecorator = new MethodDecorator()
+                .Use(new WrapExceptionMiddleware());
+        }
 
         public ApiResult<Model, ErrorCodes> DoSomething(Model argument)
         {
-            return _apiWrapper.Execute<Model, ErrorCodes>(() =>
+            return _methodDecorator.Execute(new { argument }, () =>
             {
                 return _applicationService.DoSomething(argument);
             });
