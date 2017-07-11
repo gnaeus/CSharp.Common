@@ -79,7 +79,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsNotNull(status);
             Assert.IsFalse(status.IsSuccess);
             Assert.IsNull(status.ErrorCode);
-            Assert.IsNull(status.ErrorMessage);
+            Assert.AreEqual("Message", status.ErrorMessage);
             Assert.AreEqual(0, status.ValidationErrors.Length);
         }
 
@@ -97,7 +97,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsNotNull(status);
             Assert.IsFalse(status.IsSuccess);
             Assert.IsNull(status.ErrorCode);
-            Assert.IsNull(status.ErrorMessage);
+            Assert.AreEqual("The method or operation is not implemented.", status.ErrorMessage);
             Assert.AreEqual(0, status.ValidationErrors.Length);
         }
 
@@ -155,7 +155,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsNotNull(status);
             Assert.IsFalse(status.IsSuccess);
             Assert.IsNull(status.ErrorCode);
-            Assert.IsNull(status.ErrorMessage);
+            Assert.AreEqual("Message", status.ErrorMessage);
             Assert.AreEqual(0, status.ValidationErrors.Length);
         }
 
@@ -191,7 +191,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsNotNull(status);
             Assert.IsFalse(status.IsSuccess);
             Assert.IsNull(status.ErrorCode);
-            Assert.IsNull(status.ErrorMessage);
+            Assert.AreEqual("The method or operation is not implemented.", status.ErrorMessage);
             Assert.AreEqual(0, status.ValidationErrors.Length);
         }
 
@@ -271,7 +271,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsFalse(result.IsSuccess);
             Assert.IsNull(result.Data);
             Assert.IsNull(result.ErrorCode);
-            Assert.IsNull(result.ErrorMessage);
+            Assert.AreEqual("Message", result.ErrorMessage);
             Assert.AreEqual(0, result.ValidationErrors.Length);
         }
 
@@ -290,7 +290,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsFalse(result.IsSuccess);
             Assert.IsNull(result.Data);
             Assert.IsNull(result.ErrorCode);
-            Assert.IsNull(result.ErrorMessage);
+            Assert.AreEqual("The method or operation is not implemented.", result.ErrorMessage);
             Assert.AreEqual(0, result.ValidationErrors.Length);
         }
 
@@ -351,7 +351,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsFalse(result.IsSuccess);
             Assert.IsNull(result.Data);
             Assert.IsNull(result.ErrorCode);
-            Assert.IsNull(result.ErrorMessage);
+            Assert.AreEqual("Message", result.ErrorMessage);
             Assert.AreEqual(0, result.ValidationErrors.Length);
         }
 
@@ -389,7 +389,7 @@ namespace MrArvice.Aspects.Tests.WrapError
             Assert.IsFalse(result.IsSuccess);
             Assert.IsNull(result.Data);
             Assert.IsNull(result.ErrorCode);
-            Assert.IsNull(result.ErrorMessage);
+            Assert.AreEqual("The method or operation is not implemented.", result.ErrorMessage);
             Assert.AreEqual(0, result.ValidationErrors.Length);
         }
 

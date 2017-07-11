@@ -31,8 +31,7 @@ namespace Common.Api
 
         public ApiStatus<TError> Execute<TError>(
             Action method,
-            [CallerMemberName] string caller = null
-        )
+            [CallerMemberName] string caller = null)
             where TError : struct
         {
             var response = new ApiStatus<TError>();
@@ -51,8 +50,7 @@ namespace Common.Api
 
         public ApiResult<TResult, TError> Execute<TResult, TError>(
             Func<TResult> method,
-            [CallerMemberName] string caller = null
-        )
+            [CallerMemberName] string caller = null)
             where TError : struct
         {
             var response = new ApiResult<TResult, TError>();
@@ -61,10 +59,7 @@ namespace Common.Api
         }
 
         private void Execute<TResult, TError>(
-            IApiStatus response,
-            Delegate method,
-            string caller
-        )
+            IApiStatus response, Delegate method, string caller)
             where TError : struct
         {
             try
@@ -92,8 +87,8 @@ namespace Common.Api
                 if (error != null)
                 {
                     error.ErrorCode = exception.Code;
-                    error.ErrorMessage = exception.Message;
                 }
+                response.ErrorMessage = exception.Message;
                 response.IsSuccess = false;
             }
             catch (BusinessException<TError> exception)
@@ -103,13 +98,14 @@ namespace Common.Api
                 if (error != null)
                 {
                     error.ErrorCode = exception.Code;
-                    error.ErrorMessage = exception.Message;
                 }
+                response.ErrorMessage = exception.Message;
                 response.IsSuccess = false;
             }
             catch (Exception exception)
             {
                 Logger.Error(exception, $"[{caller}]");
+                response.ErrorMessage = exception.Message;
                 response.IsSuccess = false;
             }
         }
@@ -125,8 +121,7 @@ namespace Common.Api
 
         public async Task<ApiStatus<TError>> ExecuteAsync<TError>(
             Func<Task> method,
-            [CallerMemberName] string caller = null
-        )
+            [CallerMemberName] string caller = null)
             where TError : struct
         {
             var response = new ApiStatus<TError>();
@@ -145,8 +140,7 @@ namespace Common.Api
 
         public async Task<ApiResult<TResult, TError>> ExecuteAsync<TResult, TError>(
             Func<Task<TResult>> method,
-            [CallerMemberName] string caller = null
-        )
+            [CallerMemberName] string caller = null)
             where TError : struct
         {
             var response = new ApiResult<TResult, TError>();
@@ -155,10 +149,7 @@ namespace Common.Api
         }
 
         private async Task ExecuteAsync<TResult, TError>(
-            IApiStatus response,
-            Delegate method,
-            string caller
-        )
+            IApiStatus response, Delegate method, string caller)
             where TError : struct
         {
             try
@@ -186,8 +177,8 @@ namespace Common.Api
                 if (error != null)
                 {
                     error.ErrorCode = exception.Code;
-                    error.ErrorMessage = exception.Message;
                 }
+                response.ErrorMessage = exception.Message;
                 response.IsSuccess = false;
             }
             catch (BusinessException<TError> exception)
@@ -197,13 +188,14 @@ namespace Common.Api
                 if (error != null)
                 {
                     error.ErrorCode = exception.Code;
-                    error.ErrorMessage = exception.Message;
                 }
+                response.ErrorMessage = exception.Message;
                 response.IsSuccess = false;
             }
             catch (Exception exception)
             {
                 Logger.Error(exception, $"[{caller}]");
+                response.ErrorMessage = exception.Message;
                 response.IsSuccess = false;
             }
         }

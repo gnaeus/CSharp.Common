@@ -5,6 +5,7 @@ namespace Common.Api
     internal interface IApiStatus
     {
         bool IsSuccess { set; }
+        string ErrorMessage { set; }
         ValidationError[] ValidationErrors { set; }
     }
 

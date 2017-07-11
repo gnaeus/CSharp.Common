@@ -30,18 +30,19 @@ namespace MrArvice.Aspects
             catch (BusinessException exception)
             {
                 response = (IApiStatus)Activator.CreateInstance(returnType);
+                response.ErrorMessage = exception.Message;
 
                 IApiError error = response as IApiError;
                 if (error != null)
                 {
                     error.ErrorCode = exception.Code;
-                    error.ErrorMessage = exception.Message;
                 }
             }
             catch (Exception exception)
             {
                 response = (IApiStatus)Activator.CreateInstance(returnType);
-
+                response.ErrorMessage = exception.Message;
+                
                 Type exceptionType = exception.GetType();
                 if (exceptionType.IsGenericType
                     && exceptionType.GetGenericTypeDefinition() == typeof(BusinessException<>))
@@ -52,7 +53,6 @@ namespace MrArvice.Aspects
                         dynamic dynamicException = exception;
 
                         dynamicResponse.ErrorCode = dynamicException.Code;
-                        dynamicResponse.ErrorMessage = exception.Message;
                     }
                     catch { }
                 }
