@@ -34,22 +34,22 @@ namespace Common.MethodMiddleware
         #region Action
 
 <#    for (int i = 0; i <= count; i++) { #>
-        public void Execute(
+        public dynamic Execute(
 <#    for (int j = 1; j <= i; j++) { #>
             IMethodMiddleware middleware<#= j #>,
 <#    } #>
             Action method)
         {
-            Invoke(null, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+            return Invoke(null, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
         }
 
-        public void Execute(
+        public dynamic Execute(
 <#    for (int j = 1; j <= i; j++) { #>
             IMethodMiddleware middleware<#= j #>,
 <#    } #>
             object arguments, Action method)
         {
-            Invoke(arguments, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+            return Invoke(arguments, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
         }
 
 <#    } #>
@@ -82,7 +82,7 @@ namespace Common.MethodMiddleware
         #region AsyncAction
 
 <#    for (int i = 0; i <= count; i++) { #>
-        public Task Execute(
+        public dynamic Execute(
 <#    for (int j = 1; j <= i; j++) { #>
             IMethodAsyncMiddleware middleware<#= j #>,
 <#    } #>
@@ -91,7 +91,7 @@ namespace Common.MethodMiddleware
             return Invoke(null, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
         }
 
-        public Task Execute(
+        public dynamic Execute(
 <#    for (int j = 1; j <= i; j++) { #>
             IMethodAsyncMiddleware middleware<#= j #>,
 <#    } #>

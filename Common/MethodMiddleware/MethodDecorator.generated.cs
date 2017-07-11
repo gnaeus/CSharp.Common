@@ -137,130 +137,130 @@ namespace Common.MethodMiddleware
 
         #region Action
 
-        public void Execute(
+        public dynamic Execute(
             Action method)
         {
-            Invoke(null, MakeFunc(method));
+            return Invoke(null, MakeFunc(method));
         }
 
-        public void Execute(
+        public dynamic Execute(
             object arguments, Action method)
         {
-            Invoke(arguments, MakeFunc(method));
+            return Invoke(arguments, MakeFunc(method));
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             Action method)
         {
-            Invoke(null, MakeFunc(method), middleware1);
+            return Invoke(null, MakeFunc(method), middleware1);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             object arguments, Action method)
         {
-            Invoke(arguments, MakeFunc(method), middleware1);
+            return Invoke(arguments, MakeFunc(method), middleware1);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             Action method)
         {
-            Invoke(null, MakeFunc(method), middleware1, middleware2);
+            return Invoke(null, MakeFunc(method), middleware1, middleware2);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             object arguments, Action method)
         {
-            Invoke(arguments, MakeFunc(method), middleware1, middleware2);
+            return Invoke(arguments, MakeFunc(method), middleware1, middleware2);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             IMethodMiddleware middleware3,
             Action method)
         {
-            Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3);
+            return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             IMethodMiddleware middleware3,
             object arguments, Action method)
         {
-            Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3);
+            return Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3);
         }
 
-        public void Execute(
-            IMethodMiddleware middleware1,
-            IMethodMiddleware middleware2,
-            IMethodMiddleware middleware3,
-            IMethodMiddleware middleware4,
-            Action method)
-        {
-            Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4);
-        }
-
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             IMethodMiddleware middleware3,
             IMethodMiddleware middleware4,
-            object arguments, Action method)
+            Action method)
         {
-            Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4);
+            return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             IMethodMiddleware middleware3,
             IMethodMiddleware middleware4,
-            IMethodMiddleware middleware5,
-            Action method)
+            object arguments, Action method)
         {
-            Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5);
+            return Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             IMethodMiddleware middleware3,
             IMethodMiddleware middleware4,
             IMethodMiddleware middleware5,
-            object arguments, Action method)
+            Action method)
         {
-            Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5);
+            return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             IMethodMiddleware middleware3,
             IMethodMiddleware middleware4,
             IMethodMiddleware middleware5,
-            IMethodMiddleware middleware6,
-            Action method)
+            object arguments, Action method)
         {
-            Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5, middleware6);
+            return Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5);
         }
 
-        public void Execute(
+        public dynamic Execute(
             IMethodMiddleware middleware1,
             IMethodMiddleware middleware2,
             IMethodMiddleware middleware3,
             IMethodMiddleware middleware4,
             IMethodMiddleware middleware5,
             IMethodMiddleware middleware6,
+            Action method)
+        {
+            return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5, middleware6);
+        }
+
+        public dynamic Execute(
+            IMethodMiddleware middleware1,
+            IMethodMiddleware middleware2,
+            IMethodMiddleware middleware3,
+            IMethodMiddleware middleware4,
+            IMethodMiddleware middleware5,
+            IMethodMiddleware middleware6,
             object arguments, Action method)
         {
-            Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5, middleware6);
+            return Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5, middleware6);
         }
 
         #endregion
@@ -397,33 +397,33 @@ namespace Common.MethodMiddleware
 
         #region AsyncAction
 
-        public Task Execute(
+        public dynamic Execute(
             Func<Task> method)
         {
             return Invoke(null, MakeFunc(method));
         }
 
-        public Task Execute(
+        public dynamic Execute(
             object arguments, Func<Task> method)
         {
             return Invoke(arguments, MakeFunc(method));
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             Func<Task> method)
         {
             return Invoke(null, MakeFunc(method), middleware1);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             object arguments, Func<Task> method)
         {
             return Invoke(arguments, MakeFunc(method), middleware1);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             Func<Task> method)
@@ -431,7 +431,7 @@ namespace Common.MethodMiddleware
             return Invoke(null, MakeFunc(method), middleware1, middleware2);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             object arguments, Func<Task> method)
@@ -439,7 +439,7 @@ namespace Common.MethodMiddleware
             return Invoke(arguments, MakeFunc(method), middleware1, middleware2);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
@@ -448,7 +448,7 @@ namespace Common.MethodMiddleware
             return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
@@ -457,7 +457,7 @@ namespace Common.MethodMiddleware
             return Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
@@ -467,7 +467,7 @@ namespace Common.MethodMiddleware
             return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
@@ -477,7 +477,7 @@ namespace Common.MethodMiddleware
             return Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
@@ -488,7 +488,7 @@ namespace Common.MethodMiddleware
             return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
@@ -499,7 +499,7 @@ namespace Common.MethodMiddleware
             return Invoke(arguments, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
@@ -511,7 +511,7 @@ namespace Common.MethodMiddleware
             return Invoke(null, MakeFunc(method), middleware1, middleware2, middleware3, middleware4, middleware5, middleware6);
         }
 
-        public Task Execute(
+        public dynamic Execute(
             IMethodAsyncMiddleware middleware1,
             IMethodAsyncMiddleware middleware2,
             IMethodAsyncMiddleware middleware3,
