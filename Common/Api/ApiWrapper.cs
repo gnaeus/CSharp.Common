@@ -59,7 +59,7 @@ namespace Common.Api
         }
 
         private void Execute<TResult, TError>(
-            IApiStatus response, Delegate method, string caller)
+            IApiResponse response, Delegate method, string caller)
             where TError : struct
         {
             try
@@ -149,7 +149,7 @@ namespace Common.Api
         }
 
         private async Task ExecuteAsync<TResult, TError>(
-            IApiStatus response, Delegate method, string caller)
+            IApiResponse response, Delegate method, string caller)
             where TError : struct
         {
             try

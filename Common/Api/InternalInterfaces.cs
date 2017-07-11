@@ -2,11 +2,16 @@
 
 namespace Common.Api
 {
-    internal interface IApiStatus
+    internal interface IApiResponse
     {
         bool IsSuccess { set; }
         string ErrorMessage { set; }
         ValidationError[] ValidationErrors { set; }
+    }
+
+    internal interface IApiResult
+    {
+        object Data { set; }
     }
 
     internal interface IApiResult<TResult>
@@ -16,14 +21,12 @@ namespace Common.Api
 
     internal interface IApiError
     {
-        string ErrorCode { set; }
-        string ErrorMessage { set; }
+        object ErrorCode { set; }
     }
 
     internal interface IApiError<TError>
         where TError : struct
     {
         TError? ErrorCode { set; }
-        string ErrorMessage { set; }
     }
 }

@@ -6,12 +6,23 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing status of service operation with possible validation and logic errors.
     /// </summary>
-    public class ApiStatus : IApiStatus, IApiError
+    public class ApiStatus : IApiResponse, IApiError
     {
         public bool IsSuccess { get; set; }
         public string ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        object IApiError.ErrorCode
+        {
+            set
+            {
+                if (value is string)
+                {
+                    ErrorCode = (string)value;
+                }
+            }
+        }
 
         public static implicit operator ApiStatus(bool isSuccess)
         {
@@ -43,13 +54,24 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing status of service operation with possible validation and logic errors.
     /// </summary>
-    public class ApiStatus<TError> : IApiStatus, IApiError<TError>
+    public class ApiStatus<TError> : IApiResponse, IApiError, IApiError<TError>
         where TError : struct
     {
         public bool IsSuccess { get; set; }
         public TError? ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        object IApiError.ErrorCode
+        {
+            set
+            {
+                if (value is TError)
+                {
+                    ErrorCode = (TError)value;
+                }
+            }
+        }
 
         public static implicit operator ApiStatus<TError>(bool isSuccess)
         {

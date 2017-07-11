@@ -16,7 +16,7 @@ namespace MrArvice.Aspects
             MethodInfo methodInfo = (MethodInfo)context.TargetMethod;
             Type returnType = methodInfo.ReturnType;
 
-            IApiStatus response;
+            IApiResponse response;
 
             try
             {
@@ -25,12 +25,12 @@ namespace MrArvice.Aspects
             }
             catch (ValidationException exception)
             {
-                response = (IApiStatus)Activator.CreateInstance(returnType);
+                response = (IApiResponse)Activator.CreateInstance(returnType);
                 response.ValidationErrors = exception.Errors;
             }
             catch (BusinessException exception)
             {
-                response = (IApiStatus)Activator.CreateInstance(returnType);
+                response = (IApiResponse)Activator.CreateInstance(returnType);
                 response.ErrorMessage = exception.Message;
 
                 IApiError error = response as IApiError;
@@ -41,21 +41,17 @@ namespace MrArvice.Aspects
             }
             catch (Exception exception)
             {
-                response = (IApiStatus)Activator.CreateInstance(returnType);
+                response = (IApiResponse)Activator.CreateInstance(returnType);
                 response.ErrorMessage = exception.Message;
 
-                Type exceptionType = exception.GetType();
-                if (exceptionType.IsGenericType
-                    && exceptionType.GetGenericTypeDefinition() == typeof(BusinessException<>))
+                IBusinessException businessException = exception as IBusinessException;
+                if (businessException != null)
                 {
-                    try
+                    IApiError error = response as IApiError;
+                    if (error != null)
                     {
-                        dynamic dynamicResponse = response;
-                        dynamic dynamicException = exception;
-
-                        dynamicResponse.ErrorCode = dynamicException.Code;
+                        error.ErrorCode = businessException.Code;
                     }
-                    catch { }
                 }
             }
 

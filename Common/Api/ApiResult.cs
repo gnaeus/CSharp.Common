@@ -6,13 +6,35 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing result of service operation with possible validation and logic errors.
     /// </summary>
-    public class ApiResult<TResult> : IApiStatus, IApiError, IApiResult<TResult>
+    public class ApiResult<TResult> : IApiResponse, IApiError, IApiResult, IApiResult<TResult>
     {
         public bool IsSuccess { get; set; }
         public virtual TResult Data { get; set; }
         public string ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        object IApiResult.Data
+        {
+            set
+            {
+                if (value is TResult)
+                {
+                    Data = (TResult)value;
+                }
+            }
+        }
+
+        object IApiError.ErrorCode
+        {
+            set
+            {
+                if (value is string)
+                {
+                    ErrorCode = (string)value;
+                }
+            }
+        }
 
         public static implicit operator ApiResult<TResult>(TResult data)
         {
@@ -46,7 +68,7 @@ namespace Common.Api
     /// <summary>
     /// Structure for passing result of service operation with possible validation and logic errors.
     /// </summary>
-    public class ApiResult<TResult, TError> : IApiStatus, IApiError<TError>, IApiResult<TResult>
+    public class ApiResult<TResult, TError> : IApiResponse, IApiError, IApiError<TError>, IApiResult, IApiResult<TResult>
         where TError : struct
     {
         public bool IsSuccess { get; set; }
@@ -54,6 +76,28 @@ namespace Common.Api
         public TError? ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public ValidationError[] ValidationErrors { get; set; } = ValidationError.EmptyErrors;
+
+        object IApiResult.Data
+        {
+            set
+            {
+                if (value is TResult)
+                {
+                    Data = (TResult)value;
+                }
+            }
+        }
+
+        object IApiError.ErrorCode
+        {
+            set
+            {
+                if (value is TError)
+                {
+                    ErrorCode = (TError)value;
+                }
+            }
+        }
 
         public static implicit operator ApiResult<TResult, TError>(TResult data)
         {
