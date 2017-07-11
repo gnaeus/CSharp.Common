@@ -70,6 +70,11 @@
     <Compile Include="Mail\MailMessageBinarySerializer.cs" />
     <Compile Include="Mail\MailMessageExtensions.cs" />
     <Compile Include="Mail\_Examples.cs" />
+    <Compile Include="MethodMiddleware\IMethodMiddleware.cs" />
+    <Compile Include="MethodMiddleware\LogExceptionMiddleware.cs" />
+    <Compile Include="MethodMiddleware\MethodDecorator.cs" />
+    <Compile Include="MethodMiddleware\WrapExceptionMiddleware.cs" />
+    <Compile Include="MethodMiddleware\_Examples.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Smtp\SmtpConnectionChecker.cs" />
     <Compile Include="Smtp\SmtpConnectionSettings.cs" />
@@ -90,7 +95,17 @@
     <Compile Include="Validation\ValidationHelper.cs" />
     <Compile Include="Validation\_Examples.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="MethodMiddleware\MethodDecorator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MethodDecorator.generated.cs</LastGenOutput>
+    </Content>
+    <Compile Include="MethodMiddleware\MethodDecorator.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MethodDecorator.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
   <ItemGroup>
     <None Include="Api\README.md" />
     <None Include="Exceptions\README.md" />
@@ -98,10 +113,14 @@
     <None Include="Helpers\Readme.md" />
     <None Include="Jobs\README.md" />
     <None Include="Mail\README.md" />
+    <None Include="MethodMiddleware\README.md" />
     <None Include="packages.config" />
     <None Include="Smtp\README.md" />
     <None Include="Utils\README.md" />
     <None Include="Validation\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

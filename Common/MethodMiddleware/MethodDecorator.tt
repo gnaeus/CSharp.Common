@@ -1,0 +1,106 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#    int count = 6; #>
+using System;
+using System.Threading.Tasks;
+
+namespace Common.MethodMiddleware
+{
+    public partial class MethodDecorator
+    {
+        #region Function
+
+<#    for (int i = 0; i <= count; i++) { #>
+        public dynamic Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodMiddleware middleware<#= j #>,
+<#    } #>
+            Func<object> method)
+        {
+            return Invoke(null, method<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+        public dynamic Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodMiddleware middleware<#= j #>,
+<#    } #>
+            object arguments, Func<object> method)
+        {
+            return Invoke(arguments, method<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+<#    } #>
+        #endregion
+
+        #region Action
+
+<#    for (int i = 0; i <= count; i++) { #>
+        public void Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodMiddleware middleware<#= j #>,
+<#    } #>
+            Action method)
+        {
+            Invoke(null, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+        public void Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodMiddleware middleware<#= j #>,
+<#    } #>
+            object arguments, Action method)
+        {
+            Invoke(arguments, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+<#    } #>
+        #endregion
+
+        #region AsyncFunction
+
+<#    for (int i = 0; i <= count; i++) { #>
+        public dynamic Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodAsyncMiddleware middleware<#= j #>,
+<#    } #>
+            Func<Task<object>> method)
+        {
+            return Invoke(null, method<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+        public dynamic Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodAsyncMiddleware middleware<#= j #>,
+<#    } #>
+            object arguments, Func<Task<object>> method)
+        {
+            return Invoke(arguments, method<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+<#    } #>
+        #endregion
+
+        #region AsyncAction
+
+<#    for (int i = 0; i <= count; i++) { #>
+        public Task Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodAsyncMiddleware middleware<#= j #>,
+<#    } #>
+            Func<Task> method)
+        {
+            return Invoke(null, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+        public Task Execute(
+<#    for (int j = 1; j <= i; j++) { #>
+            IMethodAsyncMiddleware middleware<#= j #>,
+<#    } #>
+            object arguments, Func<Task> method)
+        {
+            return Invoke(arguments, MakeFunc(method)<# for (int j = 1; j <= i; j++) { #>, middleware<#= j #><# } #>);
+        }
+
+<#    } #>
+        #endregion
+    }
+}
