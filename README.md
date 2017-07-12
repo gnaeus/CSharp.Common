@@ -124,6 +124,57 @@ abstract class ControllerBase : Controller
 }
 ```
 
+### RedirectRoute
+Route that extracts "auth_token" parameter from query string like  
+`http://host:port/path?name=value&auth_token=abcdef1234567890`  
+and pass "auth_token" and entire URL to action:  
+`RedirectResult RedirectController.Redirect(string url, string authToken);`
+
+### EnumConstraint
+Custom constraint for AspNet.Mvc Attribute Routing that maps string values in URL to specified enum.  
+`[Route("/{enumValue:enum(MyNamespace.MyEnum)}")]`
+
+```cs
+using AspNet.Mvc.Common.Routing;
+
+static class RouteConfig
+{
+    public static void RegisterRoutes(RouteCollection routes)
+    {
+        routes.Add(new RedirectRoute());
+
+        var constraintsResolver = new DefaultInlineConstraintResolver();
+
+        constraintsResolver.ConstraintMap.Add("enum", typeof(EnumConstraint));
+
+        routes.MapMvcAttributeRoutes(constraintsResolver);
+    }
+}
+
+enum MyEnum { First, Second }
+
+class RedirectController : Controller
+{
+    [AllowAnonymous]
+    public ActionResult Redirect(string url, string authToken)
+    {
+        // verify authToken
+        if (authToken == null)
+        {
+            return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+        }
+        return new TemporaryRedirectResult(url);
+    }
+
+
+    [Route("/{enumValue:enum(MyEnum)}")]
+    public ActionResult GetEnum(MyEnum enumValue)
+    {
+        throw new NotImplementedException();
+    }
+}
+```
+
 ## <a name="link-AspNet.WebApi"></a>[AspNet.WebApi](./AspNet.WebApi)
 
 ### FileStreamResult
