@@ -82,6 +82,7 @@
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Utils\AsyncLazy.cs" />
     <Compile Include="Utils\DisposableStream.cs" />
+    <Compile Include="Utils\SimpleCache.cs" />
     <Compile Include="Utils\_Examples.cs" />
     <Compile Include="Validation\IContextValidatable.cs" />
     <Compile Include="Validation\IEnumerableValidatable.cs" />
