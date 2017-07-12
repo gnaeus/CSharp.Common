@@ -124,7 +124,14 @@ __`byte[] ExtractBytes(this byte[] source, int offset, int count)`__
 
 __`byte[] Concat(this byte[] first, byte[] second)`__  
 
-__`byte[] Combine(params byte[][] arrays)`__  
+__`static byte[] Combine(params byte[][] arrays)`__  
+Concat multiple ByteArrays.  
+
+__`byte[] HmacSign(this byte[] rawMessage, byte[] hmacKey)`__  
+Sign message with HMAC algorithm. Throws `CryptographicException`.  
+
+__`byte[] HmacExtract(this byte[] hmacMessage, byte[] hmacKey)`__  
+Extract HMAC signed message.  
 
 ### EnumerableExtensions
 

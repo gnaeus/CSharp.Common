@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace Common.Extensions
 {
@@ -43,6 +44,9 @@ namespace Common.Extensions
             return result;
         }
 
+        /// <summary>
+        /// Concat multiple ByteArrays.
+        /// </summary>
         public static byte[] Combine(params byte[][] arrays)
         {
             var result = new byte[arrays.Sum(a => a.Length)];
@@ -53,6 +57,76 @@ namespace Common.Extensions
                 offset += array.Length;
             }
             return result;
+        }
+
+        /// <summary>
+        /// Sign message with HMAC algorithm.
+        /// </summary>
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="ArgumentException" />
+        /// <param name="rawMessage">RAW message</param>
+        /// <param name="hmacKey">HMAC key</param>
+        /// <returns>HMAC signed message</returns>
+        public static byte[] HmacSign(this byte[] rawMessage, byte[] hmacKey)
+        {
+            if (rawMessage == null)
+            {
+                throw new ArgumentNullException(nameof(rawMessage));
+            }
+            if (hmacKey == null)
+            {
+                throw new ArgumentNullException(nameof(hmacKey));
+            }
+            if (hmacKey.Length != 16 && hmacKey.Length != 24 && hmacKey.Length != 32)
+            {
+                throw new ArgumentException("Should have Length = 16, 24 or 32", nameof(hmacKey));
+            }
+            using (HMACSHA256 hmac = new HMACSHA256(hmacKey))
+            {
+                return rawMessage.Concat(hmac.ComputeHash(rawMessage));
+            }
+        }
+
+        /// <summary>
+        /// Extract HMAC signed message.
+        /// </summary>
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="ArgumentException" />
+        /// <exception cref="CryptographicException" />
+        /// <param name="hmacMessage">HMAC signed message</param>
+        /// <param name="hmacKey">HMAC key</param>
+        /// <returns>RAW message</returns>
+        public static byte[] HmacExtract(this byte[] hmacMessage, byte[] hmacKey)
+        {
+            if (hmacMessage == null)
+            {
+                throw new ArgumentNullException(nameof(hmacMessage));
+            }
+            if (hmacMessage.Length < 32)
+            {
+                throw new ArgumentException("Should have Length >= 32", nameof(hmacMessage));
+            }
+            if (hmacKey == null)
+            {
+                throw new ArgumentNullException(nameof(hmacKey));
+            }
+            if (hmacKey.Length != 16 && hmacKey.Length != 24 && hmacKey.Length != 32)
+            {
+                throw new ArgumentException("Should have Length = 16, 24 or 32", nameof(hmacKey));
+            }
+
+            byte[] rawMessage = hmacMessage.ExtractBytes(0, hmacMessage.Length - 32);
+            byte[] hash = hmacMessage.ExtractBytes(hmacMessage.Length - 32, 32);
+
+            using (HMACSHA256 hmac = new HMACSHA256(hmacKey))
+            {
+                byte[] realHash = hmac.ComputeHash(rawMessage);
+                if (!hash.SequenceEqual(realHash))
+                {
+                    throw new CryptographicException("Data integrity check failed");
+                }
+            }
+            return rawMessage;
         }
     }
 }

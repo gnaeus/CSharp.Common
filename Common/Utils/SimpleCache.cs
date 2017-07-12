@@ -9,6 +9,7 @@ namespace Common.Utils
     /// <summary>
     /// Simple in-memory cache based on <see cref="ConcurrentDictionary{TKey, TValue}"/>
     /// for implementing "Cache Aside" pattern.
+    /// <para />
     /// https://docs.microsoft.com/en-us/azure/architecture/patterns/cache-aside
     /// </summary>
     public class SimpleCache
