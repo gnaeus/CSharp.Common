@@ -66,6 +66,12 @@
     <Compile Include="Helpers\_Examples.cs" />
     <Compile Include="Jobs\AsyncJobsManager.cs" />
     <Compile Include="Jobs\_Examples.cs" />
+    <Compile Include="Logon\BlockingLogonAttempts.cs" />
+    <Compile Include="Logon\BlockingLogonService.cs" />
+    <Compile Include="Logon\ILogonService.cs" />
+    <Compile Include="Logon\LogonAttempts.cs" />
+    <Compile Include="Logon\LogonService.cs" />
+    <Compile Include="Logon\_Examples.cs" />
     <Compile Include="Mail\MailMessageBinarySerializer.cs" />
     <Compile Include="Mail\MailMessageExtensions.cs" />
     <Compile Include="Mail\_Examples.cs" />
@@ -112,6 +118,7 @@
     <None Include="Extensions\README.md" />
     <None Include="Helpers\README.md" />
     <None Include="Jobs\README.md" />
+    <None Include="Logon\README.md" />
     <None Include="Mail\README.md" />
     <None Include="MethodMiddleware\README.md" />
     <None Include="packages.config" />

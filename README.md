@@ -5,6 +5,7 @@
  * [Common.Extensions](#link-Common.Extensions)
  * [Common.Helpers](#link-Common.Helpers)
  * [Common.Jobs](#link-Common.Jobs)
+ * [Common.Logon](#link-Common.Logon)
  * [Common.Mail](#link-Common.Mail)
  * [Common.MethodMiddleware](#link-Common.MethodMiddleware)
  * [Common.Smtp](#link-Common.Smtp)
@@ -807,6 +808,9 @@ class JobsService
     }
 }
 ```
+
+## <a name="link-Common.Logon"></a>[Common.Logon](./Common/Logon)
+
 
 ## <a name="link-Common.Mail"></a>[Common.Mail](./Common/Mail)
 
