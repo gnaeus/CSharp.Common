@@ -61,6 +61,7 @@
     <Compile Include="Helpers\FileSystemHelper.cs" />
     <Compile Include="Helpers\SqlFullTextSearchHepler.cs" />
     <Compile Include="Helpers\StringInterpolationHelper.cs" />
+    <Compile Include="Helpers\TranslitHelper.cs" />
     <Compile Include="Helpers\UriHelper.cs" />
     <Compile Include="Helpers\_Examples.cs" />
     <Compile Include="Jobs\AsyncJobsManager.cs" />
@@ -109,7 +110,7 @@
     <None Include="Api\README.md" />
     <None Include="Exceptions\README.md" />
     <None Include="Extensions\README.md" />
-    <None Include="Helpers\Readme.md" />
+    <None Include="Helpers\README.md" />
     <None Include="Jobs\README.md" />
     <None Include="Mail\README.md" />
     <None Include="MethodMiddleware\README.md" />

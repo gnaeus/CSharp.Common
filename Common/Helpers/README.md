@@ -179,3 +179,12 @@ __`string ChangeHost(string absoluteUrl, string host)`__
 
 __`bool CanonicalEqual(string url1, string url2)`__  
 "http://localhost/SomeApp" == "http://localhost/someapp/"
+
+### TranslitHelper
+Utility for performing transliteration.
+
+__`static string TransliterateIcao(char input)`__  
+Transliterate `input` symbol. Based on ICAO standard.  
+
+__`static string TransliterateIcao(char input)`__  
+Transliterate `input` string symbol by symbol. Based on ICAO standard.
