@@ -8,7 +8,7 @@ namespace EntityFramework.Common.Extensions
     /// <summary>
     /// Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs.
     /// </summary>
-    public static class MappingExtensions
+    public static partial class DbSetExtensions
     {
         public struct DbSetMappingConfig<TEntity, TModel>
             where TEntity : class

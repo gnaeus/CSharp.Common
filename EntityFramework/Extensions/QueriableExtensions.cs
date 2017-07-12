@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EntityFramework.Common.Extensions
 {
-    public static class QueriableExtensions
+    public static partial class QueriableExtensions
     {
         /// <summary>
         /// Converts a query with big IN clause to multiple queries with smaller IN clausesand combines the results
