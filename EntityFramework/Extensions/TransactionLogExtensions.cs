@@ -17,7 +17,8 @@ namespace EntityFramework.Common.Extensions
         {
             int count;
 
-            using (DbContextTransaction transaction = dbContext.WithTransaction())
+            // TODO: check transaction
+            // using (DbContextTransaction transaction = dbContext.WithTransaction())
             using (TransactionLogContext logContext = new TransactionLogContext(dbContext))
             {
                 // save main entities
@@ -28,7 +29,7 @@ namespace EntityFramework.Common.Extensions
                 // save TransactionLog entries
                 saveChanges.Invoke();
 
-                transaction.Commit();
+                // transaction.Commit();
             }
 
             return count;
