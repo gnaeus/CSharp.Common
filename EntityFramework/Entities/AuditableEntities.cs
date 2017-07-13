@@ -10,16 +10,7 @@ namespace EntityFramework.Common.Entities
     {
         bool IsDeleted { get; set; }
     }
-
-    /// <summary>
-    /// An entity can implement this interface if it should use Optimistic Concurrency Check
-    /// with populating <see cref="RowVersion"/> from client-side.
-    /// </summary>
-    public interface IOptimisticConcurrent
-    {
-        byte[] RowVersion { get; set; }
-    }
-
+    
     /// <summary>
     /// An entity can implement this interface if <see cref="CreatedUtc"/> of this entity must be stored.
     /// <see cref="CreatedUtc"/> is automatically set when saving Entity to database.

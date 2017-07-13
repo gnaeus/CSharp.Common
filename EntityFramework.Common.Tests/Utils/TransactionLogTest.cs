@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace EntityFramework.Common.Tests.Utils
                 CREATE TABLE _TransactionLog (
                     Id INTEGER PRIMARY KEY,
                     TransactionId BLOB,
-                    CreatedUtc NUMERIC,
+                    CreatedUtc DATETIME,
                     Operation TEXT,
                     TableName TEXT,
                     EntityType TEXT,
@@ -104,7 +105,11 @@ namespace EntityFramework.Common.Tests.Utils
             public DbSet<TransactionLog> TransactionLogs { get; set; }
 
             public TestDbContext(DbConnection connection)
-                : base(connection, false) { }
+                : base(connection, false)
+            {
+                Database.Log = s => Debug.WriteLine(s);
+                Database.SetInitializer<TestDbContext>(null);
+            }
 
             public override int SaveChanges()
             {

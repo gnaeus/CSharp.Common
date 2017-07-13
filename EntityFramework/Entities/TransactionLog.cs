@@ -1,6 +1,6 @@
 ﻿using System;
-using Jil;
 using System.Diagnostics;
+using Jil;
 
 namespace EntityFramework.Common.Entities
 {

@@ -61,9 +61,11 @@
   <ItemGroup>
     <Compile Include="Entities\AuditableEntities.cs" />
     <Compile Include="Entities\AuditLog.cs" />
+    <Compile Include="Entities\ConcurrentEntities.cs" />
     <Compile Include="Entities\TransactionLog.cs" />
     <Compile Include="Extensions\AuditableEntitiesExtensions.cs" />
     <Compile Include="Extensions\AuditLogExtensions.cs" />
+    <Compile Include="Extensions\ConcurrentEntitiesExtensions.cs" />
     <Compile Include="Extensions\DbContextExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Extensions\QueriableExtensions.cs" />

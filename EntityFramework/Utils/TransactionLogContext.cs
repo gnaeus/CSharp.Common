@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using EntityFramework.Common.Entities;
 using EntityFramework.Common.Extensions;
 using Jil;
-using System.Data.Entity.Core.Objects;
 
 namespace EntityFramework.Common.Utils
 {
@@ -24,8 +24,6 @@ namespace EntityFramework.Common.Utils
         readonly List<DbEntityEntry> _updatedEntries = new List<DbEntityEntry>();
         readonly List<TransactionLog> _deletedLogs = new List<TransactionLog>();
         
-        const EntityState CHANGED_STATE = EntityState.Added | EntityState.Modified | EntityState.Deleted;
-
         public TransactionLogContext(DbContext context)
         {
             _context = context;
@@ -43,7 +41,8 @@ namespace EntityFramework.Common.Utils
 
         private void StoreChangedEntries()
         {
-            foreach (var entry in _context.GetChangedEntries(CHANGED_STATE))
+            foreach (var entry in _context.GetChangedEntries(
+                EntityState.Added | EntityState.Modified | EntityState.Deleted))
             {
                 if (entry.Entity is ITransactionLoggable)
                 {

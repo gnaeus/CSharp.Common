@@ -18,9 +18,9 @@ namespace EntityFramework.Common.Extensions
             var entries = context.GetChangedEntries(
                 EntityState.Added | EntityState.Modified | EntityState.Deleted);
 
-            foreach (var entry in entries)
+            foreach (var dbEntry in entries)
             {
-                UpdateAuditableEntity(entry, utcNow, editorUserId);
+                UpdateAuditableEntity(dbEntry, utcNow, editorUserId);
             }
         }
 
@@ -34,9 +34,9 @@ namespace EntityFramework.Common.Extensions
             var entries = context.GetChangedEntries(
                 EntityState.Added | EntityState.Modified | EntityState.Deleted);
 
-            foreach (var entry in entries)
+            foreach (var dbEntry in entries)
             {
-                UpdateAuditableEntity(entry, utcNow, editorUser);
+                UpdateAuditableEntity(dbEntry, utcNow, editorUser);
             }
         }
 
@@ -50,19 +50,19 @@ namespace EntityFramework.Common.Extensions
             var entries = context.GetChangedEntries(
                 EntityState.Added | EntityState.Modified | EntityState.Deleted);
 
-            foreach (var entry in entries)
+            foreach (var dbEntry in entries)
             {
-                UpdateTrackableEntity(entry, utcNow);
+                UpdateTrackableEntity(dbEntry, utcNow);
             }
         }
 
         private static void UpdateAuditableEntity<TUserId>(
-            DbEntityEntry entry, DateTime utcNow, TUserId editorUserId)
+            DbEntityEntry dbEntry, DateTime utcNow, TUserId editorUserId)
             where TUserId : struct
         {
-            object entity = entry.Entity;
+            object entity = dbEntry.Entity;
 
-            switch (entry.State)
+            switch (dbEntry.State)
             {
                 case EntityState.Added:
                     var creationAuditable = entity as ICreationAuditable<TUserId>;
@@ -92,15 +92,15 @@ namespace EntityFramework.Common.Extensions
                     throw new InvalidOperationException();
             }
             
-            UpdateTrackableEntity(entry, utcNow);
+            UpdateTrackableEntity(dbEntry, utcNow);
         }
 
         private static void UpdateAuditableEntity(
-            DbEntityEntry entry, DateTime utcNow, string editorUser)
+            DbEntityEntry dbEntry, DateTime utcNow, string editorUser)
         {
-            object entity = entry.Entity;
+            object entity = dbEntry.Entity;
 
-            switch (entry.State)
+            switch (dbEntry.State)
             {
                 case EntityState.Added:
                     var creationAuditable = entity as ICreationAuditable;
@@ -130,18 +130,14 @@ namespace EntityFramework.Common.Extensions
                     throw new InvalidOperationException();
             }
 
-            UpdateTrackableEntity(entry, utcNow);
+            UpdateTrackableEntity(dbEntry, utcNow);
         }
 
-        /// <remarks>
-        /// EF automatically detects if byde[] RowVersion is changed by reference (not only by value)
-        /// and gentrates code like 'DECLARE @p int; UPDATE [Table] SET @p = 0 WHERE RowWersion = ...'
-        /// </remarks>
-        private static void UpdateTrackableEntity(DbEntityEntry entry, DateTime utcNow)
+        private static void UpdateTrackableEntity(DbEntityEntry dbEntry, DateTime utcNow)
         {
-            object entity = entry.Entity;
+            object entity = dbEntry.Entity;
 
-            switch (entry.State)
+            switch (dbEntry.State)
             {
                 case EntityState.Added:
                     var creationTrackable = entity as ICreationTrackable;
@@ -163,29 +159,19 @@ namespace EntityFramework.Common.Extensions
                     var softDeletable = entity as ISoftDeletable;
                     if (softDeletable != null)
                     {
-                        var deletionTrackable = entry as IDeletionTrackable;
+                        var deletionTrackable = entity as IDeletionTrackable;
                         if (deletionTrackable != null)
                         {
                             deletionTrackable.DeletedUtc = utcNow;
                         }
 
                         softDeletable.IsDeleted = true;
-                        entry.State = EntityState.Modified;
+                        dbEntry.State = EntityState.Modified;
                     }
                     break;
 
                 default:
                     throw new InvalidOperationException();
-            }
-
-            if ((entry.State & (EntityState.Modified | EntityState.Deleted)) != 0)
-            {
-                var optimisticConcurrent = entity as IOptimisticConcurrent;
-                if (optimisticConcurrent != null)
-                {
-                    // take row version from entity that modified by client
-                    entry.Property("RowVersion").OriginalValue = optimisticConcurrent.RowVersion;
-                }
             }
         }
     }
