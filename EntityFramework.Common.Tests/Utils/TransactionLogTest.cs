@@ -85,7 +85,7 @@ namespace EntityFramework.Common.Tests.Utils
             public virtual Blog Blog { get; set; }
 
             JsonField<ICollection<string>> _tags = new HashSet<string>();
-            bool ShouldSerializeTagsJson() => false;
+            public bool ShouldSerializeTagsJson() => false;
             public string TagsJson
             {
                 get { return _tags.Json; }
