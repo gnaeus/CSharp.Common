@@ -2,11 +2,13 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using ArxOne.MrAdvice.Advice;
+using ArxOne.MrAdvice.Annotation;
 using Common.Api;
 using Common.Exceptions;
 
 namespace MrArvice.Aspects
 {
+    [Priority(Int32.MaxValue)]
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class WrapErrorAsyncAttribute : Attribute, IMethodAsyncAdvice
     {

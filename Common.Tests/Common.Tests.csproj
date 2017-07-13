@@ -58,6 +58,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AssemblyInitializer.cs" />
     <Compile Include="Extensions\ArrayExtensionsTest.cs" />
     <Compile Include="Extensions\ConnectionExtensionsTest.cs" />
     <Compile Include="Extensions\EnumerableExtensionsTest.cs" />

@@ -78,6 +78,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AssemblyInitializer.cs" />
     <Compile Include="Extensions\AuditableEntitiesTest.cs" />
     <Compile Include="Extensions\ConcurrentEntitiesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
