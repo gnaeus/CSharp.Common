@@ -12,7 +12,7 @@ namespace EntityFramework.Common.Tests.Utils
         class User
         {
             private JsonField<Address> _address;
-            internal string AddressJson
+            public string AddressJson
             {
                 get { return _address.Json; }
                 set { _address.Json = value; }
@@ -24,7 +24,7 @@ namespace EntityFramework.Common.Tests.Utils
             }
 
             private JsonField<ICollection<Phone>> _phones = new HashSet<Phone>();
-            internal string PhonesJson
+            public string PhonesJson
             {
                 get { return _phones.Json; }
                 set { _phones.Json = value; }
@@ -36,9 +36,13 @@ namespace EntityFramework.Common.Tests.Utils
             }
         }
 
-        class Address
+        class Region
         {
             public string City { get; set; }
+        }
+
+        class Address : Region
+        {
             public string Street { get; set; }
         }
         
@@ -107,7 +111,7 @@ namespace EntityFramework.Common.Tests.Utils
         class Benchmark
         {
             private JsonField<IDictionary<string, int>> _scores = new Dictionary<string, int>();
-            internal string ScoresJson
+            public string ScoresJson
             {
                 get { return _scores.Json; }
                 set { _scores.Json = value; }
@@ -126,7 +130,7 @@ namespace EntityFramework.Common.Tests.Utils
 
             user.Address = new Address { City = "Moscow", Street = "Arbat" };
 
-            Assert.AreEqual("{\"Street\":\"Arbat\",\"City\":\"Moscow\"}", user.AddressJson);
+            Assert.AreEqual("{\"City\":\"Moscow\",\"Street\":\"Arbat\"}", user.AddressJson);
         }
 
         [TestMethod]
@@ -134,7 +138,7 @@ namespace EntityFramework.Common.Tests.Utils
         {
             var user = new User();
 
-            user.AddressJson = "{\"Street\":\"Arbat\",\"City\":\"Moscow\"}";
+            user.AddressJson = "{\"City\":\"Moscow\",\"Street\":\"Arbat\"}";
 
             var address = user.Address;
 
@@ -202,7 +206,7 @@ namespace EntityFramework.Common.Tests.Utils
         {
             var user = new User();
 
-            user.AddressJson = "{\"Street\":\"Arbat\",\"City\":\"Moscow\"}";
+            user.AddressJson = "{\"City\":\"Moscow\",\"Street\":\"Arbat\"}";
 
             var address1 = user.Address;
 
@@ -224,7 +228,7 @@ namespace EntityFramework.Common.Tests.Utils
         {
             var user = new User();
 
-            user.AddressJson = "{\"Street\":\"Arbat\",\"City\":\"Moscow\"}";
+            user.AddressJson = "{\"City\":\"Moscow\",\"Street\":\"Arbat\"}";
 
             string addressJson = user.AddressJson;
             
@@ -236,7 +240,7 @@ namespace EntityFramework.Common.Tests.Utils
         {
             var user = new User();
 
-            user.AddressJson = "{\"Street\":\"Arbat\",\"City\":\"Moscow\"}";
+            user.AddressJson = "{\"City\":\"Moscow\",\"Street\":\"Arbat\"}";
 
             string addressJson = user.AddressJson;
 
@@ -250,13 +254,13 @@ namespace EntityFramework.Common.Tests.Utils
         {
             var user = new User();
 
-            user.AddressJson = "{\"Street\":\"Arbat\",\"City\":\"Moscow\"}";
+            user.AddressJson = "{\"City\":\"Moscow\",\"Street\":\"Arbat\"}";
 
             user.Address.Street = "Tverskaya";
 
             string addressJson = user.AddressJson;
 
-            Assert.AreEqual("{\"Street\":\"Tverskaya\",\"City\":\"Moscow\"}", user.AddressJson);
+            Assert.AreEqual("{\"City\":\"Moscow\",\"Street\":\"Tverskaya\"}", user.AddressJson);
         }
 
         [TestMethod]
@@ -282,7 +286,7 @@ namespace EntityFramework.Common.Tests.Utils
             var address = user.Address;
             var phones = user.Phones;
 
-            Assert.AreEqual("{\"Street\":\"Arbat\",\"City\":null}", user.AddressJson);
+            Assert.AreEqual("{\"City\":null,\"Street\":\"Arbat\"}", user.AddressJson);
             Assert.AreEqual("[{\"Number\":\"456789\",\"Code\":null},{\"Number\":null,\"Code\":null}]", user.PhonesJson);
         }
     }

@@ -22,7 +22,7 @@ class User
 
     private JsonField<Address> _address;
     // used by EntityFramework
-    internal string AddressJson
+    public string AddressJson
     {
         get { return _address.Json; }
         set { _address.Json = value; }
@@ -36,7 +36,7 @@ class User
 
     // collection initialization by default
     private JsonField<ICollection<string>> _phones = new HashSet<string>();
-    internal string PhonesJson
+    public string PhonesJson
     {
         get { return _phones.Json; }
         set { _phones.Json = value; }
