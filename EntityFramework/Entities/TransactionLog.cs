@@ -1,5 +1,6 @@
 ﻿using System;
 using Jil;
+using System.Diagnostics;
 
 namespace EntityFramework.Common.Entities
 {
@@ -9,35 +10,29 @@ namespace EntityFramework.Common.Entities
     /// </summary>
     public interface ITransactionLoggable { }
 
+    [DebuggerDisplay("{TableName} {CreatedUtc}", Name = "{Id} {Operation}")]
     public class TransactionLog
     {
-        public const char INSERT = 'I';
-        public const char UPDATE = 'U';
-        public const char DELETE = 'D';
+        public const string INSERT = "INS";
+        public const string UPDATE = "UPD";
+        public const string DELETE = "DEL";
 
         public long Id { get; set; }
         public Guid TransactionId { get; set; }
         public DateTime CreatedUtc { get; set; }
-        public char Operation { get; set; }
+        public string Operation { get; set; }
         public string TableName { get; set; }
         public string EntityType { get; set; }
         public string EntityJson { get; set; }
 
-        private Lazy<object> _entity;
-        public object Entity => _entity.Value;
-
+        private object _entity;
+        public object Entity => _entity
+            ?? (_entity = JSON.Deserialize(EntityJson, Type.GetType(EntityType)));
+        
         public TEntity GetEntity<TEntity>()
             where TEntity : class
         {
-            return _entity.Value as TEntity;
-        }
-
-        public TransactionLog()
-        {
-            _entity = new Lazy<object>(() =>
-            {
-                return JSON.Deserialize(EntityJson, Type.GetType(EntityType));
-            });
+            return Entity as TEntity;
         }
     }
 }

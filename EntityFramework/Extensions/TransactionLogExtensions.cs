@@ -15,50 +15,44 @@ namespace EntityFramework.Common.Extensions
         public static int SaveChangesWithTransactionLog(
             this DbContext dbContext, Func<int> saveChanges)
         {
-            int count;
-
-            // TODO: check transaction
-            // using (DbContextTransaction transaction = dbContext.WithTransaction())
-            using (TransactionLogContext logContext = new TransactionLogContext(dbContext))
+            return dbContext.ExecuteInTransaction(() =>
             {
-                // save main entities
-                count = saveChanges.Invoke();
+                int count;
+                using (new TransactionLogContext(dbContext))
+                {
+                    // save main entities
+                    count = saveChanges.Invoke();
+                }
 
-                logContext.StoreTransactionLogs();
-
-                // save TransactionLog entries
+                // save TransactionLog entities
                 saveChanges.Invoke();
 
-                // transaction.Commit();
-            }
-
-            return count;
+                return count;
+            });
         }
 
         /// <summary>
         /// Wrapper for <see cref="DbContext.SaveChangesAsync"/> that saves <see cref="TransactionLog"/> to DB.
         /// </summary>
-        public static async Task<int> SaveChangesWithTransactionLogAsync(
+        public static Task<int> SaveChangesWithTransactionLogAsync(
             this DbContext dbContext,
-            Func<Task<int>> saveChangesAsync,
+            Func<CancellationToken, Task<int>> saveChangesAsync,
             CancellationToken cancellationToken)
         {
-            int count;
-
-            using (DbContextTransaction transaction = dbContext.WithTransaction())
-            using (TransactionLogContext logContext = new TransactionLogContext(dbContext))
+            return dbContext.ExecuteInTransaction(async () =>
             {
-                // save main entities
-                count = await saveChangesAsync.Invoke();
+                int count;
+                using (new TransactionLogContext(dbContext))
+                {
+                    // save main entities
+                    count = await saveChangesAsync.Invoke(cancellationToken);
+                }
 
-                logContext.StoreTransactionLogs();
+                // save TransactionLog entities
+                await saveChangesAsync.Invoke(cancellationToken);
 
-                // save TransactionLog entries
-                await saveChangesAsync.Invoke();
-
-                transaction.Commit();
-            }
-            return count;
+                return count;
+            });
         }
     }
 
@@ -67,18 +61,12 @@ namespace EntityFramework.Common.Extensions
         /// <summary>
         /// Register <see cref="TransactionLog"/> table in <see cref="DbContext"/>.
         /// </summary>
-        public static DbModelBuilder EnableTransactionLog(
+        public static DbModelBuilder UseTransactionLog(
             this DbModelBuilder modelBuilder,
             string tableName = "_TransactionLog",
             string schemaName = null)
         {
             var transactionLog = modelBuilder.Entity<TransactionLog>();
-             
-            transactionLog.HasKey(e => e.Id);
-
-            transactionLog.Property(e => e.TableName).IsRequired();
-            transactionLog.Property(e => e.EntityType).IsRequired();
-            transactionLog.Property(e => e.EntityJson).IsRequired();
 
             if (schemaName == null)
             {
@@ -88,6 +76,26 @@ namespace EntityFramework.Common.Extensions
             {
                 transactionLog.ToTable(tableName, schemaName);
             }
+
+            transactionLog
+                .HasKey(e => e.Id);
+
+            transactionLog
+                .Property(e => e.Operation)
+                .IsRequired()
+                .HasMaxLength(3);
+
+            transactionLog
+                .Property(e => e.TableName)
+                .IsRequired();
+
+            transactionLog
+                .Property(e => e.EntityType)
+                .IsRequired();
+
+            transactionLog
+                .Property(e => e.EntityJson)
+                .IsRequired();
 
             return modelBuilder;
         }

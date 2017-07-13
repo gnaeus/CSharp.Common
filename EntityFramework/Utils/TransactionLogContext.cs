@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Linq;
 using EntityFramework.Common.Entities;
 using EntityFramework.Common.Extensions;
 using Jil;
+using System.Data.Entity.Core.Objects;
 
 namespace EntityFramework.Common.Utils
 {
@@ -18,94 +20,99 @@ namespace EntityFramework.Common.Utils
         readonly Guid _transactionId = Guid.NewGuid();
         readonly DateTime _createdUtc = DateTime.UtcNow;
 
-        readonly List<DbEntityEntry> _added = new List<DbEntityEntry>();
-        readonly List<DbEntityEntry> _modified = new List<DbEntityEntry>();
-        readonly List<DbEntityEntry> _deleted = new List<DbEntityEntry>();
+        readonly List<DbEntityEntry> _insertedEntries = new List<DbEntityEntry>();
+        readonly List<DbEntityEntry> _updatedEntries = new List<DbEntityEntry>();
+        readonly List<TransactionLog> _deletedLogs = new List<TransactionLog>();
         
-        const EntityState CHANGED = EntityState.Added | EntityState.Modified | EntityState.Deleted;
+        const EntityState CHANGED_STATE = EntityState.Added | EntityState.Modified | EntityState.Deleted;
 
         public TransactionLogContext(DbContext context)
         {
             _context = context;
 
-            foreach (var entry in context.GetChangedEntries(CHANGED))
+            StoreChangedEntries();
+        }
+        
+        public void Dispose()
+        {
+            foreach (TransactionLog transactionLog in CreateTransactionLogs())
+            {
+                _context.Entry(transactionLog).State = EntityState.Added;
+            }
+        }
+
+        private void StoreChangedEntries()
+        {
+            foreach (var entry in _context.GetChangedEntries(CHANGED_STATE))
             {
                 if (entry.Entity is ITransactionLoggable)
                 {
                     switch (entry.State)
                     {
                         case EntityState.Added:
-                            _added.Add(entry);
+                            _insertedEntries.Add(entry);
                             break;
 
                         case EntityState.Modified:
-                            _modified.Add(entry);
+                            _updatedEntries.Add(entry);
                             break;
 
                         case EntityState.Deleted:
-                            _deleted.Add(entry);
+                            _deletedLogs.Add(CreateTransactionLog(entry, TransactionLog.DELETE));
                             break;
                     }
                 }
             }
         }
 
-        private bool _disposed = false;
-
-        public void Dispose()
+        public IEnumerable<TransactionLog> CreateTransactionLogs()
         {
-            _disposed = true;
-        }
-
-        public void StoreTransactionLogs()
-        {
-            if (_disposed)
+            foreach (DbEntityEntry insertedEntry in _insertedEntries)
             {
-                throw new ObjectDisposedException(nameof(TransactionLogContext));
+                yield return CreateTransactionLog(insertedEntry, TransactionLog.INSERT);
             }
-
-            foreach (TransactionLog transactionLog in GetTransactionLogs())
+            foreach (DbEntityEntry updateEntry in _updatedEntries)
             {
-                _context.Entry(transactionLog).State = EntityState.Added;
+                yield return CreateTransactionLog(updateEntry, TransactionLog.UPDATE);
+            }
+            foreach (TransactionLog deletedLog in _deletedLogs)
+            {
+                yield return deletedLog;
             }
         }
 
-        public IEnumerable<TransactionLog> GetTransactionLogs()
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(nameof(TransactionLogContext));
-            }
-
-            foreach (DbEntityEntry entry in _added)
-            {
-                yield return MakeTransactionLog(entry, TransactionLog.INSERT);
-            }
-            foreach (DbEntityEntry entry in _modified)
-            {
-                yield return MakeTransactionLog(entry, TransactionLog.UPDATE);
-            }
-            foreach (DbEntityEntry entry in _deleted)
-            {
-                yield return MakeTransactionLog(entry, TransactionLog.DELETE);
-            }
-        }
-
-        private TransactionLog MakeTransactionLog(DbEntityEntry entry, char operation)
+        private TransactionLog CreateTransactionLog(DbEntityEntry entry, string operation)
         {
             object entity = entry.Entity;
 
             Type entityType = entity.GetType();
 
-            return new TransactionLog
+            if (_context.Configuration.ProxyCreationEnabled)
+            {
+                entityType = ObjectContext.GetObjectType(entityType);
+            }
+            
+            var log = new TransactionLog
             {
                 TransactionId = _transactionId,
                 CreatedUtc = _createdUtc,
                 Operation = operation,
                 TableName = _context.GetTableName(entityType),
-                EntityType = $"{entityType.FullName}, {entityType.Assembly.FullName}",
-                EntityJson = JSON.SerializeDynamic(entry.CurrentValues.ToObject()),
+                EntityType = $"{entityType.FullName}, {entityType.Assembly.GetName().Name}",
             };
+
+            if (operation == TransactionLog.DELETE)
+            {
+                log.EntityJson = JSON.SerializeDynamic(
+                    _context.GetPrimaryKeys(entity).ToDictionary(k => k.Key, k => k.Value));
+            }
+            else
+            {
+                log.EntityJson = JSON.SerializeDynamic(
+                    entry.CurrentValues.ToObject(), Options.IncludeInherited);
+            }
+
+            return log;
         }
     }
 }

@@ -33,20 +33,7 @@ namespace EntityFramework.Common.Extensions
         {
             return context.ChangeTracker.Entries().Where(e => (e.State & state) != 0);
         }
-        internal static DbContextTransaction WithTransaction(this DbContext context)
-        {
-            return context.Database.CurrentTransaction ?? context.Database.BeginTransaction();
-        }
-
-        /// <summary>
-        /// Create transaction with `IDbTransaction` interface (instead of `DbContextTransaction`).
-        /// </summary>
-        public static IDbTransaction BeginTransaction(
-            this DbContext context, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
-        {
-            return new DbContextTransactionWrapper(context.Database.BeginTransaction(isolationLevel));
-        }
-
+        
         /// <summary>
         /// Check if <see cref="DbContext.Database"/> connection is alive.
         /// </summary>
@@ -62,6 +49,153 @@ namespace EntityFramework.Common.Extensions
         {
             return context.Database.ExecuteSqlCommandAsync("SELECT 1");
         }
+
+        #region Transactions
+
+        /// <summary>
+        /// Create transaction with `IDbTransaction` interface (instead of `DbContextTransaction`).
+        /// </summary>
+        public static IDbTransaction BeginTransaction(
+            this DbContext context, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+        {
+            return new DbContextTransactionWrapper(context.Database.BeginTransaction(isolationLevel));
+        }
+
+        /// <summary>
+        /// Execute <paramref name="action"/> in existing transaction or create and use new transaction.
+        /// </summary>
+        public static void ExecuteInTransaction(this DbContext context, Action action)
+        {
+            var currentTransaction = context.Database.CurrentTransaction;
+            var transaction = currentTransaction ?? context.Database.BeginTransaction();
+
+            try
+            {
+                action.Invoke();
+                if (transaction != currentTransaction)
+                {
+                    transaction.Commit();
+                }
+            }
+            catch
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Rollback();
+                }
+                throw;
+            }
+            finally
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Execute <paramref name="method"/> in existing transaction or create and use new transaction.
+        /// </summary>
+        public static T ExecuteInTransaction<T>(this DbContext context, Func<T> method)
+        {
+            var currentTransaction = context.Database.CurrentTransaction;
+            var transaction = currentTransaction ?? context.Database.BeginTransaction();
+
+            try
+            {
+                T result = method.Invoke();
+                if (transaction != currentTransaction)
+                {
+                    transaction.Commit();
+                }
+                return result;
+            }
+            catch
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Rollback();
+                }
+                throw;
+            }
+            finally
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Execute <paramref name="asyncAction"/> in existing transaction or create and use new transaction.
+        /// </summary>
+        public static async Task ExecuteInTransaction(this DbContext context, Func<Task> asyncAction)
+        {
+            var currentTransaction = context.Database.CurrentTransaction;
+            var transaction = currentTransaction ?? context.Database.BeginTransaction();
+
+            try
+            {
+                await asyncAction.Invoke();
+                if (transaction != currentTransaction)
+                {
+                    transaction.Commit();
+                }
+            }
+            catch
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Rollback();
+                }
+                throw;
+            }
+            finally
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Execute <paramref name="asyncMethod"/> in existing transaction or create and use new transaction.
+        /// </summary>
+        public static async Task<T> ExecuteInTransaction<T>(this DbContext context, Func<Task<T>> asyncMethod)
+        {
+            var currentTransaction = context.Database.CurrentTransaction;
+            var transaction = currentTransaction ?? context.Database.BeginTransaction();
+
+            try
+            {
+                T result = await asyncMethod.Invoke();
+                if (transaction != currentTransaction)
+                {
+                    transaction.Commit();
+                }
+                return result;
+            }
+            catch
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Rollback();
+                }
+                throw;
+            }
+            finally
+            {
+                if (transaction != currentTransaction)
+                {
+                    transaction.Dispose();
+                }
+            }
+        }
+
+        #endregion
 
         #region SaveChangesIgnoreConcurrency
 
