@@ -90,13 +90,16 @@ namespace EntityFramework.Common.Utils
             {
                 entityType = ObjectContext.GetObjectType(entityType);
             }
-            
+
+            TableAndSchema tableAndSchema = _context.GetTableAndSchemaName(entityType);
+
             var log = new TransactionLog
             {
                 TransactionId = _transactionId,
                 CreatedUtc = _createdUtc,
                 Operation = operation,
-                TableName = _context.GetTableName(entityType),
+                SchemaName = tableAndSchema.Schema,
+                TableName = tableAndSchema.Table,
                 EntityType = $"{entityType.FullName}, {entityType.Assembly.GetName().Name}",
             };
 

@@ -34,6 +34,7 @@ namespace EntityFramework.Common.Tests.Utils
                     TransactionId BLOB,
                     CreatedUtc DATETIME,
                     Operation TEXT,
+                    SchemaName TEXT,
                     TableName TEXT,
                     EntityType TEXT,
                     EntityJson TEXT
@@ -307,18 +308,22 @@ namespace EntityFramework.Common.Tests.Utils
                 Assert.IsTrue(logs.All(l => l.TransactionId == logs[0].TransactionId));
                 Assert.IsTrue(logs.All(l => l.CreatedUtc == logs[0].CreatedUtc));
 
+                Assert.AreEqual("dbo", logs[0].SchemaName);
                 Assert.AreEqual("Posts", logs[0].TableName);
                 Assert.AreEqual(TransactionLog.INSERT, logs[0].Operation);
                 Assert.IsInstanceOfType(logs[0].Entity, typeof(Post));
 
+                Assert.AreEqual("dbo", logs[1].SchemaName);
                 Assert.AreEqual("Blogs", logs[1].TableName);
                 Assert.AreEqual(TransactionLog.UPDATE, logs[1].Operation);
                 Assert.IsInstanceOfType(logs[1].Entity, typeof(Blog));
 
+                Assert.AreEqual("dbo", logs[2].SchemaName);
                 Assert.AreEqual("Posts", logs[2].TableName);
                 Assert.AreEqual(TransactionLog.UPDATE, logs[2].Operation);
                 Assert.IsInstanceOfType(logs[2].Entity, typeof(Post));
 
+                Assert.AreEqual("dbo", logs[3].SchemaName);
                 Assert.AreEqual("Posts", logs[3].TableName);
                 Assert.AreEqual(TransactionLog.DELETE, logs[3].Operation);
                 Assert.IsInstanceOfType(logs[3].Entity, typeof(Post));

@@ -3,10 +3,10 @@ using System.Data.Common;
 using System.Data.Entity;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Linq;
 using Dapper;
 using EntityFramework.Common.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace EntityFramework.Common.Tests.Extensions
 {
@@ -56,12 +56,6 @@ namespace EntityFramework.Common.Tests.Extensions
             {
                 Database.Log = s => Debug.WriteLine(s);
                 Database.SetInitializer<TestDbContext>(null);
-            }
-
-            public override int SaveChanges()
-            {
-                this.UpdateTrackableEntities();
-                return base.SaveChanges();
             }
         }
 

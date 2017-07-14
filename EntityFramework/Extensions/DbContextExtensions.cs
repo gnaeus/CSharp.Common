@@ -195,19 +195,19 @@ namespace EntityFramework.Common.Extensions
         }
 
         #endregion
-        
-        #region GetTableName
 
-        public static string GetTableName(this DbContext context, Type entityType)
+        #region GetTableAndSchemaName
+
+        public static TableAndSchema GetTableAndSchemaName(this DbContext context, Type entityType)
         {
-            return context.GetTableNames(entityType).Single();
+            return context.GetTableAndSchemaNames(entityType).Single();
         }
 
-        public static string[] GetTableNames(this DbContext context, Type entityType)
+        public static TableAndSchema[] GetTableAndSchemaNames(this DbContext context, Type entityType)
         {
             return _tableNames.GetOrAdd(new ContextEntityType(context.GetType(), entityType), _ =>
             {
-                return GetTableNames(entityType, context).ToArray();
+                return GetTableAndSchemaNames(entityType, context).ToArray();
             });
         }
         
@@ -228,13 +228,13 @@ namespace EntityFramework.Common.Extensions
             }
         }
 
-        private static readonly ConcurrentDictionary<ContextEntityType, string[]> _tableNames
-            = new ConcurrentDictionary<ContextEntityType, string[]>();
+        private static readonly ConcurrentDictionary<ContextEntityType, TableAndSchema[]> _tableNames
+            = new ConcurrentDictionary<ContextEntityType, TableAndSchema[]>();
 
         /// <summary>
         /// https://romiller.com/2014/04/08/ef6-1-mapping-between-types-tables/
         /// </summary>
-        private static IEnumerable<string> GetTableNames(Type type, DbContext context)
+        private static IEnumerable<TableAndSchema> GetTableAndSchemaNames(Type type, DbContext context)
         {
             var metadata = ((IObjectContextAdapter)context).ObjectContext.MetadataWorkspace;
 
@@ -265,7 +265,9 @@ namespace EntityFramework.Common.Extensions
                 .Fragments;
 
             // Return the table name from the storage entity set
-            return tables.Select(f => (string)f.StoreEntitySet.MetadataProperties["Table"].Value ?? f.StoreEntitySet.Name);
+            return tables.Select(f => new TableAndSchema(
+                (string)f.StoreEntitySet.MetadataProperties["Table"].Value ?? f.StoreEntitySet.Name,
+                (string)f.StoreEntitySet.MetadataProperties["Schema"].Value ?? f.StoreEntitySet.Schema));
         }
 
         #endregion

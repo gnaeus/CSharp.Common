@@ -10,7 +10,7 @@ namespace EntityFramework.Common.Entities
     /// </summary>
     public interface ITransactionLoggable { }
 
-    [DebuggerDisplay("{TableName} {CreatedUtc}", Name = "{Id} {Operation}")]
+    [DebuggerDisplay("{Table} {CreatedUtc}", Name = "{Id} {Operation}")]
     public class TransactionLog
     {
         public const string INSERT = "INS";
@@ -21,6 +21,7 @@ namespace EntityFramework.Common.Entities
         public Guid TransactionId { get; set; }
         public DateTime CreatedUtc { get; set; }
         public string Operation { get; set; }
+        public string SchemaName { get; set; }
         public string TableName { get; set; }
         public string EntityType { get; set; }
         public string EntityJson { get; set; }

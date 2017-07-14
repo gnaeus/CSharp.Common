@@ -83,6 +83,7 @@
     <Compile Include="Extensions\ChunkedInQueryTest.cs" />
     <Compile Include="Extensions\ConcurrentEntitiesTest.cs" />
     <Compile Include="Extensions\CollectionMappingTest.cs" />
+    <Compile Include="Extensions\GetTableAndSchemaNameTest.cs" />
     <Compile Include="Extensions\TrackableEntitiesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\JsonFieldTests.cs" />
