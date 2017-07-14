@@ -4,14 +4,14 @@ using System.Data.Entity;
 using System.Data.SQLite;
 using System.Diagnostics;
 using Dapper;
-using EntityFramework.Common.Entities;
 using EntityFramework.Common.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace EntityFramework.Common.Tests.Extensions
 {
     [TestClass]
-    public class TrackableEntitiesTest
+    public class CollectionMappingTest
     {
         private DbConnection _connection;
 
@@ -25,11 +25,7 @@ namespace EntityFramework.Common.Tests.Extensions
             _connection.Execute(@"
                 CREATE TABLE Blogs (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Theme TEXT,
-                    IsDeleted BOOLEAN,
-                    CreatedUtc DATETIME,
-                    UpdatedUtc DATETIME,
-                    DeletedUtc DATETIME
+                    Theme TEXT
                 );");
         }
 
@@ -39,17 +35,18 @@ namespace EntityFramework.Common.Tests.Extensions
             _connection.Close();
         }
 
-        public class Blog : IFullTrackable
+        public class Blog
         {
             public int Id { get; set; }
             public string Theme { get; set; }
-
-            public bool IsDeleted { get; set; }
-            public DateTime CreatedUtc { get; set; }
-            public DateTime? UpdatedUtc { get; set; }
-            public DateTime? DeletedUtc { get; set; }
         }
-        
+
+        public class BlogModel
+        {
+            public int Id { get; set; }
+            public string Theme { get; set; }
+        }
+
         public class TestDbContext : DbContext
         {
             public DbSet<Blog> Blogs { get; set; }
@@ -69,35 +66,52 @@ namespace EntityFramework.Common.Tests.Extensions
         }
 
         [TestMethod]
-        public void TestTrackableEntities()
+        public void TestCollectionMapping()
         {
+            // create
             using (var context = new TestDbContext(_connection))
             {
-                // insert
-                var blog = new Blog();
-                context.Blogs.Add(blog);
+                context.Blogs.AddRange(new[]
+                {
+                    new Blog { Theme = "first" },
+                    new Blog { Theme = "second" },
+                });
+                context.SaveChanges();
+            }
+
+            // update
+            var models = new[]
+            {
+                new BlogModel { Id = 1, Theme = "first changed" },
+                new BlogModel { Theme = "third" },
+            };
+
+            using (var context = new TestDbContext(_connection))
+            {
+                var entities = context.Blogs.ToList();
+
+                context.Blogs.UpdateCollection(entities, models)
+                    .WithKeys(e => e.Id, m => m.Id)
+                    .MapValues((e, m) =>
+                    {
+                        e.Theme = m.Theme;
+                    });
 
                 context.SaveChanges();
-                context.Entry(blog).Reload();
+            }
 
-                Assert.AreNotEqual(default(DateTime), blog.CreatedUtc);
+            // read
+            using (var context = new TestDbContext(_connection))
+            {
+                var entities = context.Blogs.ToList();
 
-                // update
-                blog.Theme = "test";
+                Assert.AreEqual(2, entities.Count);
 
-                context.SaveChanges();
-                context.Entry(blog).Reload();
+                Assert.AreEqual(1, entities[0].Id);
+                Assert.AreEqual("first changed", entities[0].Theme);
 
-                Assert.IsNotNull(blog.UpdatedUtc);
-
-                // delete
-                context.Blogs.Remove(blog);
-
-                context.SaveChanges();
-                context.Entry(blog).Reload();
-
-                Assert.AreEqual(true, blog.IsDeleted);
-                Assert.IsNotNull(blog.DeletedUtc);
+                Assert.AreEqual(3, entities[1].Id);
+                Assert.AreEqual("third", entities[1].Theme);
             }
         }
     }

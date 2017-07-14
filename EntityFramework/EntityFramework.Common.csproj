@@ -68,7 +68,7 @@
     <Compile Include="Extensions\AuditLogExtensions.cs" />
     <Compile Include="Extensions\ConcurrentEntitiesExtensions.cs" />
     <Compile Include="Extensions\DbContextExtensions.cs" />
-    <Compile Include="Extensions\MappingExtensions.cs" />
+    <Compile Include="Extensions\CollectionMappingExtensions.cs" />
     <Compile Include="Extensions\QueriableExtensions.cs" />
     <Compile Include="Extensions\TrackableEntitiesExtensions.cs" />
     <Compile Include="Extensions\TransactionLogExtensions.cs" />

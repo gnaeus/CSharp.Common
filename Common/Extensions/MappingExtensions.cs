@@ -41,6 +41,8 @@ namespace Common.Extensions
             {
                 Entities = config.Entities,
                 Models = config.Models,
+                EntityKey = entityKey,
+                ModelKey = modelKey,
             };
         }
 

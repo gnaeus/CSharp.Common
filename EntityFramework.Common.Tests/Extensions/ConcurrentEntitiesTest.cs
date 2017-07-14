@@ -29,7 +29,7 @@ namespace EntityFramework.Common.Tests.Extensions
 
             _connection.Execute(@"
                 CREATE TABLE Accounts (
-                    Id INTEGER PRIMARY KEY,
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Login TEXT,
                     RowVersion INTEGER DEFAULT 0
                 );

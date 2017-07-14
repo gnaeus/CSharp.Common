@@ -24,7 +24,7 @@ namespace EntityFramework.Common.Tests.Extensions
 
             _connection.Execute(@"
                 CREATE TABLE Blogs (
-                    Id INTEGER PRIMARY KEY,
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Theme TEXT,
                     IsDeleted BOOLEAN,
                     CreatedUtc DATETIME,
@@ -36,7 +36,7 @@ namespace EntityFramework.Common.Tests.Extensions
                 );
 
                 CREATE TABLE Posts (
-                    Id INTEGER PRIMARY KEY,
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Content TEXT,
                     IsDeleted BOOLEAN,
                     CreatedUtc DATETIME,

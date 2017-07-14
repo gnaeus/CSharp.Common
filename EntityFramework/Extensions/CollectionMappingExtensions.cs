@@ -15,7 +15,7 @@ namespace EntityFramework.Common.Extensions
         {
             public IDbSet<TEntity> DbSet;
             public ICollection<TEntity> Entities;
-            public IEnumerable<TModel> Models;
+            public IReadOnlyCollection<TModel> Models;
         }
 
         public struct DbSetMappingConfig<TEntity, TModel, TKey>
@@ -23,13 +23,13 @@ namespace EntityFramework.Common.Extensions
         {
             public IDbSet<TEntity> DbSet;
             public ICollection<TEntity> Entities;
-            public IEnumerable<TModel> Models;
+            public IReadOnlyCollection<TModel> Models;
             public Func<TEntity, TKey> EntityKey;
             public Func<TModel, TKey> ModelKey;
         }
 
         public static DbSetMappingConfig<TEntity, TModel> UpdateCollection<TEntity, TModel>(
-            this IDbSet<TEntity> table, ICollection<TEntity> entities, IEnumerable<TModel> models)
+            this IDbSet<TEntity> table, ICollection<TEntity> entities, IReadOnlyCollection<TModel> models)
             where TEntity : class
         {
             return new DbSetMappingConfig<TEntity, TModel>
@@ -50,6 +50,8 @@ namespace EntityFramework.Common.Extensions
                 DbSet = config.DbSet,
                 Entities = config.Entities,
                 Models = config.Models,
+                EntityKey = entityKey,
+                ModelKey = modelKey,
             };
         }
 
@@ -60,15 +62,23 @@ namespace EntityFramework.Common.Extensions
         {
             ILookup<TKey, TEntity> entityLookup = config.Entities.ToLookup(config.EntityKey);
 
-            HashSet<TKey> modelKeys = new HashSet<TKey>();
+            IEnumerable<TModel> models = config.Models ?? Enumerable.Empty<TModel>();
 
+            HashSet<TKey> modelKeys = new HashSet<TKey>(models.Select(config.ModelKey));
+
+            foreach (TEntity entity in config.Entities)
+            {
+                if (!modelKeys.Contains(config.EntityKey(entity)))
+                {
+                    config.DbSet.Remove(entity);
+                }
+            }
+            
             config.Entities.Clear();
 
-            foreach (TModel model in config.Models ?? Enumerable.Empty<TModel>())
+            foreach (TModel model in models)
             {
                 TKey key = config.ModelKey(model);
-
-                modelKeys.Add(key);
 
                 if (entityLookup.Contains(key))
                 {
@@ -88,15 +98,7 @@ namespace EntityFramework.Common.Extensions
 
                     config.DbSet.Add(entity);
                 }
-            }
-
-            foreach (TEntity entity in config.Entities)
-            {
-                if (!modelKeys.Contains(config.EntityKey(entity)))
-                {
-                    config.DbSet.Remove(entity);
-                }
-            }
+            }   
         }
     }
 }

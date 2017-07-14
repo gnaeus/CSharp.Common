@@ -30,7 +30,7 @@ namespace EntityFramework.Common.Tests.Utils
 
             _connection.Execute(@"
                 CREATE TABLE _TransactionLog (
-                    Id INTEGER PRIMARY KEY,
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     TransactionId BLOB,
                     CreatedUtc DATETIME,
                     Operation TEXT,
@@ -40,13 +40,13 @@ namespace EntityFramework.Common.Tests.Utils
                 );
 
                 CREATE TABLE Blogs (
-                    Id INTEGER PRIMARY KEY,
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     OwnerId INTEGER,
                     CategoryColumn TEXT
                 );
 
                 CREATE TABLE Posts (
-                    Id INTEGER PRIMARY KEY,
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     BlogId INTEGER,
                     Title TEXT,
                     Content TEXT,

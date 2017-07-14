@@ -62,6 +62,7 @@
     <Compile Include="Extensions\ArrayExtensionsTest.cs" />
     <Compile Include="Extensions\ConnectionExtensionsTest.cs" />
     <Compile Include="Extensions\EnumerableExtensionsTest.cs" />
+    <Compile Include="Extensions\MappingExtensionsTest.cs" />
     <Compile Include="Helpers\SqlFullTextSearchHeplerTest.cs" />
     <Compile Include="Extensions\StringExtensionsTest.cs" />
     <Compile Include="Helpers\UriHelperTest.cs" />
