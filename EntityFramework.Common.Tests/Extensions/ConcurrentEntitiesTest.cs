@@ -6,6 +6,8 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Dapper;
 using EntityFramework.Common.Entities;
 using EntityFramework.Common.Extensions;
@@ -73,6 +75,12 @@ namespace EntityFramework.Common.Tests.Extensions
                 this.UpdateConcurrentEntities();
                 return base.SaveChanges();
             }
+
+            public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+            {
+                this.UpdateConcurrentEntities();
+                return base.SaveChangesAsync(cancellationToken);
+            }
         }
 
         [TestMethod, ExpectedException(typeof(DbUpdateConcurrencyException))]
@@ -109,6 +117,55 @@ namespace EntityFramework.Common.Tests.Extensions
                 account.RowVersion = oldRowVersion;
 
                 context.SaveChanges();
+            }
+        }
+
+
+        [TestMethod]
+        public void TestSaveChangesIgnoreConcurrency()
+        {
+            using (var context = new TestDbContext(_connection))
+            {
+                // insert
+                var account = new Account { Login = "first" };
+                context.Accounts.Add(account);
+
+                context.SaveChanges();
+
+                // update
+                account.RowVersion = 100500;
+                account.Login = "second";
+
+                context.SaveChangesIgnoreConcurrency();
+
+                context.Entry(account).Reload();
+
+                Assert.AreEqual("second", account.Login);
+                Assert.AreNotEqual(100500, account.RowVersion);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestSaveChangesIgnoreConcurrencyAsync()
+        {
+            using (var context = new TestDbContext(_connection))
+            {
+                // insert
+                var account = new Account { Login = "first" };
+                context.Accounts.Add(account);
+
+                await context.SaveChangesAsync();
+
+                // update
+                account.RowVersion = 100500;
+                account.Login = "second";
+
+                await context.SaveChangesIgnoreConcurrencyAsync();
+
+                context.Entry(account).Reload();
+
+                Assert.AreEqual("second", account.Login);
+                Assert.AreNotEqual(100500, account.RowVersion);
             }
         }
     }

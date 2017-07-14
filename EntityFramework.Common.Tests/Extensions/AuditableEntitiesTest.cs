@@ -27,7 +27,6 @@ namespace EntityFramework.Common.Tests.Extensions
                     Id INTEGER PRIMARY KEY,
                     Theme TEXT,
                     IsDeleted BOOLEAN,
-                    RowVersion BLOB,
                     CreatedUtc DATETIME,
                     CreatorUserId INTEGER,
                     UpdatedUtc DATETIME,
