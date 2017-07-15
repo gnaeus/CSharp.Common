@@ -57,7 +57,7 @@ namespace EntityFramework.Common.Extensions
         public static IDbTransaction BeginTransaction(
             this DbContext context, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            return new DbContextTransactionWrapper(context.Database.BeginTransaction(isolationLevel));
+            return new DbTransactionAdapter(context.Database.BeginTransaction(isolationLevel));
         }
 
         /// <summary>

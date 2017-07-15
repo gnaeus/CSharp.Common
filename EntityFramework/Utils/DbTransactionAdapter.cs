@@ -8,38 +8,38 @@ namespace EntityFramework.Common.Utils
     /// For example, if you need to implement an interface that requires you to return <see cref="IDbTransaction"/>.
     /// Used by <see cref="DbContextExtensions.BeginTransaction"/>.
     /// </summary>
-    public sealed class DbContextTransactionWrapper : IDbTransaction
+    public sealed class DbTransactionAdapter : IDbTransaction
     {
-        private readonly DbContextTransaction ContextTransaction;
+        readonly DbContextTransaction _dbContextTransaction;
 
-        public DbContextTransactionWrapper(DbContextTransaction transaction)
+        public DbTransactionAdapter(DbContextTransaction transaction)
         {
-            ContextTransaction = transaction;
+            _dbContextTransaction = transaction;
         }
 
         public void Commit()
         {
-            ContextTransaction.Commit();
+            _dbContextTransaction.Commit();
         }
 
         public IDbConnection Connection
         {
-            get { return ContextTransaction.UnderlyingTransaction.Connection; }
+            get { return _dbContextTransaction.UnderlyingTransaction.Connection; }
         }
 
         public IsolationLevel IsolationLevel
         {
-            get { return ContextTransaction.UnderlyingTransaction.IsolationLevel; }
+            get { return _dbContextTransaction.UnderlyingTransaction.IsolationLevel; }
         }
 
         public void Rollback()
         {
-            ContextTransaction.Rollback();
+            _dbContextTransaction.Rollback();
         }
 
         public void Dispose()
         {
-            ContextTransaction.Dispose();
+            _dbContextTransaction.Dispose();
         }
     }
 }

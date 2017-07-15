@@ -98,7 +98,7 @@ namespace EntityFramework.Common.Utils
                 TransactionId = _transactionId,
                 CreatedUtc = _createdUtc,
                 Operation = operation,
-                SchemaName = tableAndSchema.Schema,
+                Schema = tableAndSchema.Schema,
                 TableName = tableAndSchema.Table,
                 EntityType = $"{entityType.FullName}, {entityType.Assembly.GetName().Name}",
             };
