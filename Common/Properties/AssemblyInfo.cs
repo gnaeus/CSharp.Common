@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("e474f8be-00de-457d-bdd0-5ab2f8aa1c18")]
 
 [assembly: InternalsVisibleTo("Common.Tests")]
-[assembly: InternalsVisibleTo("MrArvice.Aspects")]
+[assembly: InternalsVisibleTo("MrAdvice.Aspects")]
 
 // Version information for an assembly consists of the following four values:
 //

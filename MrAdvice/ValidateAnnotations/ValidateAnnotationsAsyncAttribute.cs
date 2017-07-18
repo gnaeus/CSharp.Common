@@ -6,7 +6,7 @@ using ArxOne.MrAdvice.Advice;
 using Common.Exceptions;
 using Common.Validation;
 
-namespace MrArvice.Aspects
+namespace MrAdvice.Aspects
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class ValidateAnnotationsAsyncAttribute : Attribute, IMethodAsyncAdvice

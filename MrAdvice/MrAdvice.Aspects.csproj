@@ -7,8 +7,8 @@
     <ProjectGuid>{8B8FB435-A33B-4021-AE3D-3AA314AF1E6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MrArvice.Aspects</RootNamespace>
-    <AssemblyName>MrArvice.Aspects</AssemblyName>
+    <RootNamespace>MrAdvice.Aspects</RootNamespace>
+    <AssemblyName>MrAdvice.Aspects</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

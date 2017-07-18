@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorEngine.Common", "Razor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrAdvice.Aspects", "MrAdvice\MrAdvice.Aspects.csproj", "{8B8FB435-A33B-4021-AE3D-3AA314AF1E6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrArvice.Aspects.Tests", "MrArvice.Tests\MrArvice.Aspects.Tests.csproj", "{915A7F33-0E37-4C70-B425-D60FA5CC9F86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrAdvice.Aspects.Tests", "MrAdvice.Tests\MrAdvice.Aspects.Tests.csproj", "{915A7F33-0E37-4C70-B425-D60FA5CC9F86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Common.Tests", "EntityFramework.Common.Tests\EntityFramework.Common.Tests.csproj", "{908A20BB-F0ED-41F4-A4D8-753D723C29A6}"
 EndProject

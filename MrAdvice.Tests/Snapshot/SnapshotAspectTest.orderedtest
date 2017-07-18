@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest name="snapshotaspecttest" storage="c:\users\panyushkind\documents\visual studio 2015\projects\csharp.infrastructure\mrarvice.tests\snapshot\snapshotaspecttest.orderedtest" id="9889acc7-cb8f-41ca-bd6e-a6ec9d9ec59a" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<OrderedTest name="snapshotaspecttest" storage="c:\users\panyushkind\documents\visual studio 2015\projects\csharp.common\mradvice.tests\snapshot\snapshotaspecttest.orderedtest" id="9889acc7-cb8f-41ca-bd6e-a6ec9d9ec59a" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <TestLinks>
     <TestLink id="3cca0988-9b7a-08cf-b8eb-2af4639c9fac" name="TestWrite" storage="..\bin\debug\mrarvice.aspects.tests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <TestLink id="2929218c-ac6d-a271-36b2-c09c5fa94746" name="TestRead" storage="..\bin\debug\mrarvice.aspects.tests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />

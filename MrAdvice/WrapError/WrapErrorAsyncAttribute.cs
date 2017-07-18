@@ -6,7 +6,7 @@ using ArxOne.MrAdvice.Annotation;
 using Common.Api;
 using Common.Exceptions;
 
-namespace MrArvice.Aspects
+namespace MrAdvice.Aspects
 {
     [Priority(Int32.MaxValue)]
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]

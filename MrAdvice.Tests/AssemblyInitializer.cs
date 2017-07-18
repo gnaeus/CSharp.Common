@@ -2,7 +2,7 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MrArvice.Aspects.Tests
+namespace MrAdvice.Aspects.Tests
 {
     [TestClass]
     public class AssemblyInitializer

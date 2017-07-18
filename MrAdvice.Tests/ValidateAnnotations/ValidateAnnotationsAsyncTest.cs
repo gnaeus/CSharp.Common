@@ -1,12 +1,13 @@
 ﻿using Common.Api;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using ValidationException = Common.Exceptions.ValidationException;
 
-namespace MrArvice.Aspects.Tests.ValidateAnnotations
+namespace MrAdvice.Aspects.Tests.ValidateAnnotations
 {
     [TestClass]
-    public class ValidateAnnotationsTest
+    public class ValidateAnnotationsAsyncAsyncTest
     {
         public class Model
         {
@@ -17,27 +18,27 @@ namespace MrArvice.Aspects.Tests.ValidateAnnotations
             public string Text { get; set; }
         }
 
-        [ValidateAnnotations]
-        public void Method(Model first)
+        [ValidateAnnotationsAsync]
+        public async Task Method(Model first)
         {
         }
         
         [TestMethod]
-        public void TestValidateAnnotationsValid()
+        public async Task TestValidateAnnotationsAsyncValid()
         {
             Model model = new Model { Title = "test", Text = "test" };
 
-            Method(model);
+            await Method(model);
         }
 
         [TestMethod, ExpectedException(typeof(ValidationException))]
-        public void TestValidateAnnotationsInvalid()
+        public async Task TestValidateAnnotationsAsyncInvalid()
         {
             Model model = new Model { Title = null, Text = "test test" };
 
             try
             {
-                Method(model);
+                await Method(model);
             }
             catch (ValidationException exception)
             {
@@ -52,27 +53,27 @@ namespace MrArvice.Aspects.Tests.ValidateAnnotations
             }
         }
 
-        [ValidateAnnotations(ArgumentNames = true)]
-        public void Method(Model first, Model second)
+        [ValidateAnnotationsAsync(ArgumentNames = true)]
+        public async Task Method(Model first, Model second)
         {
         }
 
         [TestMethod]
-        public void TestValidateAnnotationsArgumentsValid()
+        public async Task TestValidateAnnotationsAsyncArgumentsValid()
         {
             Model model = new Model { Title = "test", Text = "test" };
 
-            Method(model, model);
+            await Method(model, model);
         }
 
         [TestMethod, ExpectedException(typeof(ValidationException))]
-        public void TestValidateAnnotationsArgumentsInvalid()
+        public async Task TestValidateAnnotationsAsyncArgumentsInvalid()
         {
             Model model = new Model { Title = null, Text = "test test" };
 
             try
             {
-                Method(model, model);
+                await Method(model, model);
             }
             catch (ValidationException exception)
             {
@@ -92,18 +93,18 @@ namespace MrArvice.Aspects.Tests.ValidateAnnotations
             }
         }
 
-        [WrapError, ValidateAnnotations]
-        public ApiResult<string> CombineAspectsMethod(Model argument)
+        [WrapErrorAsync, ValidateAnnotationsAsync]
+        public async Task<ApiResult<string>> CombineAspectsMethod(Model argument)
         {
             return "Ok";
         }
 
         [TestMethod]
-        public void TestWrapErrorValidateAnnotations()
+        public async Task TestWrapErrorValidateAnnotationsAsync()
         {
             Model model = new Model { Title = null, Text = "test test" };
 
-            ApiResult<string> result = CombineAspectsMethod(model);
+            ApiResult<string> result = await CombineAspectsMethod(model);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.IsSuccess);
