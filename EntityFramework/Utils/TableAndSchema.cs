@@ -1,19 +1,22 @@
 ﻿namespace EntityFramework.Common.Utils
 {
+    /// <summary>
+    /// Structure that represents table name and schema.
+    /// </summary>
     public struct TableAndSchema
     {
-        public string Table;
+        public string TableName;
         public string Schema;
 
         public TableAndSchema(string table, string schema)
         {
-            Table = table;
+            TableName = table;
             Schema = schema;
         }
 
         public void Deconstruct(out string table, out string schema)
         {
-            table = Table;
+            table = TableName;
             schema = Schema;
         }
     }

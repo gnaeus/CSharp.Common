@@ -198,11 +198,18 @@ namespace EntityFramework.Common.Extensions
 
         #region GetTableAndSchemaName
 
+        /// <summary>
+        /// Get corresponding table name and schema by <paramref name="entityType"/>.
+        /// </summary>
         public static TableAndSchema GetTableAndSchemaName(this DbContext context, Type entityType)
         {
             return context.GetTableAndSchemaNames(entityType).Single();
         }
 
+        /// <summary>
+        /// Get corresponding table name and schema by <paramref name="entityType"/>.
+        /// Use it if entity is splitted between multiple tables.
+        /// </summary>
         public static TableAndSchema[] GetTableAndSchemaNames(this DbContext context, Type entityType)
         {
             return _tableNames.GetOrAdd(new ContextEntityType(context.GetType(), entityType), _ =>

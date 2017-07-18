@@ -136,9 +136,20 @@ partial class _Examples
             var addedEntities = _context.GetChangedEntries(EntityState.Added);
             // addedEntities[0].Entry == passport;
 
+            var tableAndSchema = _context.GetTableAndSchemaName(typeof(Passport));
+            // tableAndSchema.TableName == "Passports"; tableAndSchema.Schema == "dbo"
+
+            // uses existing transaction, otherwise creates new one
+            _context.ExecuteInTransaction(() =>
+            {
+                _context.SaveChanges();
+                _context.SaveChanges();
+            });
+
             using (IDbTransaction transaction = _context.BeginTransaction())
             {
                 _context.SaveChanges();
+                transaction.Commit();
             }
         }
     }

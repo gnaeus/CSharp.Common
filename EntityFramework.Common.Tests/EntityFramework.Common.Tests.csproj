@@ -47,6 +47,7 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="SQLite.CodeFirst, Version=1.3.2.19, Culture=neutral, PublicKeyToken=eb96ba0a78d831a7, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLite.CodeFirst.1.3.2.19\lib\net45\SQLite.CodeFirst.dll</HintPath>
     </Reference>
@@ -79,15 +80,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AssemblyInitializer.cs" />
-    <Compile Include="Extensions\AuditableEntitiesTest.cs" />
+    <Compile Include="Experiments.cs" />
     <Compile Include="Extensions\ChunkedInQueryTest.cs" />
-    <Compile Include="Extensions\ConcurrentEntitiesTest.cs" />
     <Compile Include="Extensions\CollectionMappingTest.cs" />
+    <Compile Include="Extensions\ExecuteInTransactionTest.cs" />
     <Compile Include="Extensions\GetTableAndSchemaNameTest.cs" />
-    <Compile Include="Extensions\TrackableEntitiesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\JsonFieldTests.cs" />
-    <Compile Include="Utils\TransactionLogTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntityFramework\EntityFramework.Common.csproj">

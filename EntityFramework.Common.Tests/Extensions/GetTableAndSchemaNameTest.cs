@@ -59,7 +59,7 @@ namespace EntityFramework.Common.Tests.Extensions
             {
                 var tableAndSchema = context.GetTableAndSchemaName(typeof(Blog));
 
-                Assert.AreEqual("Blogs", tableAndSchema.Table);
+                Assert.AreEqual("Blogs", tableAndSchema.TableName);
                 Assert.AreEqual("dbo", tableAndSchema.Schema);
             }
         }

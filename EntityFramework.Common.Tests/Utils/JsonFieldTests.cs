@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EntityFramework.Common.Utils;
@@ -288,6 +287,36 @@ namespace EntityFramework.Common.Tests.Utils
 
             Assert.AreEqual("{\"City\":null,\"Street\":\"Arbat\"}", user.AddressJson);
             Assert.AreEqual("[{\"Number\":\"456789\",\"Code\":null},{\"Number\":null,\"Code\":null}]", user.PhonesJson);
+        }
+
+        class Settings
+        {
+            public string Key { get; set; }
+
+            JsonField<dynamic> _value;
+            public string ValueJson
+            {
+                get { return _value.Json; }
+                set { _value.Json = value; }
+            }
+            public dynamic Value
+            {
+                get { return _value.Value; }
+                set { _value.Value = value; }
+            }
+        }
+
+        [TestMethod]
+        public void ShouldWorkWithDynamic()
+        {
+            var settings = new Settings
+            {
+                ValueJson = "{\"Number\": 123, \"String\": \"test\"}",
+            };
+
+            Assert.IsNotNull(settings.Value);
+            Assert.AreEqual(123, (int)settings.Value.Number);
+            Assert.AreEqual("test", (string)settings.Value.String);
         }
     }
 }
