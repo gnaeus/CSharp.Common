@@ -11,16 +11,16 @@ namespace Common.Extensions
     {
         public struct MappingConfig<TEntity, TModel>
         {
-            public ICollection<TEntity> Entities;
-            public IEnumerable<TModel> Models;
+            internal ICollection<TEntity> Entities;
+            internal IEnumerable<TModel> Models;
         }
 
         public struct MappingConfig<TEntity, TModel, TKey>
         {
-            public ICollection<TEntity> Entities;
-            public IEnumerable<TModel> Models;
-            public Func<TEntity, TKey> EntityKey;
-            public Func<TModel, TKey> ModelKey;
+            internal ICollection<TEntity> Entities;
+            internal IEnumerable<TModel> Models;
+            internal Func<TEntity, TKey> EntityKey;
+            internal Func<TModel, TKey> ModelKey;
         }
 
         public static MappingConfig<TEntity, TModel> UpdateFrom<TEntity, TModel>(

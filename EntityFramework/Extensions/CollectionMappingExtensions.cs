@@ -13,19 +13,19 @@ namespace EntityFramework.Common.Extensions
         public struct DbSetMappingConfig<TEntity, TModel>
             where TEntity : class
         {
-            public IDbSet<TEntity> DbSet;
-            public ICollection<TEntity> Entities;
-            public IReadOnlyCollection<TModel> Models;
+            internal IDbSet<TEntity> DbSet;
+            internal ICollection<TEntity> Entities;
+            internal IReadOnlyCollection<TModel> Models;
         }
 
         public struct DbSetMappingConfig<TEntity, TModel, TKey>
             where TEntity : class
         {
-            public IDbSet<TEntity> DbSet;
-            public ICollection<TEntity> Entities;
-            public IReadOnlyCollection<TModel> Models;
-            public Func<TEntity, TKey> EntityKey;
-            public Func<TModel, TKey> ModelKey;
+            internal IDbSet<TEntity> DbSet;
+            internal ICollection<TEntity> Entities;
+            internal IReadOnlyCollection<TModel> Models;
+            internal Func<TEntity, TKey> EntityKey;
+            internal Func<TModel, TKey> ModelKey;
         }
 
         public static DbSetMappingConfig<TEntity, TModel> UpdateCollection<TEntity, TModel>(
