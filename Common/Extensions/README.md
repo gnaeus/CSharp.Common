@@ -38,6 +38,19 @@ class SqlRepository
 Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs
 
 ```cs
+List<Entity> entities;
+Model[] models;
+
+entities.UpdateFrom(entities, models)
+    .WithKeys(e => e.Id, m => m.Id)
+    .MapValues((e, m) =>
+    {
+        e.Property = m.Property;
+    });
+```
+
+Detailed example:
+```cs
 using System.Collections.Generic;
 using System.Linq;
 
