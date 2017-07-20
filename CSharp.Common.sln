@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrAdvice.Aspects", "MrAdvic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrAdvice.Aspects.Tests", "MrAdvice.Tests\MrAdvice.Aspects.Tests.csproj", "{915A7F33-0E37-4C70-B425-D60FA5CC9F86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Common.Tests", "EntityFramework.Common.Tests\EntityFramework.Common.Tests.csproj", "{908A20BB-F0ED-41F4-A4D8-753D723C29A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Common.Tests", "EntityFramework.Tests\EntityFramework.Common.Tests.csproj", "{908A20BB-F0ED-41F4-A4D8-753D723C29A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
