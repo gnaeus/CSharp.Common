@@ -38,6 +38,7 @@ partial class _Examples
     // [Console]
     // Service Created
     // Application Created
+    // Application.Execute Executing
     // NativeResource Created
     // Reporitory Created
     // NativeResource Disposed
@@ -65,6 +66,8 @@ partial class _Examples
 
         public void Execute()
         {
+            Console.WriteLine($"{GetType().Name}.{nameof(Execute)} Executing");
+
             using (_nativeResourceFactory.Create())
             {
                 var repository = _repository.Value;
