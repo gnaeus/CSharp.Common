@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrAdvice.Aspects.Tests", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Common.Tests", "EntityFramework.Tests\EntityFramework.Common.Tests.csproj", "{908A20BB-F0ED-41F4-A4D8-753D723C29A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.NetStandard", "Common.NetStandard\Common.NetStandard.csproj", "{111ED8A4-E0D3-4BD9-AFF2-A1E9D74C829F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{908A20BB-F0ED-41F4-A4D8-753D723C29A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{908A20BB-F0ED-41F4-A4D8-753D723C29A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{908A20BB-F0ED-41F4-A4D8-753D723C29A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{111ED8A4-E0D3-4BD9-AFF2-A1E9D74C829F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{111ED8A4-E0D3-4BD9-AFF2-A1E9D74C829F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{111ED8A4-E0D3-4BD9-AFF2-A1E9D74C829F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{111ED8A4-E0D3-4BD9-AFF2-A1E9D74C829F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
