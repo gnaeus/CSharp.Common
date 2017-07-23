@@ -170,7 +170,7 @@ namespace Common.Utils
             {
                 if (Interlocked.CompareExchange(ref _cleanupIsRunning, 1, 0) == 0)
                 {
-                    Task.Run(() =>
+                    ThreadPool.QueueUserWorkItem(_ =>
                     {
                         DateTime utcNow = DateTime.UtcNow;
                         var store = (IDictionary<object, CacheEntry>)_storage;
