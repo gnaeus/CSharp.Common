@@ -5,22 +5,22 @@ using System.Threading.Tasks;
 
 namespace Common.MemoryCache
 {
-    internal class TagEntry
+    internal class BaseEntry
     {
         public ImmutableHashSet<CacheEntry> DerivedEntries;
 
-        protected TagEntry()
+        protected BaseEntry()
         {
             DerivedEntries = ImmutableHashSet.Create<CacheEntry>();
         }
 
-        public TagEntry(CacheEntry cacheEntry)
+        public BaseEntry(CacheEntry cacheEntry)
         {
             DerivedEntries = ImmutableHashSet.Create(cacheEntry);
         }
     }
 
-    internal class CacheEntry : TagEntry
+    internal class CacheEntry : BaseEntry
     {
         public readonly object Key;
         public readonly object[] Tags;
@@ -28,12 +28,11 @@ namespace Common.MemoryCache
         private readonly bool _isSliding;
         private readonly TimeSpan _lifetime;
 
-        // writes to Int64 are atomic
-        // writes to DateTimeOffset are not
-        private long _expiredUtc;
-        private bool _isExpired;
-
         private readonly object _value;
+
+        // DateTime or DateTimeOffset can not be volatile
+        private long _expiredUtcTicks;
+        private bool _isExpired;
         
         private CacheEntry(
             object key, object[] tags,
@@ -45,43 +44,54 @@ namespace Common.MemoryCache
 
             _isSliding = isSliding;
             _lifetime = lifetime;
-            _expiredUtc = (DateTimeOffset.UtcNow + lifetime).Ticks;
-            _isExpired = false;
 
             _value = value;
+
+            // inside the constructor we not need a Volatile.Write
+            _expiredUtcTicks = (DateTime.UtcNow + lifetime).Ticks;
+            _isExpired = false;
         }
         
         public static CacheEntry Create<T>(
-            object key, object[] tags,
-            bool isSliding, TimeSpan lifetime,
-            T value)
+            object key, object[] tags, bool isSliding, TimeSpan lifetime, T value)
         {
             return new CacheEntry(key, tags, isSliding, lifetime, value);
         }
 
         public static CacheEntry Create<T>(
-            object key, object[] tags,
-            bool isSliding, TimeSpan lifetime,
-            Func<T> valueFactory)
+            object key, object[] tags, bool isSliding, TimeSpan lifetime, Func<T> valueFactory)
         {
             return new CacheEntry(key, tags, isSliding, lifetime, new LazyValue<T>(valueFactory));
         }
 
         public static CacheEntry Create<T>(
-            object key, object[] tags,
-            bool isSliding, TimeSpan lifetime,
-            Func<Task<T>> taskFactory)
+            object key, object[] tags,bool isSliding, TimeSpan lifetime, Func<Task<T>> taskFactory)
         {
             return new CacheEntry(key, tags, isSliding, lifetime, new LazyTask<T>(taskFactory));
         }
-
-        public bool IsExpired => _isExpired || (_isExpired = _expiredUtc < DateTimeOffset.UtcNow.Ticks);
+        
+        public bool IsExpired
+        {
+            get
+            {
+                if (Volatile.Read(ref _isExpired))
+                {
+                    return true;
+                }
+                if (Volatile.Read(ref _expiredUtcTicks) < DateTime.UtcNow.Ticks)
+                {
+                    Volatile.Write(ref _isExpired, true);
+                    return true;
+                }
+                return false;
+            }
+        }
 
         public T GetValue<T>()
         {
             if (_isSliding)
             {
-                _expiredUtc = (DateTimeOffset.UtcNow + _lifetime).Ticks;
+                Volatile.Write(ref _expiredUtcTicks, (DateTime.UtcNow + _lifetime).Ticks);
             }
             if (_value is T)
             {
@@ -100,7 +110,7 @@ namespace Common.MemoryCache
             }
             catch
             {
-                _isExpired = true;
+                Volatile.Write(ref _isExpired, true);
                 throw;
             }
         }
@@ -109,7 +119,7 @@ namespace Common.MemoryCache
         {
             if (_isSliding)
             {
-                _expiredUtc = (DateTimeOffset.UtcNow + _lifetime).Ticks;
+                Volatile.Write(ref _expiredUtcTicks, (DateTime.UtcNow + _lifetime).Ticks);
             }
             if (_value is T)
             {
@@ -125,7 +135,7 @@ namespace Common.MemoryCache
             }
             catch
             {
-                _isExpired = true;
+                Volatile.Write(ref _isExpired, true);
                 throw;
             }
         }
