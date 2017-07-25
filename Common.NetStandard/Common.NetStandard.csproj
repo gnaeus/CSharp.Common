@@ -124,15 +124,15 @@
     <Compile Include="MemoryCache\CacheEntry.cs" />
     <Compile Include="MemoryCache\ConcurrentCache.cs" />
     <Compile Include="MemoryCache\IConcurrentCache.cs" />
+    <Compile Include="MemoryCache\ReaderWriterLock\CacheEntry.cs" />
+    <Compile Include="MemoryCache\ReaderWriterLock\ConcurrentCache.cs" />
+    <Compile Include="MemoryCache\ReaderWriterLock\IConcurrentCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MemoryCache\ConcurrentLock\" />
-    <Folder Include="MemoryCache\ReaderWriterLock\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

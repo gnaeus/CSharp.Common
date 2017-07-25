@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.MemoryCache
+namespace Common.MemoryCache.ReaderWriterLock
 {
     public class ConcurrentCache : IConcurrentCache
     {
@@ -218,12 +218,9 @@ namespace Common.MemoryCache
                 RemoveFromTags(cacheEntry);
             }
 
-            foreach (CacheEntry derivedEntry in entry.DerivedEntries)
-            {
-                RemoveFromStorage(derivedEntry);
-            }
+            entry.ForEachDerivedEntry(RemoveFromStorage);
         }
-
+        
         private void RemoveFromStorage(CacheEntry cacheEntry)
         {
             RemoveFromStorage(new KeyValuePair<object, BaseEntry>(cacheEntry.Key, cacheEntry));
@@ -281,20 +278,14 @@ namespace Common.MemoryCache
                 }
                 else
                 {
-                    if (entry.DerivedEntries.IsEmpty)
+                    if (!entry.HasDerivedEntries)
                     {
                         cache.RemoveFromStorage(pair);
                         continue;
                     }
                 }
 
-                foreach (CacheEntry derivedEntry in entry.DerivedEntries)
-                {
-                    if (derivedEntry.IsRemovedFromStorage)
-                    {
-                        entry.RemoveDerivedEntry(derivedEntry);
-                    }
-                }
+                entry.ScanForRemovedDerivedEntries();
             }
 
             Volatile.Write(ref cache._cleanupIsRunning, 0);

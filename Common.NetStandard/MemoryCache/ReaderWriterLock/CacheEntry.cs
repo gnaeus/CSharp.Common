@@ -1,48 +1,122 @@
 ﻿using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.MemoryCache
+namespace Common.MemoryCache.ReaderWriterLock
 {
     internal class BaseEntry
     {
-        private ImmutableHashSet<CacheEntry> _derivedEntries;
+        private readonly ReaderWriterLockSlim _locker;
+
+        private HashSet<CacheEntry> _derivedEntries;
         
         protected BaseEntry()
         {
-            _derivedEntries = ImmutableHashSet.Create<CacheEntry>();
+            _locker = new ReaderWriterLockSlim();
         }
 
         public BaseEntry(CacheEntry cacheEntry)
+            : this()
         {
-            _derivedEntries = ImmutableHashSet.Create(cacheEntry);
+            _derivedEntries = new HashSet<CacheEntry> { cacheEntry };
         }
 
-        public ImmutableHashSet<CacheEntry> DerivedEntries => Volatile.Read(ref _derivedEntries);
+        public bool HasDerivedEntries
+        {
+            get
+            {
+                try
+                {
+                    _locker.EnterReadLock();
+
+                    return _derivedEntries != null && _derivedEntries.Count > 0;
+                }
+                finally
+                {
+                    _locker.ExitReadLock();
+                }
+            }
+        }
 
         public void AddDerivedEntry(CacheEntry cacheEntry)
         {
-            ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
-
-            do
+            try
             {
-                derivedEntries = Volatile.Read(ref _derivedEntries);
-                originalEntries = Interlocked.CompareExchange(
-                    ref _derivedEntries, derivedEntries.Add(cacheEntry), derivedEntries);
-            } while (originalEntries != derivedEntries);
+                _locker.EnterWriteLock();
+
+                if (_derivedEntries == null)
+                {
+                    _derivedEntries = new HashSet<CacheEntry>();
+                }
+                _derivedEntries.Add(cacheEntry);
+            }
+            finally
+            {
+                _locker.ExitWriteLock();
+            }
         }
 
         public void RemoveDerivedEntry(CacheEntry cacheEntry)
         {
-            ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
-
-            do
+            try
             {
-                derivedEntries = Volatile.Read(ref _derivedEntries);
-                originalEntries = Interlocked.CompareExchange(
-                    ref _derivedEntries, derivedEntries.Remove(cacheEntry), derivedEntries);
-            } while (originalEntries != derivedEntries);
+                _locker.EnterWriteLock();
+
+                if (_derivedEntries != null)
+                {
+                    _derivedEntries.Remove(cacheEntry);
+                }
+            }
+            finally
+            {
+                _locker.ExitWriteLock();
+            }
+        }
+
+        public void ForEachDerivedEntry(Action<CacheEntry> action)
+        {
+            try
+            {
+                _locker.EnterReadLock();
+
+                if (_derivedEntries == null)
+                {
+                    return;
+                }
+                foreach (CacheEntry entry in _derivedEntries)
+                {
+                    action.Invoke(entry);
+                }
+            }
+            finally
+            {
+                _locker.ExitReadLock();
+            }
+        }
+
+        public void ScanForRemovedDerivedEntries()
+        {
+            try
+            {
+                _locker.EnterReadLock();
+
+                if (_derivedEntries == null)
+                {
+                    return;
+                }
+                foreach (CacheEntry entry in _derivedEntries)
+                {
+                    if (entry.IsRemovedFromStorage)
+                    {
+                        RemoveDerivedEntry(entry);
+                    }
+                }
+            }
+            finally
+            {
+                _locker.ExitReadLock();
+            }
         }
     }
 
