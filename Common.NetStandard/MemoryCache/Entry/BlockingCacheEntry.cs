@@ -3,127 +3,103 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.MemoryCache.ReaderWriterLock
+namespace Common.MemoryCache
 {
-    internal class BaseEntry
+    internal class BlockingBaseEntry : IBaseEntry
     {
-        private readonly ReaderWriterLockSlim _locker;
+        private HashSet<ICacheEntry> _derivedEntries;
 
-        private HashSet<CacheEntry> _derivedEntries;
-        
-        protected BaseEntry()
-        {
-            _locker = new ReaderWriterLockSlim();
-        }
+        protected BlockingBaseEntry() { }
 
-        public BaseEntry(CacheEntry cacheEntry)
-            : this()
+        public BlockingBaseEntry(ICacheEntry cacheEntry)
         {
-            _derivedEntries = new HashSet<CacheEntry> { cacheEntry };
+            _derivedEntries = new HashSet<ICacheEntry> { cacheEntry };
         }
 
         public bool HasDerivedEntries
         {
             get
             {
-                try
+                lock (this)
                 {
-                    _locker.EnterReadLock();
-
                     return _derivedEntries != null && _derivedEntries.Count > 0;
-                }
-                finally
-                {
-                    _locker.ExitReadLock();
                 }
             }
         }
 
-        public void AddDerivedEntry(CacheEntry cacheEntry)
+        public void AddDerivedEntry(ICacheEntry cacheEntry)
         {
-            try
+            lock (this)
             {
-                _locker.EnterWriteLock();
-
                 if (_derivedEntries == null)
                 {
-                    _derivedEntries = new HashSet<CacheEntry>();
+                    _derivedEntries = new HashSet<ICacheEntry>();
                 }
                 _derivedEntries.Add(cacheEntry);
             }
-            finally
-            {
-                _locker.ExitWriteLock();
-            }
         }
 
-        public void RemoveDerivedEntry(CacheEntry cacheEntry)
+        public void RemoveDerivedEntry(ICacheEntry cacheEntry)
         {
-            try
+            lock (this)
             {
-                _locker.EnterWriteLock();
-
                 if (_derivedEntries != null)
                 {
                     _derivedEntries.Remove(cacheEntry);
                 }
             }
-            finally
-            {
-                _locker.ExitWriteLock();
-            }
         }
 
-        public void ForEachDerivedEntry(Action<CacheEntry> action)
+        public void ForEachDerivedEntry(Action<ICacheEntry> action)
         {
-            try
+            lock (this)
             {
-                _locker.EnterReadLock();
-
                 if (_derivedEntries == null)
                 {
                     return;
                 }
-                foreach (CacheEntry entry in _derivedEntries)
+                foreach (ICacheEntry entry in _derivedEntries)
                 {
                     action.Invoke(entry);
                 }
-            }
-            finally
-            {
-                _locker.ExitReadLock();
             }
         }
 
         public void ScanForRemovedDerivedEntries()
         {
-            try
+            lock (this)
             {
-                _locker.EnterReadLock();
-
                 if (_derivedEntries == null)
                 {
                     return;
                 }
-                foreach (CacheEntry entry in _derivedEntries)
+
+                List<ICacheEntry> entriesToRemove = null;
+
+                foreach (ICacheEntry entry in _derivedEntries)
                 {
                     if (entry.IsRemovedFromStorage)
                     {
-                        RemoveDerivedEntry(entry);
+                        if (entriesToRemove == null)
+                        {
+                            entriesToRemove = new List<ICacheEntry>();
+                        }
+                        entriesToRemove.Add(entry);
                     }
                 }
-            }
-            finally
-            {
-                _locker.ExitReadLock();
+
+                if (entriesToRemove != null)
+                {
+                    _derivedEntries.ExceptWith(entriesToRemove);
+                }
             }
         }
     }
 
-    internal class CacheEntry : BaseEntry
+    internal class BlockingCacheEntry : BlockingBaseEntry, ICacheEntry
     {
-        public readonly object Key;
-        public readonly object[] Tags;
+        private readonly object _key;
+        private readonly object[] _tags;
 
         private readonly bool _isSliding;
         private readonly TimeSpan _lifetime;
@@ -134,12 +110,12 @@ namespace Common.MemoryCache.ReaderWriterLock
         private long _expiredUtcTicks;
         private bool _isExpired;
         private bool _isRemovedFromStorage;
-        
-        private CacheEntry(
+
+        public BlockingCacheEntry(
             object key, object[] tags, bool isSliding, TimeSpan lifetime, object value)
         {
-            Key = key;
-            Tags = tags ?? Array.Empty<object>();
+            _key = key;
+            _tags = tags ?? Array.Empty<object>();
 
             _isSliding = isSliding;
             _lifetime = lifetime;
@@ -147,29 +123,15 @@ namespace Common.MemoryCache.ReaderWriterLock
             _value = value;
 
             // inside the constructor we not need a Volatile.Write
-            _expiredUtcTicks = (DateTime.UtcNow + lifetime).Ticks;
+            _expiredUtcTicks = ( DateTime.UtcNow + lifetime ).Ticks;
             _isExpired = false;
             _isRemovedFromStorage = false;
         }
-        
-        public static CacheEntry Create<T>(
-            object key, object[] tags, bool isSliding, TimeSpan lifetime, T value)
-        {
-            return new CacheEntry(key, tags, isSliding, lifetime, value);
-        }
 
-        public static CacheEntry Create<T>(
-            object key, object[] tags, bool isSliding, TimeSpan lifetime, Func<T> valueFactory)
-        {
-            return new CacheEntry(key, tags, isSliding, lifetime, new LazyValue<T>(valueFactory));
-        }
+        public object Key => _key;
 
-        public static CacheEntry Create<T>(
-            object key, object[] tags,bool isSliding, TimeSpan lifetime, Func<Task<T>> taskFactory)
-        {
-            return new CacheEntry(key, tags, isSliding, lifetime, new LazyTask<T>(taskFactory));
-        }
-        
+        public object[] Tags => _tags;
+
         public bool IsExpired
         {
             get
@@ -188,7 +150,7 @@ namespace Common.MemoryCache.ReaderWriterLock
         }
 
         public bool IsRemovedFromStorage => Volatile.Read(ref _isRemovedFromStorage);
-
+        
         public void MarkAsRemovedFromStorage()
         {
             Volatile.Write(ref _isRemovedFromStorage, true);
@@ -198,7 +160,7 @@ namespace Common.MemoryCache.ReaderWriterLock
         {
             if (_isSliding)
             {
-                Volatile.Write(ref _expiredUtcTicks, (DateTime.UtcNow + _lifetime).Ticks);
+                Volatile.Write(ref _expiredUtcTicks, ( DateTime.UtcNow + _lifetime ).Ticks);
             }
             if (_value is T)
             {
@@ -208,7 +170,7 @@ namespace Common.MemoryCache.ReaderWriterLock
             {
                 if (_value is Lazy<T>)
                 {
-                    return ((LazyValue<T>)_value ).Value;
+                    return ((LazyValue<T>)_value).Value;
                 }
                 return ((LazyTask<T>)_value).Value
                     .ConfigureAwait(false)
@@ -226,7 +188,7 @@ namespace Common.MemoryCache.ReaderWriterLock
         {
             if (_isSliding)
             {
-                Volatile.Write(ref _expiredUtcTicks, (DateTime.UtcNow + _lifetime).Ticks);
+                Volatile.Write(ref _expiredUtcTicks, ( DateTime.UtcNow + _lifetime ).Ticks);
             }
             if (_value is T)
             {
@@ -248,16 +210,29 @@ namespace Common.MemoryCache.ReaderWriterLock
         }
     }
 
-    internal class LazyValue<T> : Lazy<T>
+    public class BlockingEntryFactory : IEntryFactory
     {
-        public LazyValue(Func<T> valueFactory)
-            : base(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication) { }
-    }
+        public IBaseEntry CreateBase(ICacheEntry cacheEntry)
+        {
+            return new BlockingBaseEntry(cacheEntry);
+        }
 
-    internal class LazyTask<T> : Lazy<Task<T>>
-    {
-        public LazyTask(Func<Task<T>> taskFactory)
-            : base(() => Task.Factory.StartNew(taskFactory).Unwrap(),
-                   LazyThreadSafetyMode.ExecutionAndPublication) { }
+        public ICacheEntry Create<T>(
+            object key, object[] tags, bool isSliding, TimeSpan lifetime, T value)
+        {
+            return new BlockingCacheEntry(key, tags, isSliding, lifetime, value);
+        }
+
+        public ICacheEntry Create<T>(
+            object key, object[] tags, bool isSliding, TimeSpan lifetime, Func<T> valueFactory)
+        {
+            return new BlockingCacheEntry(key, tags, isSliding, lifetime, new LazyValue<T>(valueFactory));
+        }
+
+        public ICacheEntry Create<T>(
+            object key, object[] tags, bool isSliding, TimeSpan lifetime, Func<Task<T>> taskFactory)
+        {
+            return new BlockingCacheEntry(key, tags, isSliding, lifetime, new LazyTask<T>(taskFactory));
+        }
     }
 }

@@ -5,25 +5,25 @@ using System.Threading.Tasks;
 
 namespace Common.MemoryCache
 {
-    internal class BaseEntry
+    internal class InterlockedBaseEntry : IBaseEntry
     {
-        private ImmutableHashSet<CacheEntry> _derivedEntries;
-        
-        protected BaseEntry()
+        private ImmutableHashSet<ICacheEntry> _derivedEntries;
+
+        protected InterlockedBaseEntry()
         {
-            _derivedEntries = ImmutableHashSet.Create<CacheEntry>();
+            _derivedEntries = ImmutableHashSet.Create<ICacheEntry>();
         }
 
-        public BaseEntry(CacheEntry cacheEntry)
+        public InterlockedBaseEntry(ICacheEntry cacheEntry)
         {
             _derivedEntries = ImmutableHashSet.Create(cacheEntry);
         }
 
-        public ImmutableHashSet<CacheEntry> DerivedEntries => Volatile.Read(ref _derivedEntries);
+        public bool HasDerivedEntries => !Volatile.Read(ref _derivedEntries).IsEmpty;
 
-        public void AddDerivedEntry(CacheEntry cacheEntry)
+        public void AddDerivedEntry(ICacheEntry cacheEntry)
         {
-            ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
+            ImmutableHashSet<ICacheEntry> derivedEntries, originalEntries;
 
             do
             {
@@ -33,9 +33,9 @@ namespace Common.MemoryCache
             } while (originalEntries != derivedEntries);
         }
 
-        public void RemoveDerivedEntry(CacheEntry cacheEntry)
+        public void RemoveDerivedEntry(ICacheEntry cacheEntry)
         {
-            ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
+            ImmutableHashSet<ICacheEntry> derivedEntries, originalEntries;
 
             do
             {
@@ -44,12 +44,28 @@ namespace Common.MemoryCache
                     ref _derivedEntries, derivedEntries.Remove(cacheEntry), derivedEntries);
             } while (originalEntries != derivedEntries);
         }
+
+        public void ForEachDerivedEntry(Action<ICacheEntry> action)
+        {
+            foreach (ICacheEntry entry in Volatile.Read(ref _derivedEntries))
+            {
+                action.Invoke(entry);
+            }
+        }
+
+        public void ScanForRemovedDerivedEntries()
+        {
+            foreach (ICacheEntry entry in Volatile.Read(ref _derivedEntries))
+            {
+                RemoveDerivedEntry(entry);
+            }
+        }
     }
 
-    internal class CacheEntry : BaseEntry
+    internal class InterlockedCacheEntry : InterlockedBaseEntry, ICacheEntry
     {
-        public readonly object Key;
-        public readonly object[] Tags;
+        private readonly object _key;
+        private readonly object[] _tags;
 
         private readonly bool _isSliding;
         private readonly TimeSpan _lifetime;
@@ -60,12 +76,12 @@ namespace Common.MemoryCache
         private long _expiredUtcTicks;
         private bool _isExpired;
         private bool _isRemovedFromStorage;
-        
-        private CacheEntry(
+
+        public InterlockedCacheEntry(
             object key, object[] tags, bool isSliding, TimeSpan lifetime, object value)
         {
-            Key = key;
-            Tags = tags ?? Array.Empty<object>();
+            _key = key;
+            _tags = tags ?? Array.Empty<object>();
 
             _isSliding = isSliding;
             _lifetime = lifetime;
@@ -73,29 +89,15 @@ namespace Common.MemoryCache
             _value = value;
 
             // inside the constructor we not need a Volatile.Write
-            _expiredUtcTicks = (DateTime.UtcNow + lifetime).Ticks;
+            _expiredUtcTicks = ( DateTime.UtcNow + lifetime ).Ticks;
             _isExpired = false;
             _isRemovedFromStorage = false;
         }
-        
-        public static CacheEntry Create<T>(
-            object key, object[] tags, bool isSliding, TimeSpan lifetime, T value)
-        {
-            return new CacheEntry(key, tags, isSliding, lifetime, value);
-        }
 
-        public static CacheEntry Create<T>(
-            object key, object[] tags, bool isSliding, TimeSpan lifetime, Func<T> valueFactory)
-        {
-            return new CacheEntry(key, tags, isSliding, lifetime, new LazyValue<T>(valueFactory));
-        }
+        public object Key => _key;
 
-        public static CacheEntry Create<T>(
-            object key, object[] tags,bool isSliding, TimeSpan lifetime, Func<Task<T>> taskFactory)
-        {
-            return new CacheEntry(key, tags, isSliding, lifetime, new LazyTask<T>(taskFactory));
-        }
-        
+        public object[] Tags => _tags;
+
         public bool IsExpired
         {
             get
@@ -124,7 +126,7 @@ namespace Common.MemoryCache
         {
             if (_isSliding)
             {
-                Volatile.Write(ref _expiredUtcTicks, (DateTime.UtcNow + _lifetime).Ticks);
+                Volatile.Write(ref _expiredUtcTicks, ( DateTime.UtcNow + _lifetime ).Ticks);
             }
             if (_value is T)
             {
@@ -134,7 +136,7 @@ namespace Common.MemoryCache
             {
                 if (_value is Lazy<T>)
                 {
-                    return ((LazyValue<T>)_value ).Value;
+                    return ((LazyValue<T>)_value).Value;
                 }
                 return ((LazyTask<T>)_value).Value
                     .ConfigureAwait(false)
@@ -152,7 +154,7 @@ namespace Common.MemoryCache
         {
             if (_isSliding)
             {
-                Volatile.Write(ref _expiredUtcTicks, (DateTime.UtcNow + _lifetime).Ticks);
+                Volatile.Write(ref _expiredUtcTicks, ( DateTime.UtcNow + _lifetime ).Ticks);
             }
             if (_value is T)
             {
@@ -172,18 +174,5 @@ namespace Common.MemoryCache
                 throw;
             }
         }
-    }
-
-    internal class LazyValue<T> : Lazy<T>
-    {
-        public LazyValue(Func<T> valueFactory)
-            : base(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication) { }
-    }
-
-    internal class LazyTask<T> : Lazy<Task<T>>
-    {
-        public LazyTask(Func<Task<T>> taskFactory)
-            : base(() => Task.Factory.StartNew(taskFactory).Unwrap(),
-                   LazyThreadSafetyMode.ExecutionAndPublication) { }
     }
 }

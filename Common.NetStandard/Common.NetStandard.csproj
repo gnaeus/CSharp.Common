@@ -121,12 +121,13 @@
   <ItemGroup>
     <Compile Include="DependencyInjection\LazyFactory.cs" />
     <Compile Include="DependencyInjection\_Examples.cs" />
-    <Compile Include="MemoryCache\CacheEntry.cs" />
-    <Compile Include="MemoryCache\ConcurrentCache.cs" />
+    <Compile Include="MemoryCache\Entry\BlockingCacheEntry.cs" />
+    <Compile Include="MemoryCache\ICacheEntry.cs" />
     <Compile Include="MemoryCache\IConcurrentCache.cs" />
-    <Compile Include="MemoryCache\ReaderWriterLock\CacheEntry.cs" />
-    <Compile Include="MemoryCache\ReaderWriterLock\ConcurrentCache.cs" />
-    <Compile Include="MemoryCache\ReaderWriterLock\IConcurrentCache.cs" />
+    <Compile Include="MemoryCache\Entry\InterlockedCacheEntry.cs" />
+    <Compile Include="MemoryCache\Entry\ReaderWriterCacheEntry.cs" />
+    <Compile Include="MemoryCache\LazyValue.cs" />
+    <Compile Include="MemoryCache\Cache\ConcurrentDictionaryCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

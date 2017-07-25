@@ -4,34 +4,45 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.MemoryCache.ReaderWriterLock
+namespace Common.MemoryCache
 {
-    public class ConcurrentCache : IConcurrentCache
+    public class ConcurrentDictionaryCache : IConcurrentCache
     {
-        readonly ICollection<KeyValuePair<object, BaseEntry>> _storageCollection;
+        readonly ICollection<KeyValuePair<object, IBaseEntry>> _storageCollection;
 
-        readonly ConcurrentDictionary<object, BaseEntry> _storage;
-        
+        readonly ConcurrentDictionary<object, IBaseEntry> _storage;
+
         readonly TimeSpan _expirationScanFrequency;
+
+        readonly IEntryFactory _entryFactory;
         
-        public ConcurrentCache(TimeSpan expirationScanFrequency)
+        public ConcurrentDictionaryCache(IEntryFactory entryFactory, TimeSpan expirationScanFrequency)
         {
+            if (entryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(entryFactory));
+            }
             if (expirationScanFrequency <= TimeSpan.Zero)
             {
                 throw new ArgumentOutOfRangeException(nameof(expirationScanFrequency));
             }
 
+            _entryFactory = entryFactory;
+
             _expirationScanFrequency = expirationScanFrequency;
 
-            _storageCollection = _storage = new ConcurrentDictionary<object, BaseEntry>();
+            _storageCollection = _storage = new ConcurrentDictionary<object, IBaseEntry>();
         }
 
-        public ConcurrentCache()
-            : this(TimeSpan.FromMinutes(1)) { }
-        
+        public ConcurrentDictionaryCache(IEntryFactory entryFactory)
+            : this(entryFactory, TimeSpan.FromMinutes(1)) { }
+
+        public ConcurrentDictionaryCache()
+            : this(new BlockingEntryFactory()) { }
+
         public bool TryGetValue<T>(object key, out T value)
         {
-            BaseEntry entry;
+            IBaseEntry entry;
             if (!_storage.TryGetValue(key, out entry))
             {
                 value = default(T);
@@ -39,7 +50,7 @@ namespace Common.MemoryCache.ReaderWriterLock
                 return false;
             }
 
-            var cacheEntry = entry as CacheEntry;
+            var cacheEntry = entry as ICacheEntry;
             if (cacheEntry == null)
             {
                 value = default(T);
@@ -62,19 +73,19 @@ namespace Common.MemoryCache.ReaderWriterLock
             if (lifetime <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(lifetime));
             if (value == null) throw new ArgumentNullException(nameof(value));
 
-            BaseEntry oldEntry = null;
+            IBaseEntry oldEntry = null;
 
-            var newCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
+            var newICacheEntry = (ICacheEntry)_storage.AddOrUpdate(key, _ =>
             {
-                return CacheEntry.Create(key, tags, isSliding, lifetime, value);
+                return _entryFactory.Create(key, tags, isSliding, lifetime, value);
             }, (_, existingEntry) =>
             {
                 oldEntry = existingEntry;
 
-                return CacheEntry.Create(key, tags, isSliding, lifetime, value);
+                return _entryFactory.Create(key, tags, isSliding, lifetime, value);
             });
 
-            AddToTags(newCacheEntry);
+            AddToTags(newICacheEntry);
 
             if (oldEntry != null)
             {
@@ -94,29 +105,29 @@ namespace Common.MemoryCache.ReaderWriterLock
             if (lifetime <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(lifetime));
             if (valueFactory == null) throw new ArgumentNullException(nameof(valueFactory));
 
-            BaseEntry oldEntry = null;
-            CacheEntry newCacheEntry = null;
+            IBaseEntry oldEntry = null;
+            ICacheEntry newICacheEntry = null;
 
-            var actualCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
+            var actualICacheEntry = (ICacheEntry)_storage.AddOrUpdate(key, _ =>
             {
-                return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, valueFactory);
+                return newICacheEntry = _entryFactory.Create(key, tags, isSliding, lifetime, valueFactory);
             }, (_, existingEntry) =>
             {
-                var existingCacheEntry = existingEntry as CacheEntry;
+                var existingICacheEntry = existingEntry as ICacheEntry;
 
-                if (existingCacheEntry == null || existingCacheEntry.IsExpired)
+                if (existingICacheEntry == null || existingICacheEntry.IsExpired)
                 {
                     oldEntry = existingEntry;
 
-                    return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, valueFactory);
+                    return newICacheEntry = _entryFactory.Create(key, tags, isSliding, lifetime, valueFactory);
                 }
 
-                return existingCacheEntry;
+                return existingICacheEntry;
             });
 
-            if (actualCacheEntry == newCacheEntry)
+            if (actualICacheEntry == newICacheEntry)
             {
-                AddToTags(newCacheEntry);
+                AddToTags(newICacheEntry);
             }
 
             if (oldEntry != null)
@@ -124,7 +135,7 @@ namespace Common.MemoryCache.ReaderWriterLock
                 RemoveFromDependencyGraph(oldEntry);
             }
 
-            T value = actualCacheEntry.GetValue<T>();
+            T value = actualICacheEntry.GetValue<T>();
 
             ScheduleScanForExpiredEntries();
 
@@ -141,29 +152,29 @@ namespace Common.MemoryCache.ReaderWriterLock
             if (lifetime <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(lifetime));
             if (taskFactory == null) throw new ArgumentNullException(nameof(taskFactory));
 
-            BaseEntry oldEntry = null;
-            CacheEntry newCacheEntry = null;
+            IBaseEntry oldEntry = null;
+            ICacheEntry newICacheEntry = null;
 
-            var actualCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
+            var actualICacheEntry = (ICacheEntry)_storage.AddOrUpdate(key, _ =>
             {
-                return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, taskFactory);
+                return newICacheEntry = _entryFactory.Create(key, tags, isSliding, lifetime, taskFactory);
             }, (_, existingEntry) =>
             {
-                var existingCacheEntry = existingEntry as CacheEntry;
+                var existingICacheEntry = existingEntry as ICacheEntry;
 
-                if (existingCacheEntry == null || existingCacheEntry.IsExpired)
+                if (existingICacheEntry == null || existingICacheEntry.IsExpired)
                 {
                     oldEntry = existingEntry;
 
-                    return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, taskFactory);
+                    return newICacheEntry = _entryFactory.Create(key, tags, isSliding, lifetime, taskFactory);
                 }
 
-                return existingCacheEntry;
+                return existingICacheEntry;
             });
 
-            if (actualCacheEntry == newCacheEntry)
+            if (actualICacheEntry == newICacheEntry)
             {
-                AddToTags(newCacheEntry);
+                AddToTags(newICacheEntry);
             }
 
             if (oldEntry != null)
@@ -171,20 +182,20 @@ namespace Common.MemoryCache.ReaderWriterLock
                 RemoveFromDependencyGraph(oldEntry);
             }
 
-            Task<T> task = actualCacheEntry.GetTask<T>();
+            Task<T> task = actualICacheEntry.GetTask<T>();
 
             ScheduleScanForExpiredEntries();
 
             return task;
         }
         
-        private void AddToTags(CacheEntry cacheEntry)
+        private void AddToTags(ICacheEntry cacheEntry)
         {
             foreach (object tag in cacheEntry.Tags)
             {
                 _storage.AddOrUpdate(tag, _ =>
                 {
-                    return new BaseEntry(cacheEntry);
+                    return _entryFactory.CreateBase(cacheEntry);
                 }, (_, entry) =>
                 {
                     entry.AddDerivedEntry(cacheEntry);
@@ -194,11 +205,11 @@ namespace Common.MemoryCache.ReaderWriterLock
             }
         }
 
-        private void RemoveFromTags(CacheEntry cacheEntry)
+        private void RemoveFromTags(ICacheEntry cacheEntry)
         {
             foreach (object tag in cacheEntry.Tags)
             {
-                BaseEntry entry;
+                IBaseEntry entry;
                 if (!_storage.TryGetValue(tag, out entry))
                 {
                     continue;
@@ -208,9 +219,9 @@ namespace Common.MemoryCache.ReaderWriterLock
             }
         }
 
-        private void RemoveFromDependencyGraph(BaseEntry entry)
+        private void RemoveFromDependencyGraph(IBaseEntry entry)
         {
-            var cacheEntry = entry as CacheEntry;
+            var cacheEntry = entry as ICacheEntry;
 
             if (cacheEntry != null)
             {
@@ -221,12 +232,12 @@ namespace Common.MemoryCache.ReaderWriterLock
             entry.ForEachDerivedEntry(RemoveFromStorage);
         }
         
-        private void RemoveFromStorage(CacheEntry cacheEntry)
+        private void RemoveFromStorage(ICacheEntry cacheEntry)
         {
-            RemoveFromStorage(new KeyValuePair<object, BaseEntry>(cacheEntry.Key, cacheEntry));
+            RemoveFromStorage(new KeyValuePair<object, IBaseEntry>(cacheEntry.Key, cacheEntry));
         }
 
-        private void RemoveFromStorage(KeyValuePair<object, BaseEntry> pair)
+        private void RemoveFromStorage(KeyValuePair<object, IBaseEntry> pair)
         {
             if (_storageCollection.Remove(pair))
             {
@@ -236,7 +247,7 @@ namespace Common.MemoryCache.ReaderWriterLock
 
         public void Remove(object key)
         {
-            BaseEntry entry;
+            IBaseEntry entry;
             if (_storage.TryRemove(key, out entry))
             {
                 RemoveFromDependencyGraph(entry);
@@ -255,18 +266,18 @@ namespace Common.MemoryCache.ReaderWriterLock
                 if (Interlocked.CompareExchange(ref _cleanupIsRunning, 1, 0) == 0)
                 {
                     Volatile.Write(ref _lastExpirationScan, DateTime.UtcNow.Ticks);
-                    ThreadPool.QueueUserWorkItem(s => ScanForExpiredEntries((ConcurrentCache)s), this);
+                    ThreadPool.QueueUserWorkItem(s => ScanForExpiredEntries((ConcurrentDictionaryCache)s), this);
                 }
             }
         }
 
-        private static void ScanForExpiredEntries(ConcurrentCache cache)
+        private static void ScanForExpiredEntries(ConcurrentDictionaryCache cache)
         {
             foreach (var pair in cache._storage)
             {
-                BaseEntry entry = pair.Value;
+                IBaseEntry entry = pair.Value;
 
-                var cacheEntry = entry as CacheEntry;
+                var cacheEntry = entry as ICacheEntry;
 
                 if (cacheEntry != null)
                 {
