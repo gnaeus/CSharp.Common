@@ -7,16 +7,42 @@ namespace Common.MemoryCache
 {
     internal class BaseEntry
     {
-        public ImmutableHashSet<CacheEntry> DerivedEntries;
-
+        private ImmutableHashSet<CacheEntry> _derivedEntries;
+        
         protected BaseEntry()
         {
-            DerivedEntries = ImmutableHashSet.Create<CacheEntry>();
+            _derivedEntries = ImmutableHashSet.Create<CacheEntry>();
         }
 
         public BaseEntry(CacheEntry cacheEntry)
         {
-            DerivedEntries = ImmutableHashSet.Create(cacheEntry);
+            _derivedEntries = ImmutableHashSet.Create(cacheEntry);
+        }
+
+        public ImmutableHashSet<CacheEntry> DerivedEntries => Volatile.Read(ref _derivedEntries);
+
+        public void AddDerivedEntry(CacheEntry cacheEntry)
+        {
+            ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
+
+            do
+            {
+                derivedEntries = Volatile.Read(ref _derivedEntries);
+                originalEntries = Interlocked.CompareExchange(
+                    ref _derivedEntries, derivedEntries.Add(cacheEntry), derivedEntries);
+            } while (originalEntries != derivedEntries);
+        }
+
+        public void RemoveDerivedEntry(CacheEntry cacheEntry)
+        {
+            ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
+
+            do
+            {
+                derivedEntries = Volatile.Read(ref _derivedEntries);
+                originalEntries = Interlocked.CompareExchange(
+                    ref _derivedEntries, derivedEntries.Remove(cacheEntry), derivedEntries);
+            } while (originalEntries != derivedEntries);
         }
     }
 
@@ -33,6 +59,7 @@ namespace Common.MemoryCache
         // DateTime or DateTimeOffset can not be volatile
         private long _expiredUtcTicks;
         private bool _isExpired;
+        private bool _isRemovedFromStorage;
         
         private CacheEntry(
             object key, object[] tags,
@@ -50,6 +77,7 @@ namespace Common.MemoryCache
             // inside the constructor we not need a Volatile.Write
             _expiredUtcTicks = (DateTime.UtcNow + lifetime).Ticks;
             _isExpired = false;
+            _isRemovedFromStorage = false;
         }
         
         public static CacheEntry Create<T>(
@@ -85,6 +113,13 @@ namespace Common.MemoryCache
                 }
                 return false;
             }
+        }
+
+        public bool IsRemovedFromStorage => Volatile.Read(ref _isRemovedFromStorage);
+
+        public void MarkAsRemovedFromStorage()
+        {
+            Volatile.Write(ref _isRemovedFromStorage, true);
         }
 
         public T GetValue<T>()

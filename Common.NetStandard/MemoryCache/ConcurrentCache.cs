@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,10 +8,6 @@ namespace Common.MemoryCache
 {
     public class ConcurrentCache : IConcurrentCache
     {
-        const int concurrencyLevel = 1024;
-        
-        readonly object[] _keyLocks;
-
         readonly ConcurrentDictionary<object, BaseEntry> _storage;
         
         readonly TimeSpan _expirationScanFrequency;
@@ -25,15 +20,8 @@ namespace Common.MemoryCache
             }
 
             _expirationScanFrequency = expirationScanFrequency;
-
-            _keyLocks = new object[concurrencyLevel];
-
-            for (int i = 0; i < concurrencyLevel; i++)
-            {
-                _keyLocks[i] = new object();
-            }
-
-            _storage = new ConcurrentDictionary<object, BaseEntry>(concurrencyLevel, concurrencyLevel);
+            
+            _storage = new ConcurrentDictionary<object, BaseEntry>();
         }
 
         public ConcurrentCache()
@@ -62,15 +50,8 @@ namespace Common.MemoryCache
             return true;
         }
 
-        private object GetKeyLock(object key)
-        {
-            return _keyLocks[( key.GetHashCode() & 0x7fffffff ) % _keyLocks.Length];
-        }
-
         /// <summary>
-        /// Value guaranteed to be removed by tags only after AddOrUpdate will be completed.
-        /// For stronger guarantees we need to acquire KeyLock in TryGetValue, Remove and RemoveFromStorage.
-        /// Otherwise we should remove AddOrUpdate and TryGetValue methods.
+        /// Value guaranteed to be removed by <paramref name="tags"/> only after AddOrUpdate will be completed.
         /// </summary>
         public void AddOrUpdate<T>(
             object key, object[] tags, bool isSliding, TimeSpan lifetime, T value)
@@ -80,22 +61,18 @@ namespace Common.MemoryCache
             if (value == null) throw new ArgumentNullException(nameof(value));
 
             BaseEntry oldEntry = null;
-            CacheEntry newCacheEntry;
 
-            lock (GetKeyLock(key))
+            var newCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
             {
-                newCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
-                {
-                    return CacheEntry.Create(key, tags, isSliding, lifetime, value);
-                }, (_, existingEntry) =>
-                {
-                    oldEntry = existingEntry;
+                return CacheEntry.Create(key, tags, isSliding, lifetime, value);
+            }, (_, existingEntry) =>
+            {
+                oldEntry = existingEntry;
 
-                    return CacheEntry.Create(key, tags, isSliding, lifetime, value);
-                });
+                return CacheEntry.Create(key, tags, isSliding, lifetime, value);
+            });
 
-                AddToTags(newCacheEntry);
-            }
+            AddToTags(newCacheEntry);
 
             if (oldEntry != null)
             {
@@ -105,6 +82,9 @@ namespace Common.MemoryCache
             ScheduleScanForExpiredEntries();
         }
 
+        /// <summary>
+        /// Value guaranteed to be removed by <paramref name="tags"/> only after GetOrAdd will be completed.
+        /// </summary>
         public T GetOrAdd<T>(
             object key, object[] tags, bool isSliding, TimeSpan lifetime, Func<T> valueFactory)
         {
@@ -114,33 +94,29 @@ namespace Common.MemoryCache
 
             BaseEntry oldEntry = null;
             CacheEntry newCacheEntry = null;
-            CacheEntry actualCacheEntry;
 
-            lock (GetKeyLock(key))
+            var actualCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
             {
-                actualCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
+                return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, valueFactory);
+            }, (_, existingEntry) =>
+            {
+                var existingCacheEntry = existingEntry as CacheEntry;
+
+                if (existingCacheEntry == null || existingCacheEntry.IsExpired)
                 {
+                    oldEntry = existingEntry;
+
                     return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, valueFactory);
-                }, (_, existingEntry) =>
-                {
-                    var existingCacheEntry = existingEntry as CacheEntry;
-
-                    if (existingCacheEntry == null || existingCacheEntry.IsExpired)
-                    {
-                        oldEntry = existingEntry;
-
-                        return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, valueFactory);
-                    }
-
-                    return existingCacheEntry;
-                });
-
-                if (actualCacheEntry == newCacheEntry)
-                {
-                    AddToTags(newCacheEntry);
                 }
+
+                return existingCacheEntry;
+            });
+
+            if (actualCacheEntry == newCacheEntry)
+            {
+                AddToTags(newCacheEntry);
             }
-            
+
             if (oldEntry != null)
             {
                 RemoveFromDependencyGraph(oldEntry);
@@ -153,6 +129,9 @@ namespace Common.MemoryCache
             return value;
         }
 
+        /// <summary>
+        /// Value guaranteed to be removed by <paramref name="tags"/> only after GetOrAdd will be completed.
+        /// </summary>
         public Task<T> GetOrAddAsync<T>(
             object key, object[] tags, bool isSliding, TimeSpan lifetime, Func<Task<T>> taskFactory)
         {
@@ -162,31 +141,27 @@ namespace Common.MemoryCache
 
             BaseEntry oldEntry = null;
             CacheEntry newCacheEntry = null;
-            CacheEntry actualCacheEntry;
 
-            lock (GetKeyLock(key))
+            var actualCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
             {
-                actualCacheEntry = (CacheEntry)_storage.AddOrUpdate(key, _ =>
+                return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, taskFactory);
+            }, (_, existingEntry) =>
+            {
+                var existingCacheEntry = existingEntry as CacheEntry;
+
+                if (existingCacheEntry == null || existingCacheEntry.IsExpired)
                 {
+                    oldEntry = existingEntry;
+
                     return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, taskFactory);
-                }, (_, existingEntry) =>
-                {
-                    var existingCacheEntry = existingEntry as CacheEntry;
-
-                    if (existingCacheEntry == null || existingCacheEntry.IsExpired)
-                    {
-                        oldEntry = existingEntry;
-
-                        return newCacheEntry = CacheEntry.Create(key, tags, isSliding, lifetime, taskFactory);
-                    }
-
-                    return existingCacheEntry;
-                });
-
-                if (actualCacheEntry == newCacheEntry)
-                {
-                    AddToTags(newCacheEntry);
                 }
+
+                return existingCacheEntry;
+            });
+
+            if (actualCacheEntry == newCacheEntry)
+            {
+                AddToTags(newCacheEntry);
             }
 
             if (oldEntry != null)
@@ -210,14 +185,7 @@ namespace Common.MemoryCache
                     return new BaseEntry(cacheEntry);
                 }, (_, entry) =>
                 {
-                    ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
-
-                    do
-                    {
-                        derivedEntries = entry.DerivedEntries;
-                        originalEntries = Interlocked.CompareExchange(
-                            ref entry.DerivedEntries, derivedEntries.Add(cacheEntry), derivedEntries);
-                    } while (originalEntries != derivedEntries);
+                    entry.AddDerivedEntry(cacheEntry);
 
                     return entry;
                 });
@@ -234,14 +202,7 @@ namespace Common.MemoryCache
                     continue;
                 }
 
-                ImmutableHashSet<CacheEntry> derivedEntries, originalEntries;
-
-                do
-                {
-                    derivedEntries = entry.DerivedEntries;
-                    originalEntries = Interlocked.CompareExchange(
-                        ref entry.DerivedEntries, derivedEntries.Remove(cacheEntry), derivedEntries);
-                } while (originalEntries != derivedEntries);
+                entry.RemoveDerivedEntry(cacheEntry);
             }
         }
 
@@ -251,6 +212,7 @@ namespace Common.MemoryCache
 
             if (cacheEntry != null)
             {
+                cacheEntry.MarkAsRemovedFromStorage();
                 RemoveFromTags(cacheEntry);
             }
 
@@ -320,6 +282,14 @@ namespace Common.MemoryCache
                     {
                         cache.RemoveFromStorage(pair.Key, pair.Value);
                         continue;
+                    }
+                }
+
+                foreach (CacheEntry derivedEntry in entry.DerivedEntries)
+                {
+                    if (derivedEntry.IsRemovedFromStorage)
+                    {
+                        entry.RemoveDerivedEntry(derivedEntry);
                     }
                 }
             }
