@@ -27,12 +27,22 @@ namespace Common.Tests.Extensions
             var entities = new List<Entity> { entity1, entity2 };
 
             var model1 = new Model { Id = 1, Text = "first changed" };
-            var model3 = new Model { Id = 0, Text = "added" };
+            var model3 = new Model { Id = 0, Text = "third added" };
             var models = new List<Model> { model1, model3 };
 
-            entities.UpdateFrom(models)
+            var added = new List<Entity>();
+            var updated = new List<Entity>();
+            var removed = new List<Entity>();
+
+            entities.MapFrom(models)
                 .WithKeys(e => e.Id, m => m.Id)
-                .MapValues((e, m) =>
+                .OnAdd(added.Add)
+                .OnUpdate(updated.Add)
+                .OnRemove(removed.Add)
+                .OnAdd(e => e)
+                .OnUpdate(e => e)
+                .OnRemove(e => e)
+                .MapElements((e, m) =>
                 {
                     e.Text = m.Text;
                 });
@@ -45,7 +55,19 @@ namespace Common.Tests.Extensions
 
             Assert.AreNotSame(entity2, entities[1]);
             Assert.AreEqual(0, entities[1].Id);
-            Assert.AreEqual("added", entities[1].Text);
+            Assert.AreEqual("third added", entities[1].Text);
+
+            Assert.AreEqual(1, added.Count);
+            Assert.AreEqual(0, added[0].Id);
+            Assert.AreEqual("third added", added[0].Text);
+
+            Assert.AreEqual(1, updated.Count);
+            Assert.AreEqual(1, updated[0].Id);
+            Assert.AreEqual("first changed", updated[0].Text);
+
+            Assert.AreEqual(1, removed.Count);
+            Assert.AreEqual(2, removed[0].Id);
+            Assert.AreEqual("second", removed[0].Text);
         }
     }
 }

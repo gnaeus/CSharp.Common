@@ -57,53 +57,6 @@ partial class _Examples
 
     #endregion
 
-    #region MappingExtensions
-
-    class ProductModel
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-    }
-    
-    class ProductEntity
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-    }
-
-    class ProductsContext : DbContext
-    {
-        public DbSet<ProductEntity> Products { get; set; }
-    }
-
-    class ProductService
-    {
-        readonly ProductsContext _context;
-
-        public void UpdateProducts(ProductModel[] productModels)
-        {
-            int[] productIds = productModels.Select(p => p.Id).ToArray();
-
-            List<ProductEntity> productEntities = _context.Products
-                .Where(p => productIds.Contains(p.Id))
-                .ToList();
-
-            _context.Products.UpdateCollection(productEntities, productModels)
-                .WithKeys(e => e.Id, m => m.Id)
-                .MapValues(UpdateProduct);
-
-            _context.SaveChanges();
-        }
-
-        private static void UpdateProduct(ProductEntity entity, ProductModel model)
-        {
-            entity.Id = model.Id;
-            entity.Title = model.Title;
-        }
-    }
-
-    #endregion
-
     #region DbContextExtensions
 
     class Passport

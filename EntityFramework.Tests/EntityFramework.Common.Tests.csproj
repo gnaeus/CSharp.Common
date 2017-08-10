@@ -82,7 +82,6 @@
     <Compile Include="AssemblyInitializer.cs" />
     <Compile Include="Experiments.cs" />
     <Compile Include="Extensions\ChunkedInQueryTest.cs" />
-    <Compile Include="Extensions\CollectionMappingTest.cs" />
     <Compile Include="Extensions\ExecuteInTransactionTest.cs" />
     <Compile Include="Extensions\GetTableAndSchemaNameTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

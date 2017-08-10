@@ -41,9 +41,9 @@ Extensions for updating `ICollection` of some domain entities from `IEnumerable`
 List<Entity> entities;
 Model[] models;
 
-entities.UpdateFrom(entities, models)
+entities.MapFrom(entities, models)
     .WithKeys(e => e.Id, m => m.Id)
-    .MapValues((e, m) =>
+    .MapElements((e, m) =>
     {
         e.Property = m.Property;
     });
@@ -78,45 +78,28 @@ class ProductEntity
     public string Title { get; set; }
 }
 
-static class OrderMapper
+class OrderService
 {
+    readonly DbContext _dbContext;
+    readonly ProductService _productService
+
     public static void UpdateOrder(OrderEntity entity, OrderModel model)
     {
         entity.Id = model.Id;
 
-        entity.Products.UpdateFrom(model.Products)
+        entity.Products.MapFrom(model.Products)
             .WithKeys(e => e.Id, m => m.Id)
-            .MapValues(ProductMapper.UpdateProduct);
-    }
-
-    public static OrderModel MapOrder(OrderEntity entity)
-    {
-        return new OrderModel
-        {
-            Id = entity.Id,
-
-            Products = entity.Products
-                .Select(ProductMapper.MapProduct)
-                .ToArray(),
-        };
+            .OnRemove(_dbContext.Products.Remove)
+            .MapElements(_productService.UpdateProduct);
     }
 }
 
-static class ProductMapper
+class ProductService
 {
-    public static void UpdateProduct(ProductEntity entity, ProductModel model)
+    public void UpdateProduct(ProductEntity entity, ProductModel model)
     {
         entity.Id = model.Id;
         entity.Title = model.Title;
-    }
-
-    public static ProductModel MapProduct(ProductEntity entity)
-    {
-        return new ProductModel
-        {
-            Id = entity.Id,
-            Title = entity.Title,
-        };
     }
 }
 ```

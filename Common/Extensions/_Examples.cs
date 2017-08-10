@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Data.SqlClient;
@@ -60,15 +61,30 @@ partial class _Examples
         public string Title { get; set; }
     }
 
+    interface IDbSet<TEntity>
+    {
+        TEntity Add(TEntity entity);
+        TEntity Remove(TEntity entity);
+    }
+
+    static class OrdersContext
+    {
+        public static IDbSet<OrderEntity> Orders { get; set; }
+        public static IDbSet<ProductEntity> Products { get; set; }
+    }
+
     static class OrderMapper
     {
         public static void UpdateOrder(OrderEntity entity, OrderModel model)
         {
             entity.Id = model.Id;
 
-            entity.Products.UpdateFrom(model.Products)
+            entity.Products.MapFrom(model.Products)
                 .WithKeys(e => e.Id, m => m.Id)
-                .MapValues(ProductMapper.UpdateProduct);
+                .OnAdd(OrdersContext.Products.Add)
+                .OnUpdate(Console.WriteLine)
+                .OnRemove(OrdersContext.Products.Remove)
+                .MapElements(ProductMapper.UpdateProduct);
         }
 
         public static OrderModel MapOrder(OrderEntity entity)

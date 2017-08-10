@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\DbContextExtensions.cs" />
-    <Compile Include="Extensions\CollectionMappingExtensions.cs" />
     <Compile Include="Extensions\QueriableExtensions.cs" />
     <Compile Include="Helpers\EfDeadlockHelper.cs" />
     <Compile Include="Utils\JsonField.cs" />
