@@ -1,4 +1,4 @@
-﻿#### tringIntepolationHelper
+﻿#### StringIntepolationHelper
 Simple DSL based on C# 6 String Interpolation for building dynamic SQL queries.
 
 ```cs
@@ -49,6 +49,7 @@ class ProductsFilter
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
     public string[] Tags { get; set; }
+    public int? TagsLength => Tags?.Length;
     public ProductsSortBy SortBy { get; set; }
 }
 
@@ -80,7 +81,7 @@ class ProductsSearchService
                 FROM ProductTags AS t
                 WHERE t.ProductId = p.Id
                   AND t.Tag IN (@Tags)
-            ) = {filter.Tags.Length}"
+            ) = @TagsLength"
         )}
         ORDER BY
         {@switch(filter.SortBy,

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using Common.Helpers;
 using static Common.Helpers.StringInterpolationHelper;
 
@@ -47,13 +46,14 @@ partial class _Examples
             )";
         }
     }
-
+    
     class ProductsFilter
     {
         public string Title { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public string[] Tags { get; set; }
+        public int? TagsLength => Tags?.Length;
         public ProductsSortBy SortBy { get; set; }
     }
 
@@ -85,7 +85,7 @@ partial class _Examples
                     FROM ProductTags AS t
                     WHERE t.ProductId = p.Id
                       AND t.Tag IN (@Tags)
-                ) = {filter.Tags.Length}"
+                ) = @TagsLength"
             )}
             ORDER BY
             {@switch(filter.SortBy,

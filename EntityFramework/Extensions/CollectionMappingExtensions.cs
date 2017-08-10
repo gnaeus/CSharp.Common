@@ -96,6 +96,7 @@ namespace EntityFramework.Common.Extensions
 
                     config.Entities.Add(entity);
 
+                    // TODO: is it required?
                     config.DbSet.Add(entity);
                 }
             }   
