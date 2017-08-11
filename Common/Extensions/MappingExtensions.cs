@@ -10,10 +10,17 @@ namespace Common.Extensions
     /// </summary>
     public static class MappingExtensions
     {
+        /// <summary>
+        /// Update <see cref="ICollection{T}"/> of some domain entities
+        /// from <see cref="IEnumerable{T}"/> of the relevant models.
+        /// If <see cref="IEnumerable{T}"/> is null, then <see cref="ICollection{T}"/> stays unchanged.
+        /// </summary>
         public static Mapping<TEntity, TModel> MapFrom<TEntity, TModel>(
             this ICollection<TEntity> entities, IEnumerable<TModel> models)
             where TEntity : class, new()
         {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
             return new Mapping<TEntity, TModel>(entities, models);
         }
 
@@ -29,9 +36,16 @@ namespace Common.Extensions
                 _models = models;
             }
 
+            /// <summary>
+            /// Specify keys for equality comparsion of
+            /// <typeparamref name="TEntity"/> and <typeparamref name="TModel"/>.
+            /// </summary>
             public Mapping<TEntity, TModel, TKey> WithKeys<TKey>(
                 Func<TEntity, TKey> entityKey, Func<TModel, TKey> modelKey)
             {
+                if (entityKey == null) throw new ArgumentNullException(nameof(entityKey));
+                if (modelKey == null) throw new ArgumentNullException(nameof(modelKey));
+
                 return new Mapping<TEntity, TModel, TKey>(_entities, _models, entityKey, modelKey);
             }
         }
@@ -57,44 +71,87 @@ namespace Common.Extensions
                 _modelKey = modelKey;
             }
 
+            /// <summary>
+            /// Invoke provided <paramref name="action"/> for each added entity.
+            /// </summary>
             public Mapping<TEntity, TModel, TKey> OnAdd(Action<TEntity> action)
             {
+                if (action == null) throw new ArgumentNullException(nameof(action));
+
                 _onAdd += action;
+
                 return this;
             }
 
+            /// <summary>
+            /// Invoke provided <paramref name="action"/> for each added entity.
+            /// </summary>
             public Mapping<TEntity, TModel, TKey> OnAdd<T>(Func<TEntity, T> action)
             {
+                if (action == null) throw new ArgumentNullException(nameof(action));
+
                 _onAdd += entity => action.Invoke(entity);
+
                 return this;
             }
 
+            /// <summary>
+            /// Invoke provided <paramref name="action"/> for each updated entity.
+            /// </summary>
             public Mapping<TEntity, TModel, TKey> OnUpdate(Action<TEntity> action)
             {
+                if (action == null) throw new ArgumentNullException(nameof(action));
+
                 _onUpdate += action;
+
                 return this;
             }
 
+            /// <summary>
+            /// Invoke provided <paramref name="action"/> for each updated entity.
+            /// </summary>
             public Mapping<TEntity, TModel, TKey> OnUpdate<T>(Func<TEntity, T> action)
             {
+                if (action == null) throw new ArgumentNullException(nameof(action));
+
                 _onUpdate += entity => action.Invoke(entity);
+
                 return this;
             }
 
+            /// <summary>
+            /// Invoke provided <paramref name="action"/> for each removed entity.
+            /// </summary>
             public Mapping<TEntity, TModel, TKey> OnRemove(Action<TEntity> action)
             {
+                if (action == null) throw new ArgumentNullException(nameof(action));
+
                 _onRemove += action;
+
                 return this;
             }
 
+            /// <summary>
+            /// Invoke provided <paramref name="action"/> for each removed entity.
+            /// </summary>
             public Mapping<TEntity, TModel, TKey> OnRemove<T>(Func<TEntity, T> action)
             {
+                if (action == null) throw new ArgumentNullException(nameof(action));
+
                 _onRemove += entity => action.Invoke(entity);
+
                 return this;
             }
 
+            /// <summary>
+            /// Specify function that performs actual mapping between
+            /// <typeparamref name="TEntity"/> and <typeparamref name="TModel"/>
+            /// and execute mapping operation.
+            /// </summary>
             public void MapElements(Action<TEntity, TModel> mapping)
             {
+                if (mapping == null) throw new ArgumentNullException(nameof(mapping));
+
                 if (_models == null)
                 {
                     return;
