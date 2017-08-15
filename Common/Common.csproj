@@ -51,6 +51,13 @@
     <Compile Include="Api\Tags\ErrorTag.cs" />
     <Compile Include="Api\Tags\SuccessTag.cs" />
     <Compile Include="Api\_Examples.cs" />
+    <Compile Include="Cache\CacheEntry.cs" />
+    <Compile Include="Cache\Extensions.cs" />
+    <Compile Include="Cache\IConcurrentCache.cs" />
+    <Compile Include="Cache\LazyValue.cs" />
+    <Compile Include="Cache\LazyTask.cs" />
+    <Compile Include="Cache\ConcurrentCache.cs" />
+    <Compile Include="Cache\TagEntry.cs" />
     <Compile Include="Exceptions\BusinessException.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Helpers\BitHelper.cs" />
@@ -93,7 +100,6 @@
     <Compile Include="Utils\AsyncLazy.cs" />
     <Compile Include="Utils\DisposableStream.cs" />
     <Compile Include="Utils\QueryBuilder.cs" />
-    <Compile Include="Utils\SimpleCache.cs" />
     <Compile Include="Utils\_Examples.cs" />
     <Compile Include="Validation\IContextValidatable.cs" />
     <Compile Include="Validation\IEnumerableValidatable.cs" />
@@ -135,6 +141,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
