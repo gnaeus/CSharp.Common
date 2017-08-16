@@ -5,36 +5,22 @@ namespace Common.Cache
 {
     internal class TagEntry
     {
-        private bool _isExpired;
+        private bool _isRemoved;
 
         public readonly ConcurrentDictionary<object, CacheEntry> CacheEntries;
 
         public TagEntry()
         {
-            _isExpired = false;
+            _isRemoved = false;
 
             CacheEntries = new ConcurrentDictionary<object, CacheEntry>();
         }
         
-        public bool IsExpired => Volatile.Read(ref _isExpired);
+        public bool IsRemoved => Volatile.Read(ref _isRemoved);
 
-        public void MarkAsExpired()
+        public void MarkAsRemoved()
         {
-            Volatile.Write(ref _isExpired, true);
-        }
-
-        public bool CheckIfExpired()
-        {
-            if (IsExpired)
-            {
-                return true;
-            }
-            if (CacheEntries.IsEmpty)
-            {
-                MarkAsExpired();
-                return true;
-            }
-            return false;
+            Volatile.Write(ref _isRemoved, true);
         }
     }
 }

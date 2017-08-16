@@ -102,15 +102,6 @@ namespace Common.Cache
 
             return actualEntry;
         }
-
-        private void RemoveCacheEntry(object key, CacheEntry cacheEntry)
-        {
-            cacheEntry.MarkAsExpired();
-
-            _cacheEntries.Remove(key, cacheEntry);
-
-            RemoveFromTagEntries(key, cacheEntry);
-        }
         
         private void AddToTagEntries(object key, object[] tags, CacheEntry cacheEntry)
         {
@@ -132,7 +123,7 @@ namespace Common.Cache
                 cacheEntry.TagEntries.Add(tagEntry);
             }
 
-            if (cacheEntry.TagEntries.Any(tagEntry => tagEntry.IsExpired))
+            if (cacheEntry.IsExpired || cacheEntry.TagEntries.Any(tagEntry => tagEntry.IsRemoved))
             {
                 RemoveCacheEntry(key, cacheEntry); 
             }
@@ -144,7 +135,7 @@ namespace Common.Cache
             {
                 foreach (TagEntry tagEntry in cacheEntry.TagEntries)
                 {
-                    if (!tagEntry.IsExpired)
+                    if (!tagEntry.IsRemoved)
                     {
                         tagEntry.CacheEntries.Remove(key, cacheEntry);
                     }
@@ -215,6 +206,15 @@ namespace Common.Cache
             return actualEntry.GetTask<T>();
         }
 
+        private void RemoveCacheEntry(object key, CacheEntry cacheEntry)
+        {
+            cacheEntry.MarkAsExpired();
+
+            _cacheEntries.Remove(key, cacheEntry);
+
+            RemoveFromTagEntries(key, cacheEntry);
+        }
+
         public void Remove(object key)
         {
             CacheEntry cacheEntry;
@@ -226,12 +226,24 @@ namespace Common.Cache
             }
         }
 
+        private void RemoveTagEntry(object tag, TagEntry tagEntry)
+        {
+            tagEntry.MarkAsRemoved();
+
+            _tagEntries.Remove(tag, tagEntry);
+
+            foreach (var cachePair in tagEntry.CacheEntries)
+            {
+                RemoveCacheEntry(cachePair.Key, cachePair.Value);
+            }
+        }
+        
         public void RemoveByTag(object tag)
         {
             TagEntry tagEntry;
             if (_tagEntries.TryRemove(tag, out tagEntry))
             {
-                tagEntry.MarkAsExpired();
+                tagEntry.MarkAsRemoved();
 
                 foreach (var cachePair in tagEntry.CacheEntries)
                 {
@@ -273,14 +285,9 @@ namespace Common.Cache
 
             foreach (var tagPair in cache._tagEntries)
             {
-                if (tagPair.Value.CheckIfExpired())
+                if (tagPair.Value.CacheEntries.IsEmpty)
                 {
-                    cache._tagEntries.Remove(tagPair);
-
-                    foreach (var cachePair in tagPair.Value.CacheEntries)
-                    {
-                        cache.RemoveCacheEntry(cachePair.Key, cachePair.Value);
-                    }
+                    cache.RemoveTagEntry(tagPair.Key, tagPair.Value);
                 }
             }
 
