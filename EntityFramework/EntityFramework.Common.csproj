@@ -62,7 +62,6 @@
     <Compile Include="Extensions\DbContextExtensions.cs" />
     <Compile Include="Extensions\QueriableExtensions.cs" />
     <Compile Include="Helpers\EfDeadlockHelper.cs" />
-    <Compile Include="Utils\JsonField.cs" />
     <Compile Include="Utils\NLogDbInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\DbTransactionAdapter.cs" />
