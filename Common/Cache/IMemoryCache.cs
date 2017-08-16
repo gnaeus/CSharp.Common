@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Common.Cache
 {
-    public interface IConcurrentCache
+    public interface IMemoryCache
     {
         bool TryGet<T>(object key, out T value);
 

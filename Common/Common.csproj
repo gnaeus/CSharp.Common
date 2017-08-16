@@ -53,10 +53,10 @@
     <Compile Include="Api\_Examples.cs" />
     <Compile Include="Cache\CacheEntry.cs" />
     <Compile Include="Cache\Extensions.cs" />
-    <Compile Include="Cache\IConcurrentCache.cs" />
+    <Compile Include="Cache\IMemoryCache.cs" />
     <Compile Include="Cache\LazyValue.cs" />
     <Compile Include="Cache\LazyTask.cs" />
-    <Compile Include="Cache\ConcurrentCache.cs" />
+    <Compile Include="Cache\MemoryCache.cs" />
     <Compile Include="Cache\TagEntry.cs" />
     <Compile Include="Exceptions\BusinessException.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
