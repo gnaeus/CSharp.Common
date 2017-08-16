@@ -125,69 +125,6 @@ class PostsService
 }
 ```
 
-### MappingExtensions
-Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs.
-
-```cs
-List<Entity> entities;
-Model[] models;
-
-dbContext.Entities.UpdateCollection(entities, models)
-    .WithKeys(e => e.Id, m => m.Id)
-    .MapValues((e, m) =>
-    {
-        e.Property = m.Property;
-    });
-```
-
-Detailed example:
-```cs
-using EntityFramework.Common.Extensions;
-
-class ProductModel
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-}
-
-class ProductEntity
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-}
-
-class ProductsContext : DbContext
-{
-    public DbSet<ProductEntity> Products { get; set; }
-}
-
-class ProductService
-{
-    readonly ProductsContext _context;
-
-    public void UpdateProducts(ProductModel[] productModels)
-    {
-        int[] productIds = productModels.Select(p => p.Id).ToArray();
-
-        List<ProductEntity> productEntities = _context.Products
-            .Where(p => productIds.Contains(p.Id))
-            .ToList();
-
-        _context.Products.UpdateCollection(productEntities, productModels)
-            .WithKeys(e => e.Id, m => m.Id)
-            .MapValues(UpdateProduct);
-
-        _context.SaveChanges();
-    }
-
-    private static void UpdateProduct(ProductEntity entity, ProductModel model)
-    {
-        entity.Id = model.Id;
-        entity.Title = model.Title;
-    }
-}
-```
-
 ### TableAndSchema
 Structure that represents table name and schema.
 

@@ -1010,65 +1010,6 @@ public class CryptoRandom : Random { }
 
 ## <a name="link-EntityFramework"></a>[EntityFramework](./EntityFramework)
 
-### JsonField
-Utility struct for storing complex types as JSON strings in database table.
-
-```cs
-struct JsonField<TValue>
-    where TValue : class
-{
-    public string Json { get; set; }
-    public TValue Value { get; set; }
-}
-```
-
-Example:
-```cs
-using EntityFramework.Common.Utils;
-
-class User
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Login { get; set; }
-
-    private JsonField<Address> _address;
-    // used by EntityFramework
-    public string AddressJson
-    {
-        get { return _address.Json; }
-        set { _address.Json = value; }
-    }
-    // used by application code
-    public Address Address
-    {
-        get { return _address.Value; }
-        set { _address.Value = value; }
-    }
-
-    // collection initialization by default
-    private JsonField<ICollection<string>> _phones = new HashSet<string>();
-    public string PhonesJson
-    {
-        get { return _phones.Json; }
-        set { _phones.Json = value; }
-    }
-    public ICollection<string> Phones
-    {
-        get { return _phones.Value; }
-        set { _phones.Value = value; }
-    }
-}
-
-[NotMapped]
-class Address
-{
-    public string City { get; set; }
-    public string Street { get; set; }
-    public string Building { get; set; }
-}
-```
-
 ### DbContextExtensions
 
 __`EntityKeyMember[] GetPrimaryKeys(this DbContext context, object entity)`__  
@@ -1192,69 +1133,6 @@ class PostsService
         return await _context.Posts
             .Where(p => p.Date >= sinceDate)
             .ExecuteChunkedInQueryAsync(p => p.AuthorId, authorIds, chunkSize: 100);
-    }
-}
-```
-
-### MappingExtensions
-Extensions for updating `ICollection` of some domain entities from `IEnumerable` of the relevant DTOs.
-
-```cs
-List<Entity> entities;
-Model[] models;
-
-dbContext.Entities.UpdateCollection(entities, models)
-    .WithKeys(e => e.Id, m => m.Id)
-    .MapValues((e, m) =>
-    {
-        e.Property = m.Property;
-    });
-```
-
-Detailed example:
-```cs
-using EntityFramework.Common.Extensions;
-
-class ProductModel
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-}
-
-class ProductEntity
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-}
-
-class ProductsContext : DbContext
-{
-    public DbSet<ProductEntity> Products { get; set; }
-}
-
-class ProductService
-{
-    readonly ProductsContext _context;
-
-    public void UpdateProducts(ProductModel[] productModels)
-    {
-        int[] productIds = productModels.Select(p => p.Id).ToArray();
-
-        List<ProductEntity> productEntities = _context.Products
-            .Where(p => productIds.Contains(p.Id))
-            .ToList();
-
-        _context.Products.UpdateCollection(productEntities, productModels)
-            .WithKeys(e => e.Id, m => m.Id)
-            .MapValues(UpdateProduct);
-
-        _context.SaveChanges();
-    }
-
-    private static void UpdateProduct(ProductEntity entity, ProductModel model)
-    {
-        entity.Id = model.Id;
-        entity.Title = model.Title;
     }
 }
 ```
