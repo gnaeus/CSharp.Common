@@ -109,7 +109,7 @@ namespace Common.Cache
 
             foreach (object tag in tags)
             {
-                TagEntry tagEntry = _tagEntries.GetOrAdd(key, _ => new TagEntry());
+                TagEntry tagEntry = _tagEntries.GetOrAdd(key, _ => new TagEntry(key, cacheEntry));
 
                 CacheEntry actualEntry;
                 if (!tagEntry.CacheEntries.TryGetValue(key, out actualEntry) || actualEntry != cacheEntry)

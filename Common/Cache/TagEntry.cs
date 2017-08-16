@@ -9,11 +9,16 @@ namespace Common.Cache
 
         public readonly ConcurrentDictionary<object, CacheEntry> CacheEntries;
 
-        public TagEntry()
+        /// <summary>
+        /// Create already not empty <see cref="TagEntry"/>.
+        /// </summary>
+        public TagEntry(object key, CacheEntry cacheEntry)
         {
             _isRemoved = false;
 
             CacheEntries = new ConcurrentDictionary<object, CacheEntry>();
+
+            CacheEntries.TryAdd(key, cacheEntry);
         }
         
         public bool IsRemoved => Volatile.Read(ref _isRemoved);
