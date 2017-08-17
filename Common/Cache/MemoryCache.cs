@@ -179,27 +179,37 @@ namespace Common.Cache
 
             foreach (object tag in tags)
             {
-                TagEntry tagEntry;
-
-                do
+                if (!TryAddTagEntry(tag, key, cacheEntry))
                 {
-                    tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
-
-                    tagEntry.CacheEntries.TryAdd(cacheEntry, key);
-
-                    if (cacheEntry.IsExpired || tagEntry.IsRemoved)
-                    {
-                        RemoveCacheEntry(key, cacheEntry);
-                        return;
-                    }
-                }
-                while (tagEntry.IsEvicted);
-                
-                lock (cacheEntry.TagEntries)
-                {
-                    cacheEntry.TagEntries.Add(tagEntry);
+                    return;
                 }
             }
+        }
+
+        private bool TryAddTagEntry(object tag, object key, CacheEntry cacheEntry)
+        {
+            TagEntry tagEntry;
+
+            do
+            {
+                tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
+
+                tagEntry.CacheEntries.TryAdd(cacheEntry, key);
+
+                if (cacheEntry.IsExpired || tagEntry.IsRemoved)
+                {
+                    RemoveCacheEntry(key, cacheEntry);
+                    return false;
+                }
+            }
+            while (tagEntry.IsEvicted);
+
+            lock (cacheEntry.TagEntries)
+            {
+                cacheEntry.TagEntries.Add(tagEntry);
+            }
+
+            return true;
         }
         
         private static void UnbindFromTagEntries(CacheEntry cacheEntry)
@@ -316,24 +326,7 @@ namespace Common.Cache
                     object key = cachePair.Value;
                     CacheEntry cacheEntry = cachePair.Key;
 
-                    do
-                    {
-                        tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
-
-                        tagEntry.CacheEntries.TryAdd(cacheEntry, key);
-
-                        if (cacheEntry.IsExpired || tagEntry.IsRemoved)
-                        {
-                            RemoveCacheEntry(key, cacheEntry);
-                            continue;
-                        }
-                    }
-                    while (tagEntry.IsEvicted);
-
-                    lock (cacheEntry.TagEntries)
-                    {
-                        cacheEntry.TagEntries.Add(tagEntry);
-                    }
+                    TryAddTagEntry(tag, key, cacheEntry);
                 }
             }
         }
