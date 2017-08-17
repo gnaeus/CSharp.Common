@@ -329,6 +329,11 @@ namespace Common.Cache
                         }
                     }
                     while (tagEntry.IsEvicted);
+
+                    lock (cacheEntry.TagEntries)
+                    {
+                        cacheEntry.TagEntries.Add(tagEntry);
+                    }
                 }
             }
         }
