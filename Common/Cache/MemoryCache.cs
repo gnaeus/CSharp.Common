@@ -179,37 +179,44 @@ namespace Common.Cache
 
             foreach (object tag in tags)
             {
-                if (!TryAddTagEntry(tag, key, cacheEntry))
+                if (!TryBindTagEntry(tag, key, cacheEntry))
                 {
                     return;
                 }
             }
         }
 
-        private bool TryAddTagEntry(object tag, object key, CacheEntry cacheEntry)
+        private bool TryBindTagEntry(object tag, object key, CacheEntry cacheEntry)
         {
-            TagEntry tagEntry;
-
-            do
+            while (true)
             {
-                tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
+                TagEntry tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
 
                 tagEntry.CacheEntries.TryAdd(cacheEntry, key);
 
-                if (cacheEntry.IsExpired || tagEntry.IsRemoved)
+                lock (cacheEntry.TagEntries)
+                {
+                    cacheEntry.TagEntries.Add(tagEntry);
+                }
+
+                if (tagEntry.IsRemoved || cacheEntry.IsExpired)
                 {
                     RemoveCacheEntry(key, cacheEntry);
                     return false;
                 }
-            }
-            while (tagEntry.IsEvicted);
 
-            lock (cacheEntry.TagEntries)
-            {
-                cacheEntry.TagEntries.Add(tagEntry);
+                if (tagEntry.IsEvicted)
+                {
+                    lock (cacheEntry.TagEntries)
+                    {
+                        cacheEntry.TagEntries.Remove(tagEntry);
+                    }
+                }
+                else
+                {
+                    return true;
+                }
             }
-
-            return true;
         }
         
         private static void UnbindFromTagEntries(CacheEntry cacheEntry)
@@ -326,7 +333,12 @@ namespace Common.Cache
                     object key = cachePair.Value;
                     CacheEntry cacheEntry = cachePair.Key;
 
-                    TryAddTagEntry(tag, key, cacheEntry);
+                    lock (cacheEntry.TagEntries)
+                    {
+                        cacheEntry.TagEntries.Remove(tagEntry);
+                    }
+
+                    TryBindTagEntry(tag, key, cacheEntry);
                 }
             }
         }
