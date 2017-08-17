@@ -13,12 +13,10 @@ namespace Common.Cache
 
         private bool _isExpired;
         private long _expiredTicks;
+        
+        public HashSet<TagEntry> TagEntries;
 
-        public readonly long Version;
-
-        public List<TagEntry> TagEntries;
-
-        public CacheEntry(long version, bool isSliding, TimeSpan lifetime, object value)
+        public CacheEntry(bool isSliding, TimeSpan lifetime, object value)
         {
             _value = value;
             _lifetime = lifetime;
@@ -26,8 +24,6 @@ namespace Common.Cache
 
             _isExpired = false;
             _expiredTicks = (DateTime.UtcNow + lifetime).Ticks;
-
-            Version = version;
         }
 
         public bool IsExpired => Volatile.Read(ref _isExpired);

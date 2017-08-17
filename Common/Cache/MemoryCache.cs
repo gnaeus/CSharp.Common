@@ -58,90 +58,6 @@ namespace Common.Cache
             value = cacheEntry.GetValue<T>();
             return true;
         }
-
-        const int VersionsMask = 0xff;
-
-        readonly long[] _versions = new long[255];
-
-        private CacheEntry CreateCacheEntry(object key, bool isSliding, TimeSpan lifetime, object value)
-        {
-            long version = Interlocked.Increment(ref _versions[key.GetHashCode() & VersionsMask]);
-
-            return new CacheEntry(version, isSliding, lifetime, value);
-        }
-
-        private CacheEntry AddCacheEntry(object key, object[] tags, CacheEntry cacheEntry)
-        {
-            CacheEntry actualEntry, deletedEntry = null;
-
-            actualEntry = _cacheEntries.AddOrUpdate(key, cacheEntry, (_, updatedEntry) =>
-            {
-                if (updatedEntry.Version < cacheEntry.Version)
-                {
-                    deletedEntry = updatedEntry;
-                    return cacheEntry;
-                }
-                else
-                {
-                    deletedEntry = null;
-                    return updatedEntry;
-                }
-            });
-
-            if (deletedEntry != null)
-            {
-                deletedEntry.MarkAsExpired();
-
-                RemoveFromTagEntries(key, deletedEntry);
-            }
-
-            if (tags != null && actualEntry == cacheEntry)
-            {
-                AddToTagEntries(key, tags, cacheEntry);
-            }
-
-            return actualEntry;
-        }
-        
-        private void AddToTagEntries(object key, object[] tags, CacheEntry cacheEntry)
-        {
-            cacheEntry.TagEntries = new List<TagEntry>(tags.Length);
-
-            foreach (object tag in tags)
-            {
-                TagEntry tagEntry = _tagEntries.GetOrAdd(key, _ => new TagEntry(key, cacheEntry));
-
-                CacheEntry actualEntry;
-                if (!tagEntry.CacheEntries.TryGetValue(key, out actualEntry) || actualEntry != cacheEntry)
-                {
-                    tagEntry.CacheEntries.AddOrUpdate(key, cacheEntry, (_, updatedEntry) =>
-                    {
-                        return updatedEntry.Version < cacheEntry.Version ? cacheEntry : updatedEntry;
-                    });
-                }
-                
-                cacheEntry.TagEntries.Add(tagEntry);
-            }
-
-            if (cacheEntry.IsExpired || cacheEntry.TagEntries.Any(tagEntry => tagEntry.IsRemoved))
-            {
-                RemoveCacheEntry(key, cacheEntry); 
-            }
-        }
-
-        private static void RemoveFromTagEntries(object key, CacheEntry cacheEntry)
-        {
-            if (cacheEntry.TagEntries != null)
-            {
-                foreach (TagEntry tagEntry in cacheEntry.TagEntries)
-                {
-                    if (!tagEntry.IsRemoved)
-                    {
-                        tagEntry.CacheEntries.Remove(key, cacheEntry);
-                    }
-                }
-            }
-        }
         
         public void Add<T>(object key, object[] tags, bool isSliding, TimeSpan lifetime, T value)
         {
@@ -153,9 +69,27 @@ namespace Common.Cache
 
             ScheduleScanForExpiredEntries();
 
-            CacheEntry createdEntry = CreateCacheEntry(key, isSliding, lifetime, value);
+            CacheEntry createdEntry, deletedEntry = null;
 
-            AddCacheEntry(key, tags, createdEntry);
+            createdEntry = new CacheEntry(isSliding, lifetime, value);
+            
+            _cacheEntries.AddOrUpdate(key, createdEntry, (_, updatedEntry) =>
+            {
+                deletedEntry = updatedEntry;
+                return createdEntry;
+            });
+
+            if (deletedEntry != null)
+            {
+                deletedEntry.MarkAsExpired();
+
+                UnbindFromTagEntries(deletedEntry);
+            }
+
+            if (tags != null)
+            {
+                BindToTagEntries(key, tags, createdEntry);
+            }
         }
 
         public T GetOrAdd<T>(
@@ -170,13 +104,13 @@ namespace Common.Cache
 
             ScheduleScanForExpiredEntries();
 
-            CacheEntry actualEntry;
+            CacheEntry actualEntry, createdEntry;
+
             if (!_cacheEntries.TryGetValue(key, out actualEntry) || actualEntry.CheckIfExpired())
             {
-                CacheEntry createdEntry = CreateCacheEntry(
-                    key, isSliding, lifetime, new LazyValue<T>(valueFactory));
+                createdEntry = new CacheEntry(isSliding, lifetime, new LazyValue<T>(valueFactory));
 
-                actualEntry = AddCacheEntry(key, tags, createdEntry);
+                actualEntry = GetOrAddCacheEntry(key, tags, createdEntry);
             }
 
             return actualEntry.GetValue<T>();
@@ -194,25 +128,105 @@ namespace Common.Cache
 
             ScheduleScanForExpiredEntries();
 
-            CacheEntry actualEntry;
+            CacheEntry actualEntry, createdEntry;
+
             if (!_cacheEntries.TryGetValue(key, out actualEntry) || actualEntry.CheckIfExpired())
             {
-                CacheEntry createdEntry = CreateCacheEntry(
-                    key, isSliding, lifetime, new LazyTask<T>(taskFactory));
+                createdEntry = new CacheEntry(isSliding, lifetime, new LazyTask<T>(taskFactory));
 
-                actualEntry = AddCacheEntry(key, tags, createdEntry);
+                actualEntry = GetOrAddCacheEntry(key, tags, createdEntry);
             }
 
             return actualEntry.GetTask<T>();
         }
 
+        private CacheEntry GetOrAddCacheEntry(object key, object[] tags, CacheEntry createdEntry)
+        {
+            CacheEntry actualEntry, deletedEntry = null;
+
+            actualEntry = _cacheEntries.AddOrUpdate(key, createdEntry, (_, updatedEntry) =>
+            {
+                if (updatedEntry.CheckIfExpired())
+                {
+                    deletedEntry = updatedEntry;
+                    return createdEntry;
+                }
+                else
+                {
+                    deletedEntry = null;
+                    return updatedEntry;
+                }
+            });
+
+            if (deletedEntry != null)
+            {
+                deletedEntry.MarkAsExpired();
+
+                UnbindFromTagEntries(deletedEntry);
+            }
+
+            if (tags != null && actualEntry == createdEntry)
+            {
+                BindToTagEntries(key, tags, createdEntry);
+            }
+            
+            return actualEntry;
+        }
+
+        private void BindToTagEntries(object key, object[] tags, CacheEntry cacheEntry)
+        {
+            cacheEntry.TagEntries = new HashSet<TagEntry>();
+
+            foreach (object tag in tags)
+            {
+                TagEntry tagEntry;
+
+                do
+                {
+                    tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
+
+                    tagEntry.CacheEntries.TryAdd(cacheEntry, key);
+
+                    if (cacheEntry.IsExpired || tagEntry.IsRemoved)
+                    {
+                        RemoveCacheEntry(key, cacheEntry);
+                        return;
+                    }
+                }
+                while (tagEntry.IsEvicted);
+                
+                lock (cacheEntry.TagEntries)
+                {
+                    cacheEntry.TagEntries.Add(tagEntry);
+                }
+            }
+        }
+        
+        private static void UnbindFromTagEntries(CacheEntry cacheEntry)
+        {
+            if (cacheEntry.TagEntries != null)
+            {
+                lock (cacheEntry.TagEntries)
+                {
+                    foreach (TagEntry tagEntry in cacheEntry.TagEntries)
+                    {
+                        if (tagEntry.IsActive)
+                        {
+                            object _;
+                            tagEntry.CacheEntries.TryRemove(cacheEntry, out _);
+                        }
+                    }
+                }
+            }
+        }
+
         private void RemoveCacheEntry(object key, CacheEntry cacheEntry)
         {
-            cacheEntry.MarkAsExpired();
-
             _cacheEntries.Remove(key, cacheEntry);
 
-            RemoveFromTagEntries(key, cacheEntry);
+            cacheEntry.MarkAsExpired();
+
+            UnbindFromTagEntries(cacheEntry);
         }
 
         public void Remove(object key)
@@ -222,19 +236,7 @@ namespace Common.Cache
             {
                 cacheEntry.MarkAsExpired();
 
-                RemoveFromTagEntries(key, cacheEntry);
-            }
-        }
-
-        private void RemoveTagEntry(object tag, TagEntry tagEntry)
-        {
-            tagEntry.MarkAsRemoved();
-
-            _tagEntries.Remove(tag, tagEntry);
-
-            foreach (var cachePair in tagEntry.CacheEntries)
-            {
-                RemoveCacheEntry(cachePair.Key, cachePair.Value);
+                UnbindFromTagEntries(cacheEntry);
             }
         }
         
@@ -247,7 +249,10 @@ namespace Common.Cache
 
                 foreach (var cachePair in tagEntry.CacheEntries)
                 {
-                    RemoveCacheEntry(cachePair.Key, cachePair.Value);
+                    object key = cachePair.Value;
+                    CacheEntry cacheEntry = cachePair.Key;
+
+                    RemoveCacheEntry(key, cacheEntry);
                 }
             }
         }
@@ -277,21 +282,55 @@ namespace Common.Cache
 
             foreach (var cachePair in cache._cacheEntries)
             {
-                if (cachePair.Value.CheckIfExpired(utcNow))
+                object key = cachePair.Key;
+                CacheEntry cacheEntry = cachePair.Value;
+
+                if (cacheEntry.CheckIfExpired(utcNow))
                 {
-                    cache.RemoveCacheEntry(cachePair.Key, cachePair.Value);
+                    cache.RemoveCacheEntry(key, cacheEntry);
                 }
             }
 
             foreach (var tagPair in cache._tagEntries)
             {
-                if (tagPair.Value.CacheEntries.IsEmpty)
+                object tag = tagPair.Key;
+                TagEntry tagEntry = tagPair.Value;
+
+                if (tagEntry.CacheEntries.IsEmpty)
                 {
-                    cache.RemoveTagEntry(tagPair.Key, tagPair.Value);
+                    cache.ScatterEvictedTagEntry(tag, tagEntry);
                 }
             }
 
             Volatile.Write(ref cache._cleanupIsRunning, 0);
+        }
+
+        private void ScatterEvictedTagEntry(object tag, TagEntry tagEntry)
+        {
+            if (_tagEntries.Remove(tag, tagEntry))
+            {
+                tagEntry.MarkAsEvicted();
+
+                foreach (var cachePair in tagEntry.CacheEntries)
+                {
+                    object key = cachePair.Value;
+                    CacheEntry cacheEntry = cachePair.Key;
+
+                    do
+                    {
+                        tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
+
+                        tagEntry.CacheEntries.TryAdd(cacheEntry, key);
+
+                        if (cacheEntry.IsExpired || tagEntry.IsRemoved)
+                        {
+                            RemoveCacheEntry(key, cacheEntry);
+                            continue;
+                        }
+                    }
+                    while (tagEntry.IsEvicted);
+                }
+            }
         }
     }
 }
