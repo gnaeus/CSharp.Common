@@ -49,10 +49,11 @@ namespace Common.Cache
 
             if (cacheEntry.CheckIfExpired())
             {
-                _cacheEntries.Remove(key, cacheEntry);
-
-                RemoveFromTagEntries(cacheEntry);
-
+                if (_cacheEntries.Remove(key, cacheEntry))
+                {
+                    RemoveFromAllTagEntries(cacheEntry);
+                }
+                
                 value = default(T);
                 return false;
             }
@@ -86,7 +87,7 @@ namespace Common.Cache
 
             if (deletedEntry != null)
             {
-                RemoveFromTagEntries(deletedEntry);
+                RemoveFromAllTagEntries(deletedEntry);
             }
 
             AddToTagEntries(key, createdEntry);
@@ -160,7 +161,7 @@ namespace Common.Cache
 
             if (deletedEntry != null)
             {
-                RemoveFromTagEntries(deletedEntry);
+                RemoveFromAllTagEntries(deletedEntry);
             }
 
             if (actualEntry == createdEntry)
@@ -188,9 +189,10 @@ namespace Common.Cache
                 
                 if (cacheEntry.IsExpired || tagEntries.Any(tagEntry => tagEntry.IsRemoved))
                 {
-                    cacheEntry.MarkAsExpired();
-
-                    _cacheEntries.Remove(key, cacheEntry);
+                    if (_cacheEntries.Remove(key, cacheEntry))
+                    {
+                        cacheEntry.MarkAsExpired();
+                    }
                     
                     RemoveFromTagEntries(tagEntries, cacheEntry);
                 }
@@ -209,7 +211,7 @@ namespace Common.Cache
             }
         }
 
-        private void RemoveFromTagEntries(CacheEntry cacheEntry)
+        private void RemoveFromAllTagEntries(CacheEntry cacheEntry)
         {
             if (cacheEntry.Tags != null)
             {
@@ -232,7 +234,7 @@ namespace Common.Cache
             {
                 cacheEntry.MarkAsExpired();
 
-                RemoveFromTagEntries(cacheEntry);
+                RemoveFromAllTagEntries(cacheEntry);
             }
         }
         
@@ -243,22 +245,23 @@ namespace Common.Cache
             {
                 tagEntry.MarkAsRemoved();
 
-                RemoveAllCacheEntries(tagEntry);
+                RemoveLinkedCacheEntries(tagEntry);
             }
         }
 
-        private void RemoveAllCacheEntries(TagEntry tagEntry)
+        private void RemoveLinkedCacheEntries(TagEntry tagEntry)
         {
             foreach (var cachePair in tagEntry)
             {
                 object key = cachePair.Value;
                 CacheEntry cacheEntry = cachePair.Key;
+                
+                if (_cacheEntries.Remove(key, cacheEntry))
+                {
+                    cacheEntry.MarkAsExpired();
 
-                cacheEntry.MarkAsExpired();
-
-                _cacheEntries.Remove(key, cacheEntry);
-
-                RemoveFromTagEntries(cacheEntry);
+                    RemoveFromAllTagEntries(cacheEntry);
+                }
             }
         }
 
@@ -292,9 +295,10 @@ namespace Common.Cache
 
                 if (cacheEntry.CheckIfExpired(utcNow))
                 {
-                    cache._cacheEntries.Remove(key, cacheEntry);
-
-                    cache.RemoveFromTagEntries(cacheEntry);
+                    if (cache._cacheEntries.Remove(key, cacheEntry))
+                    {
+                        cache.RemoveFromAllTagEntries(cacheEntry);
+                    }
                 }
             }
 
@@ -309,7 +313,7 @@ namespace Common.Cache
                     {
                         tagEntry.MarkAsRemoved();
 
-                        cache.RemoveAllCacheEntries(tagEntry);
+                        cache.RemoveLinkedCacheEntries(tagEntry);
                     }
                 }
             }
