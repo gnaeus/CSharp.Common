@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,20 +6,22 @@ namespace Common.Cache
 {
     internal class CacheEntry
     {
-        private readonly object _value;
-        private readonly TimeSpan _lifetime;
+        public readonly object[] Tags;
+
         private readonly bool _isSliding;
+        private readonly TimeSpan _lifetime;
+        private readonly object _value;
 
         private bool _isExpired;
         private long _expiredTicks;
         
-        public HashSet<TagEntry> TagEntries;
-
-        public CacheEntry(bool isSliding, TimeSpan lifetime, object value)
+        public CacheEntry(object[] tags, bool isSliding, TimeSpan lifetime, object value)
         {
-            _value = value;
-            _lifetime = lifetime;
+            Tags = tags;
+
             _isSliding = isSliding;
+            _lifetime = lifetime;
+            _value = value;
 
             _isExpired = false;
             _expiredTicks = (DateTime.UtcNow + lifetime).Ticks;
