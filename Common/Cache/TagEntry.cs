@@ -23,5 +23,7 @@ namespace Common.Cache
         {
             Volatile.Write(ref _isRemoved, true);
         }
+
+        public bool IsActive => !IsRemoved;
     }
 }

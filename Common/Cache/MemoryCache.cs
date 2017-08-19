@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,7 +49,9 @@ namespace Common.Cache
 
             if (cacheEntry.CheckIfExpired())
             {
-                RemoveCacheEntry(key, cacheEntry);
+                _cacheEntries.Remove(key, cacheEntry);
+
+                RemoveFromTagEntries(cacheEntry);
 
                 value = default(T);
                 return false;
@@ -171,21 +175,40 @@ namespace Common.Cache
         {
             if (cacheEntry.Tags != null)
             {
+                var tagEntries = new List<TagEntry>(cacheEntry.Tags.Length);
+
                 foreach (object tag in cacheEntry.Tags)
                 {
                     TagEntry tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry, key));
 
                     tagEntry.TryAdd(cacheEntry, key);
 
-                    if (tagEntry.IsRemoved || cacheEntry.IsExpired)
-                    {
-                        RemoveCacheEntry(key, cacheEntry);
-                        return;
-                    }
+                    tagEntries.Add(tagEntry);
+                }
+                
+                if (cacheEntry.IsExpired || tagEntries.Any(tagEntry => tagEntry.IsRemoved))
+                {
+                    cacheEntry.MarkAsExpired();
+
+                    _cacheEntries.Remove(key, cacheEntry);
+                    
+                    RemoveFromTagEntries(tagEntries, cacheEntry);
                 }
             }
         }
-        
+
+        private void RemoveFromTagEntries(List<TagEntry> tagEntries, CacheEntry cacheEntry)
+        {
+            foreach (TagEntry tagEntry in tagEntries)
+            {
+                if (tagEntry.IsActive)
+                {
+                    object key;
+                    tagEntry.TryRemove(cacheEntry, out key);
+                }
+            }
+        }
+
         private void RemoveFromTagEntries(CacheEntry cacheEntry)
         {
             if (cacheEntry.Tags != null)
@@ -193,24 +216,15 @@ namespace Common.Cache
                 foreach (object tag in cacheEntry.Tags)
                 {
                     TagEntry tagEntry;
-                    if (_tagEntries.TryGetValue(tag, out tagEntry))
+                    if (_tagEntries.TryGetValue(tag, out tagEntry) && tagEntry.IsActive)
                     {
-                        object _;
-                        tagEntry.TryRemove(cacheEntry, out _);
+                        object key;
+                        tagEntry.TryRemove(cacheEntry, out key);
                     }
                 }
             }
         }
-
-        private void RemoveCacheEntry(object key, CacheEntry cacheEntry)
-        {
-            _cacheEntries.Remove(key, cacheEntry);
-
-            cacheEntry.MarkAsExpired();
-            
-            RemoveFromTagEntries(cacheEntry);
-        }
-
+        
         public void Remove(object key)
         {
             CacheEntry cacheEntry;
@@ -229,18 +243,22 @@ namespace Common.Cache
             {
                 tagEntry.MarkAsRemoved();
 
-                RemoveAllCacheEntriesByTagEntry(tagEntry);
+                RemoveAllCacheEntries(tagEntry);
             }
         }
 
-        private void RemoveAllCacheEntriesByTagEntry(TagEntry tagEntry)
+        private void RemoveAllCacheEntries(TagEntry tagEntry)
         {
             foreach (var cachePair in tagEntry)
             {
                 object key = cachePair.Value;
                 CacheEntry cacheEntry = cachePair.Key;
 
-                RemoveCacheEntry(key, cacheEntry);
+                cacheEntry.MarkAsExpired();
+
+                _cacheEntries.Remove(key, cacheEntry);
+
+                RemoveFromTagEntries(cacheEntry);
             }
         }
 
@@ -274,7 +292,9 @@ namespace Common.Cache
 
                 if (cacheEntry.CheckIfExpired(utcNow))
                 {
-                    cache.RemoveCacheEntry(key, cacheEntry);
+                    cache._cacheEntries.Remove(key, cacheEntry);
+
+                    cache.RemoveFromTagEntries(cacheEntry);
                 }
             }
 
@@ -289,7 +309,7 @@ namespace Common.Cache
                     {
                         tagEntry.MarkAsRemoved();
 
-                        cache.RemoveAllCacheEntriesByTagEntry(tagEntry);
+                        cache.RemoveAllCacheEntries(tagEntry);
                     }
                 }
             }
