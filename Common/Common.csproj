@@ -51,6 +51,13 @@
     <Compile Include="Api\Tags\ErrorTag.cs" />
     <Compile Include="Api\Tags\SuccessTag.cs" />
     <Compile Include="Api\_Examples.cs" />
+    <Compile Include="BlockingCache\CacheEntry.cs" />
+    <Compile Include="BlockingCache\Extensions.cs" />
+    <Compile Include="BlockingCache\IMemoryCache.cs" />
+    <Compile Include="BlockingCache\LazyTask.cs" />
+    <Compile Include="BlockingCache\LazyValue.cs" />
+    <Compile Include="BlockingCache\MemoryCache.cs" />
+    <Compile Include="BlockingCache\TagEntry.cs" />
     <Compile Include="Cache\CacheEntry.cs" />
     <Compile Include="Cache\Extensions.cs" />
     <Compile Include="Cache\IMemoryCache.cs" />
