@@ -181,9 +181,11 @@ namespace Common.BlockingCache
 
                 foreach (object tag in cacheEntry.Tags)
                 {
+                    TagEntry tagEntry;
+
                     while (true)
                     {
-                        TagEntry tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry));
+                        tagEntry = _tagEntries.GetOrAdd(tag, _ => new TagEntry(cacheEntry));
 
                         lock (tagEntry)
                         {
@@ -195,21 +197,21 @@ namespace Common.BlockingCache
                             tagEntry.Add(cacheEntry);
                         }
 
-                        tagEntries.Add(tagEntry);
+                        break;
+                    }
 
-                        if (cacheEntry.IsExpired || tagEntry.IsRemoved)
+                    tagEntries.Add(tagEntry);
+
+                    if (cacheEntry.IsExpired || tagEntry.IsRemoved)
+                    {
+                        if (_cacheEntries.Remove(cacheEntry.Key, cacheEntry))
                         {
-                            if (_cacheEntries.Remove(cacheEntry.Key, cacheEntry))
-                            {
-                                cacheEntry.MarkAsExpired();
-                            }
-
-                            RemoveFromTagEntries(tagEntries, cacheEntry);
-
-                            return;
+                            cacheEntry.MarkAsExpired();
                         }
 
-                        break;
+                        RemoveFromTagEntries(tagEntries, cacheEntry);
+
+                        return;
                     }
                 }
             }
