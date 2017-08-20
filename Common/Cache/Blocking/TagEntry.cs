@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace Common.BlockingCache
+namespace Common.Cache.Blocking
 {
     internal class TagEntry : HashSet<CacheEntry>
     {

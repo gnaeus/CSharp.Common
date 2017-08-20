@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.BlockingCache
+namespace Common.Cache.Blocking
 {
     internal class CacheEntry
     {

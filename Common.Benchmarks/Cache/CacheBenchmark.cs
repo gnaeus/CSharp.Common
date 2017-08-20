@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-//using Common.Cache;
-using Common.BlockingCache;
+using Common.Cache;
+//using Common.Cache.Blocking;
+using Common.Cache.Concurrent;
 
 namespace Common.Benchmarks.Cache
 {

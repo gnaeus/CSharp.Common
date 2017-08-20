@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.Cache
+namespace Common.Cache.Concurrent
 {
     public class MemoryCache : IMemoryCache
     {        

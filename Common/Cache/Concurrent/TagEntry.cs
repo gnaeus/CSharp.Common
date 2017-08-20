@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Common.Cache
+namespace Common.Cache.Concurrent
 {
     internal class TagEntry : ConcurrentDictionary<CacheEntry, object>
     {

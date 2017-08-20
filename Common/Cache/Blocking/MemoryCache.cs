@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.BlockingCache
+namespace Common.Cache.Blocking
 {
     public class MemoryCache : IMemoryCache
     {        

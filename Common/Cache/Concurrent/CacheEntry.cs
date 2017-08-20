@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.Cache
+namespace Common.Cache.Concurrent
 {
     internal class CacheEntry
     {
