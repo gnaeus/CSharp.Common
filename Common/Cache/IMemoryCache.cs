@@ -17,6 +17,6 @@ namespace Common.Cache
 
         void Remove(object key);
 
-        void RemoveByTag(object tag);
+        void ClearTag(object tag);
     }
 }

@@ -164,23 +164,23 @@ namespace Common.Cache
             }
         }
 
-        public static void RemoveByTag(this IMemoryCache cache, params object[] tags)
+        public static void ClearTags(this IMemoryCache cache, params object[] tags)
         {
             if (tags == null) throw new ArgumentNullException(nameof(tags));
 
             foreach (object tag in tags)
             {
-                cache.RemoveByTag(tag);
+                cache.ClearTag(tag);
             }
         }
 
-        public static void RemoveByTag(this IMemoryCache cache, IEnumerable<object> tags)
+        public static void ClearTags(this IMemoryCache cache, IEnumerable<object> tags)
         {
             if (tags == null) throw new ArgumentNullException(nameof(tags));
 
             foreach (object tag in tags)
             {
-                cache.RemoveByTag(tag);
+                cache.ClearTag(tag);
             }
         }
     }

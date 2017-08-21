@@ -239,7 +239,7 @@ namespace Common.Cache.Concurrent
             }
         }
         
-        public void RemoveByTag(object tag)
+        public void ClearTag(object tag)
         {
             TagEntry tagEntry;
             if (_tagEntries.TryRemove(tag, out tagEntry))

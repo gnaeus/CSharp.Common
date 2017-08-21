@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Common.Cache;
-//using Common.Cache.Blocking;
-using Common.Cache.Concurrent;
+using Common.Cache.Blocking;
+//using Common.Cache.Concurrent;
 
 namespace Common.Benchmarks.Cache
 {
@@ -170,7 +170,7 @@ namespace Common.Benchmarks.Cache
             {
                 string tag = _tags[random.Next(_tags.Length)];
 
-                _cache.RemoveByTag(tag);
+                _cache.ClearTag(tag);
 
                 Thread.Sleep(_invalidationMsec);
             }
