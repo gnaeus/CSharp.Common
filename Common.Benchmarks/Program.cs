@@ -25,9 +25,10 @@ namespace Common.Benchmarks
                 }
             }
 
-            // new BenchmarkSwitcher(new[] {
-            //     typeof(SomeBenchmark),
-            // }).Run(args);
+            //new BenchmarkSwitcher(new[]
+            //{
+            //    typeof(SomeBenchmark),
+            //}).Run(args);
         }
     }
 }
