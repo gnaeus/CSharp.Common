@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,6 +59,24 @@ namespace Common.Tests
         public static string GetStreamString(Stream stream, Encoding encoding)
         {
             return encoding.GetString(GetStreamBytes(stream));
+        }
+        
+        public static bool TryValidateObject(object model)
+        {
+            var results = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(
+                model, new ValidationContext(model), results, true);
+
+            if (!isValid)
+            {
+                foreach (var result in results)
+                {
+                    Debug.WriteLine(result.ErrorMessage);
+                }
+            }
+
+            return isValid;
         }
     }
 }

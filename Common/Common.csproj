@@ -98,6 +98,7 @@
     <Compile Include="Validation\IContextValidatable.cs" />
     <Compile Include="Validation\IEnumerableValidatable.cs" />
     <Compile Include="Validation\IValidationContext.cs" />
+    <Compile Include="Validation\Annotations\RequiredIfAttribute.cs" />
     <Compile Include="Validation\ValidationContext.cs" />
     <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Exceptions\ValidationException.cs" />
